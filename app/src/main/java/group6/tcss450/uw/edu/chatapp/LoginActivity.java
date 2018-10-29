@@ -17,9 +17,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         //TODO: this is just a temporary login option
-        Button b = (Button) findViewById(R.id.tmp_login_button);
+        Button b = findViewById(R.id.tmp_login_button);
         b.setOnClickListener(v ->{
-            Credentials cred = new Credentials.Builder("test@test.com", "test123").build();
+            Credentials cred = new Credentials.Builder("test@test.com", "test123")
+                    .addUsername("Test UserName")
+                    .addFirstName("Firstname")
+                    .addLastName("Lastname")
+                    .build();
             onLoginSuccess(cred);
         });
 

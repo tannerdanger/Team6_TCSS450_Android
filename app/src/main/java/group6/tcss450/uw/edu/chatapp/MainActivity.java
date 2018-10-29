@@ -1,5 +1,6 @@
 package group6.tcss450.uw.edu.chatapp;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,7 +19,8 @@ import android.view.MenuItem;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HomeFragment.OnFragmentInteractionListener {
 
     Credentials mCredentials;
 
@@ -26,10 +28,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,25 +40,32 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
         //TODO: load basic fragment
         mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
 
+        HomeFragment frag = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("credentials", mCredentials);
+        frag.setArguments(args);
+
+        loadFragment(frag);
+
 
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -94,6 +103,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
 
+            HomeFragment frag = new HomeFragment();
+            loadFragment(frag);
             //FragmentName fragment = new FragmentName();
 
             //loadFragment(fragment);
@@ -124,17 +135,17 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     private void loadFragment(Fragment theFragment){
 
-        final Bundle args = new Bundle();
-        args.putSerializable("credentials", mCredentials);
+     //   final Bundle args = new Bundle();
+    //    args.putSerializable("credentials", mCredentials);
 
-        theFragment.setArguments(args);
+    //    theFragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
@@ -145,4 +156,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //Home Fragment
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
