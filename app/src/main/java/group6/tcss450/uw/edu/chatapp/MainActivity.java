@@ -16,11 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import group6.tcss450.uw.edu.chatapp.utils.Connections;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        HomeFragment.OnFragmentInteractionListener {
+        HomeFragment.OnFragmentInteractionListener,
+        ConnectionsFragment.OnListFragmentInteractionListener{
 
     Credentials mCredentials;
 
@@ -104,6 +106,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
 
             HomeFragment frag = new HomeFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("credentials", mCredentials);
+            frag.setArguments(args);
+
             loadFragment(frag);
             //FragmentName fragment = new FragmentName();
 
@@ -111,15 +117,19 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_weather) {
 
+
             //FragmentName fragment = new FragmentName();
 
             //loadFragment(fragment);
 
         } else if (id == R.id.nav_connections) {
 
-            //FragmentName fragment = new FragmentName();
+            ConnectionsFragment frag = new ConnectionsFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("credentials", mCredentials);
+            frag.setArguments(args);
 
-            //loadFragment(fragment);
+            loadFragment(frag);
 
         } else if (id == R.id.nav_solo_chat) {
 
@@ -156,9 +166,25 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    //*************** FRAGMENT INTERACTION LISTENERS ***************//
+
+
     //Home Fragment
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    //Connections Fragment
+    @Override
+    public void onListFragmentInteraction(Connections item) {
+
+    }
+
+
+
+    //*************** ASYNC METHODS ***************//
+
+
 }
