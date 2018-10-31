@@ -6,22 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.ConnectionsFragment.OnConnectionsFragmentInteractionListener;
-import group6.tcss450.uw.edu.chatapp.utils.Connections;
+import group6.tcss450.uw.edu.chatapp.MessagesFragment.OnMessageFragmentInteractionListener;
+import group6.tcss450.uw.edu.chatapp.utils.Message;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Connections} and makes a call to the
- * specified {@link OnConnectionsFragmentInteractionListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link Message} and makes a call to the
+ * specified {@link OnMessageFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionsRecyclerViewAdapter.ViewHolder> {
+public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessagesRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Connections> mValues;
-    private final OnConnectionsFragmentInteractionListener mListener;
+    private final List<Message> mValues;
+    private final OnMessageFragmentInteractionListener mListener;
 
-    public MyConnectionsRecyclerViewAdapter(List<Connections> items, OnConnectionsFragmentInteractionListener listener) {
+    public MyMessagesRecyclerViewAdapter(List<Message> items, OnMessageFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -29,25 +29,24 @@ public class MyConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<MyCon
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_connections, parent, false);
+                .inflate(R.layout.fragment_messages, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mOtherUser.setText(mValues.get(position).getOtherUser());
-        holder.mMessage.setText(mValues.get(position).getLastMessage());
+        holder.mMessageView.setText(mValues.get(position).getMessage());
         holder.mDate.setText(mValues.get(position).getDate());
         holder.mTime.setText(mValues.get(position).getTime());
-
+        holder.mUsername.setText(mValues.get(position).getUser());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onConnectionsFragmentInteraction(holder.mItem);
+                    mListener.onMessageFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -60,24 +59,24 @@ public class MyConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<MyCon
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mOtherUser;
+        public final TextView mUsername;
         public final TextView mDate;
         public final TextView mTime;
-        public final TextView mMessage;
-        public Connections mItem;
+        public final TextView mMessageView;
+        public Message mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mOtherUser = (TextView) view.findViewById(R.id.tv_connectionsfragment_otheruser);
-            mDate = (TextView) view.findViewById(R.id.tv_connectionsfragment_date);
-            mTime = (TextView) view.findViewById(R.id.tv_connectionsfragment_time);
-            mMessage = (TextView) view.findViewById(R.id.tv_connectionsfragment_message);
+            mUsername = (TextView) view.findViewById(R.id.tv_messages_user);
+            mDate = (TextView) view.findViewById(R.id.tv_messages_date);
+            mTime = (TextView) view.findViewById(R.id.tv_messages_time);
+            mMessageView = (TextView) view.findViewById(R.id.tv_messages_message);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mDate.getText() + "'";
+            return super.toString() + " '" + mItem.toString() + "'";
         }
     }
 }

@@ -18,11 +18,13 @@ import android.view.MenuItem;
 
 import group6.tcss450.uw.edu.chatapp.utils.Connections;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
+import group6.tcss450.uw.edu.chatapp.utils.Message;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener,
-        ConnectionsFragment.OnListFragmentInteractionListener{
+        ConnectionsFragment.OnConnectionsFragmentInteractionListener,
+        MessagesFragment.OnMessageFragmentInteractionListener   {
 
     Credentials mCredentials;
 
@@ -178,8 +180,22 @@ public class MainActivity extends AppCompatActivity
 
     //Connections Fragment
     @Override
-    public void onListFragmentInteraction(Connections item) {
+    public void onConnectionsFragmentInteraction(Connections item) {
+        MessagesFragment mf = new MessagesFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("key", item);
+        mf.setArguments(args);
+        loadFragment(mf);
+    }
 
+    //Messages Fragment
+    @Override
+    public void onMessageFragmentInteraction(Message item) {
+//        MessagesFragment mf = new MessagesFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, item);
+//        mf.setArguments(args);
+//        loadFragment(mf);
     }
 
 

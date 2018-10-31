@@ -13,6 +13,8 @@ public final class DataGenerator {
     //TODO: Create same thing for chats and weather
     public static final Connections[] CONNECTIONS;
     public static final int CONNECTION_COUNT = 10;
+    public static final Message[] MESSAGES;
+    public static final int MESSAGE_COUNT = 20;
 
     static {
         CONNECTIONS = new Connections[CONNECTION_COUNT];
@@ -21,6 +23,15 @@ public final class DataGenerator {
                     .addDate("01-20-2015")
                     .addTime("12:35")
                     .addLastMessage("Pretend last message")
+                    .build();
+        }
+    }
+
+    static {
+        MESSAGES = new Message[MESSAGE_COUNT];
+        for(int i = 0; i < MESSAGES.length; i++)    {
+            MESSAGES[i] = new Message.Builder("UserSendingMessage", "00/00/0000", "00:00PM")
+                    .addMessage("This is a sample message constructed by the DataGenerator.")
                     .build();
         }
     }
