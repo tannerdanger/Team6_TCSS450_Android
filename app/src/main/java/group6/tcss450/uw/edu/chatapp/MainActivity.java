@@ -21,13 +21,18 @@ import group6.tcss450.uw.edu.chatapp.utils.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.Message;
+import group6.tcss450.uw.edu.chatapp.weather.ForecastFragment;
+import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener,
         OpenMessagesFragment.OnOpenMessageFragmentInteractionListener,
         MessagesFragment.OnMessageFragmentInteractionListener,
-        ConnectionFragment.OnConnectionsFragmentInteractionListener {
+        ConnectionFragment.OnConnectionsFragmentInteractionListener,
+        WeatherTabbedContainer.OnFragmentInteractionListener,
+        WeatherFragment.OnFragmentInteractionListener,
+        ForecastFragment.OnFragmentInteractionListener {
 
     Credentials mCredentials;
 
@@ -138,7 +143,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_weather) {
 
-
+            WeatherTabbedContainer fragment = new WeatherTabbedContainer();
+            loadFragment(fragment);
             //FragmentName fragment = new FragmentName();
 
             //loadFragment(fragment);
@@ -228,6 +234,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //Weather
+    @Override
+    public void onWeatherFragmentInteraction(Uri uri) {
+
+    }
 
 
     //*************** ASYNC METHODS ***************//
