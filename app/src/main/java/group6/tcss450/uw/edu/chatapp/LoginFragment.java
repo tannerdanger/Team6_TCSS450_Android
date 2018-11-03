@@ -124,7 +124,7 @@ public class LoginFragment extends Fragment {
         try {
             Log.d("JSON result", result);
             JSONObject resultsJSON = new JSONObject(result);
-            boolean success= resultsJSON.getBoolean("Success");
+            boolean success= resultsJSON.getBoolean("success");
 
             if (success) {
                 mListener.onLoginSuccess(mCredentials);

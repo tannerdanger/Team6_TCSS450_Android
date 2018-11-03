@@ -1,9 +1,11 @@
 package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
@@ -48,6 +50,8 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
+
+
     public void onLoginSuccess(Credentials credentials) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.putExtra("credentials", credentials);
@@ -56,10 +60,24 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void onRegisterClicked() {
+        /*
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.loginContainer, new RegisterFragment());
         ft.addToBackStack(null);
         ft.commit();
+        */
+        getSupportFragmentManager().popBackStack();
+        loadFragment(new RegisterFragment());
+    }
+
+    private void loadFragment(Fragment frag){
+        Log.wtf("Main Activity", "Started Load Fragment in Main Activity");
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.loginContainer, frag)
+                .addToBackStack(null);
+        transaction.commit();
+        Log.wtf("Main Activity", "ended Load Fragment in Main Activity");
     }
 
     @Override

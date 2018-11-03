@@ -1,16 +1,22 @@
 package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
-
+import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 
 
 /**
@@ -22,7 +28,7 @@ import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 public class RegisterFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
+    private Credentials mCredentials;
     public RegisterFragment() {
         // Required empty public constructor
     }
@@ -34,7 +40,7 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        Button registerButton = getActivity().findViewById(R.id.button_registerfragment_register);
+        Button registerButton = (Button) view.findViewById(R.id.button_registerfragment_register);//getActivity().findViewById(R.id.button_registerfragment_register);
         registerButton.setOnClickListener(v -> onRegisterButtonClicked());
 
         return view;
@@ -75,6 +81,64 @@ public class RegisterFragment extends Fragment {
             } else {
 
             }
+            if(!hasError){
+                Credentials cred = new Credentials.Builder(
+                        emailEdit.getText().toString(),
+                        passwordEdit.getText().toString())
+                        .addFirstName(firstnameEdit.getText().toString())
+                        .addLastName(lastnameEdit.getText().toString())
+                        .addUsername(usernameEdit.getText().toString())
+                        .build();
+
+                //build web service URL
+                Uri uri = new Uri.Builder()
+                        .scheme("https")
+                        .appendPath(getString(R.string.ep_base_url))
+                        .appendPath(getString(R.string.ep_register))
+                        .build();
+
+                //Build JSON object
+                JSONObject msg = cred.asJSONObject();
+
+                mCredentials = cred;
+                new SendPostAsyncTask.Builder(uri.toString(), msg)
+                        .onPreExecute(this::handleRegisterPre)
+                        .onPostExecute(this::handleRegisterOnPost)
+                        .onCancelled(this::handleErrorsInTask)
+                        .build().execute();
+
+            }
+        }
+    }
+
+    private void handleErrorsInTask(String result) {
+        Log.e("ASYNCT_TASK_ERROR", result);
+    }
+
+    private void handleRegisterPre(){
+        //TODO: enable once a wait fragment is created
+        //mListener.onWaitFragmentInteractionShow();
+    }
+
+    private void handleRegisterOnPost(String result) {
+        try {
+            Log.d("JSON result", result);
+            JSONObject resultsJSON = new JSONObject(result);
+            boolean success= resultsJSON.getBoolean("success");
+
+            //TODO: enable once a wait fragment is created
+            //mListener.onWaitFragmentInteractionHide();
+
+            if (success) {
+                mListener.onRegistration(mCredentials);
+            } else {
+                ((TextView) getView().findViewById(R.id.edittext_loginfragment_email))
+                        .setError("Log In unsuccessful.");
+            }
+        } catch (JSONException e) {
+            Log.e("JSON_PARSE_ERROR", result + System.lineSeparator() + e.getMessage());
+            ((TextView) getView().findViewById(R.id.edittext_loginfragment_email))
+                    .setError("Log In unsuccessful.");
         }
     }
 
