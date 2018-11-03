@@ -1,16 +1,18 @@
 package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
-import group6.tcss450.uw.edu.chatapp.utils.Credentials;
+import org.json.JSONObject;
 
+import group6.tcss450.uw.edu.chatapp.utils.Credentials;
+import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 
 
 /**
@@ -22,11 +24,11 @@ import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 public class RegisterFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
+//    private Credentials mCredentials;
+//
     public RegisterFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,8 +36,9 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        Button registerButton = getActivity().findViewById(R.id.button_registerfragment_register);
-        registerButton.setOnClickListener(v -> onRegisterButtonClicked());
+        // TODO CHANGE THIS LATER
+//        Button registerButton = getActivity().findViewById(R.id.button_registerfragment_register);
+//        registerButton.setOnClickListener(v -> onRegisterButtonClicked());
 
         return view;
     }
@@ -55,25 +58,40 @@ public class RegisterFragment extends Fragment {
                     getActivity().findViewById(R.id.edittext_registerfragment_firstname);
             EditText lastnameEdit =
                     getActivity().findViewById(R.id.edittext_registerfragment_lastname);
-            boolean hasError = false;
 
             if (emailEdit.getText().length() == 0) {
-                hasError = true;
                 emailEdit.setError("Email must not be empty.");
             } else if (emailEdit.getText().toString().chars().filter(ch -> ch == '@')
                     .count() != 1) {
-                hasError = true;
                 emailEdit.setError("Email must be valid.");
-            }
-            if (passwordEdit.getText().length() == 0) {
-                hasError = true;
+            } else if (passwordEdit.getText().length() == 0) {
                 passwordEdit.setError("Password must not be empty.");
-            }
-            if (!passwordEdit2.getText().toString().equals(passwordEdit.getText().toString())) {
-                hasError = true;
+            } else if (!passwordEdit2.getText().toString().equals(passwordEdit.getText().toString())) {
                 passwordEdit.setError("Passwords must match.");
             } else {
+                Credentials credentials = new Credentials.Builder(
+                        emailEdit.getText().toString(),
+                        passwordEdit.getText().toString())
+                        .addUsername(usernameEdit.getText().toString())
+                        .addFirstName(firstnameEdit.getText().toString())
+                        .addLastName(lastnameEdit.getText().toString())
+                        .build();
 
+                Uri uri = new Uri.Builder()
+                        .scheme("https")
+                        .appendPath(getString(R.string.ep_base_url))
+                        .appendPath(getString(R.string.ep_register))
+                        .build();
+
+                JSONObject msg = credentials.asJSONObject();
+
+//                mCredentials = credentials;
+
+                new SendPostAsyncTask.Builder(uri.toString(), msg)
+//                        .onPostExecute(this::handleLoginOnPost)
+//                        .onCancelled(this::handleErrorsInTask)
+                        .build().execute();
+                mListener.onRegistration(credentials);
             }
         }
     }

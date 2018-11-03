@@ -1,10 +1,9 @@
 package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.Button;
 
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 
@@ -12,7 +11,7 @@ public class LoginActivity extends AppCompatActivity implements
         LoginFragment.OnFragmentInteractionListener,
         RegisterFragment.OnFragmentInteractionListener {
 
-    Credentials mCredentials;
+//    Credentials mCredentials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
