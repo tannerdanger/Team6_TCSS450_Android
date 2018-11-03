@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
@@ -33,6 +34,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //TODO: load basic fragment
+        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,12 +57,21 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View headerView = navigationView.getHeaderView(0);
+        TextView userheadTV = (TextView)headerView.findViewById(R.id.nav_tv_username);
+        TextView emailHeadTV = (TextView)headerView.findViewById(R.id.nav_tv_userEmail);
+        String usrname = mCredentials.getUsername();
+        if("".compareTo(usrname) == 0) {
+            userheadTV.setText("User");
+        }else{
+            userheadTV.setText(usrname);
+        }
+        emailHeadTV.setText(mCredentials.getEmail());
 
-        //TODO: load basic fragment
-        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
 
         HomeFragment frag = new HomeFragment();
         Bundle args = new Bundle();
@@ -65,6 +79,9 @@ public class MainActivity extends AppCompatActivity
         frag.setArguments(args);
 
         loadFragment(frag);
+
+
+
 
 
     }
