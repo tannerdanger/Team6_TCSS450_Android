@@ -16,15 +16,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import group6.tcss450.uw.edu.chatapp.utils.Connections;
+import group6.tcss450.uw.edu.chatapp.utils.Connection;
+import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.Message;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener,
-        ConnectionsFragment.OnConnectionsFragmentInteractionListener,
-        MessagesFragment.OnMessageFragmentInteractionListener   {
+        OpenMessagesFragment.OnOpenMessageFragmentInteractionListener,
+        MessagesFragment.OnMessageFragmentInteractionListener,
+        ConnectionFragment.OnConnectionsFragmentInteractionListener {
 
     Credentials mCredentials;
 
@@ -125,15 +127,21 @@ public class MainActivity extends AppCompatActivity
             //loadFragment(fragment);
 
         } else if (id == R.id.nav_connections) {
+            ConnectionFragment frag = new ConnectionFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("credentials", mCredentials);
+            frag.setArguments(args);
+            loadFragment(frag);
 
-            ConnectionsFragment frag = new ConnectionsFragment();
+
+        } else if (id == R.id.nav_solo_chat) {
+
+            OpenMessagesFragment frag = new OpenMessagesFragment();
             Bundle args = new Bundle();
             args.putSerializable("credentials", mCredentials);
             frag.setArguments(args);
 
             loadFragment(frag);
-
-        } else if (id == R.id.nav_solo_chat) {
 
             //FragmentName fragment = new FragmentName();
 
@@ -178,9 +186,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //Connections Fragment
+    //OpenMessage Fragment
     @Override
-    public void onConnectionsFragmentInteraction(Connections item) {
+    public void onOpenMessageFragmentInteraction(OpenMessage item) {
         MessagesFragment mf = new MessagesFragment();
         Bundle args = new Bundle();
         args.putSerializable("key", item);
@@ -196,6 +204,11 @@ public class MainActivity extends AppCompatActivity
 //        args.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, item);
 //        mf.setArguments(args);
 //        loadFragment(mf);
+    }
+
+    @Override
+    public void onConnectionFragmentInteraction(Connection item)    {
+
     }
 
 

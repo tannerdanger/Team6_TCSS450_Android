@@ -2,6 +2,7 @@ package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,11 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import group6.tcss450.uw.edu.chatapp.utils.Connections;
-import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
-
 import java.util.Arrays;
 import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.utils.Connection;
+import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 
 /**
  * A fragment representing a list of Items.
@@ -22,10 +23,11 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnConnectionsFragmentInteractionListener}
  * interface.
  */
-public class ConnectionsFragment extends Fragment {
+public class ConnectionFragment extends Fragment {
 
-    private List<Connections> mConnections;
+    public List<Connection> mConnections;
     public static final String ARG_CONNECTION_LIST = "connections list";
+
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -37,31 +39,13 @@ public class ConnectionsFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ConnectionsFragment() {
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_connections_list, container,
-                false);
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyConnectionsRecyclerViewAdapter(mConnections, mListener));
-        }
-        return view;
+    public ConnectionFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ConnectionsFragment newInstance(int columnCount) {
-        ConnectionsFragment fragment = new ConnectionsFragment();
+    public static ConnectionFragment newInstance(int columnCount) {
+        ConnectionFragment fragment = new ConnectionFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -71,20 +55,42 @@ public class ConnectionsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO
-        //THIS CAN ONLY BE IMPLEMENTED ONCE WE'RE PULLING DATA FROM DATABASE
-//        if (getArguments() != null) {
-//            mConnections = new ArrayList<Connections>(Arrays
-//                    .asList((Connections[])
-//                            getArguments()
-//                                    .getSerializable(ARG_CONNECTION_LIST)));
-//        } else {
-            mConnections = Arrays.asList(DataGenerator.CONNECTIONS);
-        //}
-//        if (getArguments() != null) {
-//            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-//        }
+
+        if (getArguments() != null) {
+            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        }
+        mConnections = Arrays.asList(DataGenerator.CONNECTIONS);
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_connection_list, container, false);
+
+        // Set the adapter
+//        if (view instanceof RecyclerView) {
+//            Context context = view.getContext();
+//            RecyclerView recyclerView = (RecyclerView) view;
+//            if (mColumnCount <= 1) {
+//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//            } else {
+//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//            }
+//            recyclerView.setAdapter(new MyConnectionRecyclerViewAdapter(mConnections, mListener));
+//        }
+        Context context = view.getContext();
+        RecyclerView rv = view.findViewById(R.id.list_connections_connectionslist);
+        if(mColumnCount <= 1)   {
+            rv.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            rv.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+        rv.setAdapter(new MyConnectionRecyclerViewAdapter(mConnections, mListener));
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.hide();
+        return view;
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -93,7 +99,7 @@ public class ConnectionsFragment extends Fragment {
             mListener = (OnConnectionsFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnMessageFragmentInteractionListener");
+                    + " must implement OnOpenMessageFragmentInteractionListener");
         }
     }
 
@@ -115,6 +121,6 @@ public class ConnectionsFragment extends Fragment {
      */
     public interface OnConnectionsFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onConnectionsFragmentInteraction(Connections item);
+        void onConnectionFragmentInteraction(Connection connection);
     }
 }

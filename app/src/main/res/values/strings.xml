@@ -11,4 +11,8 @@
 
     <string name="homefrag_tv_welcome">WELCOME</string>
     <string name="connectionsfragment_tv_defaultmessage">No messages</string>
+    <string name="messageslist_et_prompt">Type a message!</string>
+    <string name="connectionslist_button_remove">Remove</string>
+    <string name="button_connectionsfragment_add">Search For User</string>
+    <string name="button_connectionsfragment_requests">Connection Requests</string>
 </resources>
