@@ -15,6 +15,8 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.json.JSONObject;
+
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 
@@ -70,13 +72,9 @@ public class RegisterFragment extends Fragment {
                     .count() != 1) {
                 hasError = true;
                 emailEdit.setError("Email must be valid.");
-            }
-            if (passwordEdit.getText().length() == 0) {
-                hasError = true;
+            } else if (passwordEdit.getText().length() == 0) {
                 passwordEdit.setError("Password must not be empty.");
-            }
-            if (!passwordEdit2.getText().toString().equals(passwordEdit.getText().toString())) {
-                hasError = true;
+            } else if (!passwordEdit2.getText().toString().equals(passwordEdit.getText().toString())) {
                 passwordEdit.setError("Passwords must match.");
             } else {
 
