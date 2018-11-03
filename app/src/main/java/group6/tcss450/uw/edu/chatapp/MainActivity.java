@@ -15,20 +15,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.utils.Connections;
+import group6.tcss450.uw.edu.chatapp.utils.Connection;
+import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
+import group6.tcss450.uw.edu.chatapp.utils.Message;
+import group6.tcss450.uw.edu.chatapp.weather.ForecastFragment;
+import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomeFragment.OnFragmentInteractionListener,
-        ConnectionsFragment.OnListFragmentInteractionListener{
+        OpenMessagesFragment.OnOpenMessageFragmentInteractionListener,
+        MessagesFragment.OnMessageFragmentInteractionListener,
+        ConnectionFragment.OnConnectionsFragmentInteractionListener,
+        WeatherTabbedContainer.OnFragmentInteractionListener,
+        WeatherFragment.OnFragmentInteractionListener,
+        ForecastFragment.OnFragmentInteractionListener {
 
     Credentials mCredentials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //TODO: load basic fragment
+        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,12 +62,21 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View headerView = navigationView.getHeaderView(0);
+        TextView userheadTV = (TextView)headerView.findViewById(R.id.nav_tv_username);
+        TextView emailHeadTV = (TextView)headerView.findViewById(R.id.nav_tv_userEmail);
+        String usrname = mCredentials.getUsername();
+        if("".compareTo(usrname) == 0) {
+            userheadTV.setText("User");
+        }else{
+            userheadTV.setText(usrname);
+        }
+        emailHeadTV.setText(mCredentials.getEmail());
 
-        //TODO: load basic fragment
-        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
 
         HomeFragment frag = new HomeFragment();
         Bundle args = new Bundle();
@@ -61,6 +84,9 @@ public class MainActivity extends AppCompatActivity
         frag.setArguments(args);
 
         loadFragment(frag);
+
+
+
 
 
     }
@@ -117,21 +143,28 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_weather) {
 
-
+            WeatherTabbedContainer fragment = new WeatherTabbedContainer();
+            loadFragment(fragment);
             //FragmentName fragment = new FragmentName();
 
             //loadFragment(fragment);
 
         } else if (id == R.id.nav_connections) {
+            ConnectionFragment frag = new ConnectionFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("credentials", mCredentials);
+            frag.setArguments(args);
+            loadFragment(frag);
 
-            ConnectionsFragment frag = new ConnectionsFragment();
+
+        } else if (id == R.id.nav_solo_chat) {
+
+            OpenMessagesFragment frag = new OpenMessagesFragment();
             Bundle args = new Bundle();
             args.putSerializable("credentials", mCredentials);
             frag.setArguments(args);
 
             loadFragment(frag);
-
-        } else if (id == R.id.nav_solo_chat) {
 
             //FragmentName fragment = new FragmentName();
 
@@ -176,12 +209,36 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //Connections Fragment
+    //OpenMessage Fragment
     @Override
-    public void onListFragmentInteraction(Connections item) {
+    public void onOpenMessageFragmentInteraction(OpenMessage item) {
+        MessagesFragment mf = new MessagesFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("key", item);
+        mf.setArguments(args);
+        loadFragment(mf);
+    }
+
+    //Messages Fragment
+    @Override
+    public void onMessageFragmentInteraction(Message item) {
+//        MessagesFragment mf = new MessagesFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, item);
+//        mf.setArguments(args);
+//        loadFragment(mf);
+    }
+
+    @Override
+    public void onConnectionFragmentInteraction(Connection item)    {
 
     }
 
+    //Weather
+    @Override
+    public void onWeatherFragmentInteraction(Uri uri) {
+
+    }
 
 
     //*************** ASYNC METHODS ***************//

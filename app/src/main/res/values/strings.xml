@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">ChatApp</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -10,4 +10,24 @@
 
 
     <string name="homefrag_tv_welcome">WELCOME</string>
+    <string name="connectionsfragment_tv_defaultmessage">No messages</string>
+    <string name="messageslist_et_prompt">Type a message!</string>
+    <string name="connectionslist_button_remove">Remove</string>
+    <string name="button_connectionsfragment_add">Search For User</string>
+    <string name="button_connectionsfragment_requests">Connection Requests</string>
+
+    <string name="loginfragment_login" tools:ignore="ExtraTranslation">LogIn</string>
+    <string name="loginfragment_register">Register</string>
+    <string name="loginfragment_email">Email</string>
+    <string name="loginfragment_password">Password</string>
+
+    <string name="registerfragment_email">Email</string>
+    <string name="registerfragment_username">Username</string>
+    <string name="registerfragment_password">Password</string>
+    <string name="registerfragment_firstname">First Name</string>
+    <string name="registerfragment_lastname">Last Name</string>
+    <string name="registerfragment_register">Register</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

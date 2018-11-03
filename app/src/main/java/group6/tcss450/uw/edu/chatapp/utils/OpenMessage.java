@@ -5,7 +5,7 @@ import java.io.Serializable;
 //Not sure if this will need serializable. Just basing this off of Credentials.
 //@author Nathan Rueschenberg
 
-public class Connections implements Serializable {
+public class OpenMessage implements Serializable {
 
     /** The user the connection was established with. */
     private final String mOtherUser;
@@ -48,12 +48,12 @@ public class Connections implements Serializable {
             return this;
         }
 
-        public Connections build()  {
-            return new Connections(this);
+        public OpenMessage build()  {
+            return new OpenMessage(this);
         }
     }
 
-    private Connections(final Builder builder)  {
+    private OpenMessage(final Builder builder)  {
         this.mOtherUser = builder.mOtherUser;
         this.mDate = builder.mDate;
         this.mTime = builder.mTime;
