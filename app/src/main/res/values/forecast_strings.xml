@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="forecast200">Thunderstorm with light rain</string>
+    <string name="forecast201">Thunderstorm with rain</string>
+    <string name="forecast202">Thunderstorm with heavy rain</string>
+    <string name="forecast230">Thunderstorm with light drizzle</string>
+    <string name="forecast231">Thunderstorm with drizzle</string>
+    <string name="forecast232">Thunderstorm with heavy drizzle</string>
+    <string name="forecast233">Thunderstorm with Hail</string>
+    <string name="forecast300">Light Drizzle</string>
+    <string name="forecast301">Drizzle</string>
+    <string name="forecast302">Heavy Drizzle</string>
+    <string name="forecast500">Light Rain</string>
+    <string name="forecast501">Moderate Rain</string>
+    <string name="forecast502">Heavy Rain</string>
+    <string name="forecast511">Freezing rain</string>
+    <string name="forecast520">Light shower rain</string>
+    <string name="forecast521">Shower rain</string>
+    <string name="forecast522">Heavy shower rain</string>
+    <string name="forecast600">Light snow</string>
+    <string name="forecast601">Snow</string>
+    <string name="forecast602">Heavy Snow</string>
+    <string name="forecast610">Mix snow/rain</string>
+    <string name="forecast611">Sleet</string>
+    <string name="forecast612">Heavy sleet</string>
+    <string name="forecast621">Snow Shower</string>
+    <string name="forecast622">Heavy snow shower</string>
+    <string name="forecast623">Flurries</string>
+    <string name="forecast700">Mist</string>
+    <string name="forecast711">Smoke</string>
+    <string name="forecast721">Haze</string>
+    <string name="forecast731">Sand/Dust</string>
+    <string name="forecast741">Fog</string>
+    <string name="forecast751">Freezing Fog</string>
+    <string name="forecast800">Clear Sky</string>
+    <string name="forecast801">Few Clouds</string>
+    <string name="forecast802">Scattered Clouds</string>
+    <string name="forecast803">Broken clouds</string>
+    <string name="forecast804">	Overcast clouds</string>
+    <string name="forecast900">Unknown Precipitation</string>
+
+</resources>
