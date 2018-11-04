@@ -1,18 +1,23 @@
 package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Context;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.utils.PagerAdapter;
+import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
+import group6.tcss450.uw.edu.chatapp.weather.WeatherMsg;
 
 
 /**
@@ -25,21 +30,92 @@ public class WeatherTabbedContainer extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private JSONObject mForecast;
+    //Weather message object for sending lat/long to api
+    private WeatherMsg mWeatherMessage;
+    private boolean mIsWeatherSet;
 
     public WeatherTabbedContainer() {
         // Required empty public constructor
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+
+        if(getArguments() != null){
+            mWeatherMessage = (WeatherMsg)getArguments().getSerializable("wmsg");
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
+        //TODO: have a way to determine what the desired weather location is
+        mIsWeatherSet = false;
         //TODO: update forecast
+        if(getArguments() != null){
+            mWeatherMessage = (WeatherMsg)getArguments().getSerializable("wmsg");
+        }
         //mForecast =
+        tryGetWeather();
 
 
 
 
+    }
+
+    private void tryGetWeather(){
+
+
+        //if(null != longitutde && null != latitude){
+
+        if(null != mWeatherMessage) {
+
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_weather))
+                    .appendPath(getString(R.string.ep_tenday))
+                    .build();
+
+            JSONObject jMsg = mWeatherMessage.asJsonObject();
+
+            new SendPostAsyncTask.Builder(uri.toString(), jMsg)
+                    .onPreExecute(this::handleWeatherPre)
+                    .onPostExecute(this::handleWeatherPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+
+            //}
+        }
+    }
+
+    //*********** ASYNC HANDLE METHODS ********************//
+    private void handleWeatherPre(){
+        //TODO: implement this
+        //mListener.onWaitFragmentInteractionShow();
+    }
+
+    private void handleWeatherPost(String result){
+        try{
+            JSONObject resultsJSON = new JSONObject(result);
+
+            //TODO: Implement this
+            //mListener.onWaitFragmentInteractionHide();
+            System.out.print("");
+
+        }catch (JSONException e){
+            Log.e("JSON_PARSE_ERROR", result
+            + System.lineSeparator()
+            + e.getMessage());
+
+            //TODO: Handle the error
+        }
+    }
+
+    private void handleErrorsInTask(String result){
+        Log.e("ASYNC_TASK_ERROR", result);
     }
 
     @Override
