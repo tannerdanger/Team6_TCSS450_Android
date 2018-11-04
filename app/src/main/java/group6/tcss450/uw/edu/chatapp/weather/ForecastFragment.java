@@ -17,6 +17,8 @@ import group6.tcss450.uw.edu.chatapp.R;
  * to handle interaction events.
  */
 public class ForecastFragment extends Fragment {
+    private static String BASE_URL = "https://tcss450group6-backend.herokuapp.com/weather/day";
+    private static String IMG_URL = "http://openweathermap.org/img/w/";
 
     private OnFragmentInteractionListener mListener;
 

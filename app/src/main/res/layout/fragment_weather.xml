@@ -6,13 +6,69 @@
     android:orientation="vertical"
     tools:context=".weather.WeatherFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    
     <TextView
-        android:id="@+id/weather_fragment_sample_tv"
+        android:id="@+id/city_field"
+        android:layout_width="192dp"
+        android:layout_height="43dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="94dp"
+        android:layout_marginTop="121dp"
+        android:layout_marginEnd="98dp"
+        android:layout_marginBottom="347dp"
+        android:text="Tacoma, WA"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#800080" />
+
+    <TextView
+        android:id="@+id/updated_field"
+        android:text="Never"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/city_field"
+        android:layout_centerHorizontal="true"
+        android:textColor="#800080"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/weather_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="THIS IS THE FRAGMENT FOR THE TODAY'S WEATHER"
-        android:textAlignment="center" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#800080"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="90sp"
+        />
+
+    <TextView
+        android:id="@+id/current_temperature_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/weather_icon"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="-93dp"
+        android:layout_marginEnd="121dp"
+        android:text="53.0°F"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#800080"
+        android:textSize="50sp" />
+
+    <TextView
+        android:id="@+id/details_field"
+        android:text="Light Drizzle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/current_temperature_field"
+        android:layout_centerHorizontal="true"
+        android:textColor="#800080"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
 
 </RelativeLayout>

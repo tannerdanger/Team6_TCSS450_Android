@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_weather) {
 
-            //TODO: save weather location preference settings, else default to phone zip
             //if(!mIsWeatherSet){ //Or location is set to phone location
             LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
