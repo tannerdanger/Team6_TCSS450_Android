@@ -13,14 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.utils.PagerAdapter;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
-
 import group6.tcss450.uw.edu.chatapp.weather.Forecast;
 import group6.tcss450.uw.edu.chatapp.weather.ForecastFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
@@ -36,14 +34,12 @@ import group6.tcss450.uw.edu.chatapp.weather.WeatherMsg;
 public class WeatherTabbedContainer extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
     //Weather message object for sending lat/long to api
     private WeatherMsg mWeatherMessage;
     private boolean mIsWeatherSet;
     private Forecast[] mTenDayForecast;
     private Fragment mWeatherFragment;
     private Fragment mForecastFragment;
-
 
     public WeatherTabbedContainer() {
         // Required empty public constructor
@@ -67,64 +63,12 @@ public class WeatherTabbedContainer extends Fragment {
         if(getArguments() != null){
             mWeatherMessage = (WeatherMsg)getArguments().getSerializable("wmsg");
         }
-
-
-    private void tryGetWeather(){
-
-
         mTenDayForecast = new Forecast[10];
         tryGetWeather();
 
 
-        //if(null != longitutde && null != latitude){
 
-        if(null != mWeatherMessage) {
 
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_weather))
-                    .appendPath(getString(R.string.ep_tenday))
-                    .build();
-
-            JSONObject jMsg = mWeatherMessage.asJsonObject();
-
-            new SendPostAsyncTask.Builder(uri.toString(), jMsg)
-                    .onPreExecute(this::handleWeatherPre)
-                    .onPostExecute(this::handleWeatherPost)
-                    .onCancelled(this::handleErrorsInTask)
-                    .build()
-                    .execute();
-
-            //}
-        }
-    }
-
-    //*********** ASYNC HANDLE METHODS ********************//
-    private void handleWeatherPre(){
-        //TODO: implement this
-        //mListener.onWaitFragmentInteractionShow();
-    }
-
-    private void handleWeatherPost(String result){
-        try{
-            JSONObject resultsJSON = new JSONObject(result);
-
-            //TODO: Implement this
-            //mListener.onWaitFragmentInteractionHide();
-            System.out.print("");
-
-        }catch (JSONException e){
-            Log.e("JSON_PARSE_ERROR", result
-            + System.lineSeparator()
-            + e.getMessage());
-
-            //TODO: Handle the error
-        }
-    }
-
-    private void handleErrorsInTask(String result){
-        Log.e("ASYNC_TASK_ERROR", result);
     }
 
     private void tryGetWeather(){
@@ -229,16 +173,10 @@ public class WeatherTabbedContainer extends Fragment {
         return view;
     }
 
-    /**
-     * This method can be called to update the fields in the weather fragments.
-     * This method has access to a class variable for both fragments,
-     * as well as an a reference to an array of forecast objects for the next 10 days.
-     */
     public void updateForecasts(){
         //mWeatherFragment = the weather fragment
         //mForecastFragment = the 10day forecast fragment
         //mTenDayForecast[0...9] each item represents a forecast object.
-        //TODO: here is where all the text fields/icons should be updated from the forecast array
     }
 
     // TODO: Rename method, update argument and hook method into UI event
