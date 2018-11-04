@@ -173,6 +173,11 @@ public class WeatherTabbedContainer extends Fragment {
         return view;
     }
 
+    /**
+     * This method can be called to update the fields in the weather fragments.
+     * This method has access to a class variable for both fragments,
+     * as well as an a reference to an array of forecast objects for the next 10 days.
+     */
     public void updateForecasts(){
         //mWeatherFragment = the weather fragment
         //mForecastFragment = the 10day forecast fragment
