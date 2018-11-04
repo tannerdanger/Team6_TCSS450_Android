@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity
             frag.setArguments(args);
 
             loadFragment(frag);
+
             //FragmentName fragment = new FragmentName();
 
             //loadFragment(fragment);
