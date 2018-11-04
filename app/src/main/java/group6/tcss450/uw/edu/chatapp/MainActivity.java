@@ -1,11 +1,19 @@
 package group6.tcss450.uw.edu.chatapp;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,12 +25,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.Message;
+import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.weather.ForecastFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
+import group6.tcss450.uw.edu.chatapp.weather.WeatherMsg;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -67,12 +79,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = navigationView.getHeaderView(0);
-        TextView userheadTV = (TextView)headerView.findViewById(R.id.nav_tv_username);
-        TextView emailHeadTV = (TextView)headerView.findViewById(R.id.nav_tv_userEmail);
+        TextView userheadTV = (TextView) headerView.findViewById(R.id.nav_tv_username);
+        TextView emailHeadTV = (TextView) headerView.findViewById(R.id.nav_tv_userEmail);
         String usrname = mCredentials.getUsername();
-        if("".compareTo(usrname) == 0) {
+        if ("".compareTo(usrname) == 0) {
             userheadTV.setText("User");
-        }else{
+        } else {
             userheadTV.setText(usrname);
         }
         emailHeadTV.setText(mCredentials.getEmail());
@@ -84,9 +96,6 @@ public class MainActivity extends AppCompatActivity
         frag.setArguments(args);
 
         loadFragment(frag);
-
-
-
 
 
     }
@@ -143,11 +152,35 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_weather) {
 
-            WeatherTabbedContainer fragment = new WeatherTabbedContainer();
-            loadFragment(fragment);
-            //FragmentName fragment = new FragmentName();
+            //TODO: save weather location preference settings, else default to phone zip
+            //if(!mIsWeatherSet){ //Or location is set to phone location
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            //loadFragment(fragment);
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
+            }
+
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double longitutde = location.getLongitude();
+            double latitude = location.getLatitude();
+
+            Log.wtf("lon", "lon: "+longitutde);
+            Log.wtf("lat", "lat: "+latitude);
+
+            WeatherMsg wMsg = new WeatherMsg(latitude, longitutde);
+
+            Bundle args = new Bundle();
+            args.putSerializable("wmsg", wMsg);
+            WeatherTabbedContainer fragment = new WeatherTabbedContainer();
+            fragment.setArguments(args);
+            loadFragment(fragment);
+
 
         } else if (id == R.id.nav_connections) {
             ConnectionFragment frag = new ConnectionFragment();
@@ -185,10 +218,10 @@ public class MainActivity extends AppCompatActivity
 
     private void loadFragment(Fragment theFragment){
 
-     //   final Bundle args = new Bundle();
-    //    args.putSerializable("credentials", mCredentials);
+        //   final Bundle args = new Bundle();
+        //    args.putSerializable("credentials", mCredentials);
 
-    //    theFragment.setArguments(args);
+        //    theFragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
@@ -198,6 +231,9 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
 
     }
+
+
+
 
 
     //*************** FRAGMENT INTERACTION LISTENERS ***************//
