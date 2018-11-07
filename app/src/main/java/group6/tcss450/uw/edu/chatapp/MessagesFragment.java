@@ -8,8 +8,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 
 import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
@@ -63,7 +66,7 @@ public class MessagesFragment extends Fragment {
 //                            getArguments()
 //                                    .getSerializable(ARG_CONNECTION_LIST)));
 //        } else {
-        mMessages = Arrays.asList(DataGenerator.MESSAGES);
+        mMessages = DataGenerator.MESSAGES;
         //}
 //        if (getArguments() != null) {
 //            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -88,15 +91,45 @@ public class MessagesFragment extends Fragment {
 //        }
         Context context = view.getContext();
         RecyclerView rv = view.findViewById(R.id.list_messages_messageslist);
-        if(mColumnCount <= 1)   {
+        if (mColumnCount <= 1) {
             rv.setLayoutManager(new LinearLayoutManager(context));
         } else {
             rv.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
         rv.setAdapter(new MyMessagesRecyclerViewAdapter(mMessages, mListener));
         rv.scrollToPosition(mMessages.size() - 1);
+        int defaultBottom = rv.getBottom();
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.hide();
+
+        Button sendButton = view.findViewById(R.id.button_messsages_send);
+        EditText messageEntry = view.findViewById(R.id.et_messages_messageinput);
+
+        rv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if ( bottom < oldBottom) {
+                    rv.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            rv.smoothScrollToPosition(mMessages.size() - 1);
+                        }
+                    });
+                }
+            }
+        });
+
+        sendButton.setOnClickListener((View v) -> {
+            String text = messageEntry.getText().toString();
+            String user = "Me";
+            String date = "Today";
+            String time = "Now";
+            Message m = new Message.Builder(user, date, time).addMessage(text).build();
+            mMessages.add(m);
+            rv.getAdapter().notifyItemInserted(mMessages.size() - 1);
+            messageEntry.setText("");
+            rv.scrollToPosition(mMessages.size() - 1);
+        });
         return view;
     }
 

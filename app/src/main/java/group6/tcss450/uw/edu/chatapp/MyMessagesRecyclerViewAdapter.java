@@ -33,6 +33,10 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
         return new ViewHolder(view);
     }
 
+    public void addItem(Message theMessage) {
+        mValues.add(theMessage);
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);

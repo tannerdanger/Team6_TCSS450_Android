@@ -5,7 +5,9 @@
     android:id="@+id/linearlayout_connectionsfragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/connectionsfragment_rectangleborder_big">
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/connectionsfragment_rectangleborder_big"
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/tv_connectionsfragment_username"

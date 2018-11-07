@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearlayout_messages"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_messages_messageslist"
         android:name="group6.tcss450.uw.edu.chatapp.MessagesFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/et_messages_messageinput"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:fitsSystemWindows="false"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/et_messages_messageinput"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,17 +29,29 @@
 
     <EditText
         android:id="@+id/et_messages_messageinput"
-        android:layout_width="0dp"
+        android:layout_width="339dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="7dp"
         android:ems="10"
         android:hint="@string/messageslist_et_prompt"
-        android:inputType="textMultiLine"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:imeOptions="actionSend"
-        />
-</android.support.constraint.ConstraintLayout>
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/button_messsages_send"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="357dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="9dp"
+        android:text="->" />
+
+</RelativeLayout>
