@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "168973602090",
+    "firebase_url": "https://tcss450-hoolichat.firebaseio.com",
+    "project_id": "tcss450-hoolichat",
+    "storage_bucket": "tcss450-hoolichat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168973602090:android:f479e53bac7b0744",
+        "android_client_info": {
+          "package_name": "group6.tcss450.uw.edu.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168973602090-6a16dds3fbjlqs9uo8pdpe781d9lb7b0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEeUsV3QDmGuxSa2lWWzMpZkFgpz6XEwY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
