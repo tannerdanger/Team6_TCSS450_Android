@@ -32,4 +32,16 @@ public class Connection implements Serializable {
     public String getEmail()    {
         return mEmail;
     }
+
+    @Override
+    public boolean equals(Object theOther)  {
+        return (theOther instanceof Connection) && (this.hashCode() == theOther.hashCode());
+    }
+
+    @Override
+    public int hashCode()   {
+        int hash = this.mUsername.hashCode() + this.mEmail.hashCode();
+        return hash * 31;
+    }
+
 }

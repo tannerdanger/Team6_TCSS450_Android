@@ -13,7 +13,7 @@ public final class DataGenerator {
     public static final int OPEN_MESSAGE_COUNT = 10;
     public static final ArrayList<Message> MESSAGES;
     public static final int MESSAGE_COUNT = 20;
-    public static final Connection[] CONNECTIONS;
+    public static final ArrayList<Connection> CONNECTIONS;
     public static final int CONNECTION_COUNT = 10;
 
     static {
@@ -38,11 +38,11 @@ public final class DataGenerator {
     }
 
     static  {
-        CONNECTIONS = new Connection[CONNECTION_COUNT];
-        for(int i = 0; i < CONNECTIONS.length; i++) {
+        CONNECTIONS = new ArrayList<Connection>();
+        for(int i = 0; i < CONNECTION_COUNT; i++) {
             String username = "user" + i;
             String email = "email" + i + "@testing.com";
-            CONNECTIONS[i] = new Connection.Builder(username, email).build();
+            CONNECTIONS.add(new Connection.Builder(username, email).build());
         }
     }
 

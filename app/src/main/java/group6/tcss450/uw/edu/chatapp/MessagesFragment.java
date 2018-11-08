@@ -98,13 +98,11 @@ public class MessagesFragment extends Fragment {
         }
         rv.setAdapter(new MyMessagesRecyclerViewAdapter(mMessages, mListener));
         rv.scrollToPosition(mMessages.size() - 1);
-        int defaultBottom = rv.getBottom();
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.hide();
 
         Button sendButton = view.findViewById(R.id.button_messsages_send);
         EditText messageEntry = view.findViewById(R.id.et_messages_messageinput);
-
         rv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {

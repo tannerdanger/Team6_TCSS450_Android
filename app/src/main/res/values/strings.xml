@@ -30,4 +30,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="connectionsearch_request">Add</string>
+    <string name="connectionsearch_searchprompt">Search by username or email</string>
+    <string name="connectionrequest_accept">Accept</string>
+    <string name="connectionrequest_reject">Reject</string>
 </resources>

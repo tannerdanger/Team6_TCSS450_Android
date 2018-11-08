@@ -8,22 +8,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.ConnectionFragment.OnConnectionsFragmentInteractionListener;
+import group6.tcss450.uw.edu.chatapp.ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener;
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the
- * specified {@link OnConnectionsFragmentInteractionListener}.
+ * specified {@link ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyConnectionRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionRecyclerViewAdapter.ViewHolder> {
+public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionRequestsRecyclerViewAdapter.ViewHolder> {
 
-    private List<Connection> mValues;
-    private final ConnectionFragment.OnConnectionsFragmentInteractionListener mListener;
+    private final List<Connection> mValues;
+    private final OnConnectionRequestFragmentInteractionListener mListener;
 
-    public MyConnectionRecyclerViewAdapter(List<Connection> items, OnConnectionsFragmentInteractionListener listener) {
+    public MyConnectionRequestsRecyclerViewAdapter(List<Connection> items, ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,29 +31,37 @@ public class MyConnectionRecyclerViewAdapter extends RecyclerView.Adapter<MyConn
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_connection, parent, false);
+                .inflate(R.layout.fragment_connectionrequests, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mConnection = mValues.get(position);
-        Connection thisConnection = mValues.get(position);
-        holder.mEmail.setText(mValues.get(position).getEmail());
         holder.mUsername.setText(mValues.get(position).getUsername());
+        holder.mEmail.setText(mValues.get(position).getEmail());
+        Connection thisConnection = mValues.get(position);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onConnectionFragmentInteraction(holder.mConnection);
+                    mListener.onConnectionRequestFragmentInteraction(holder.mConnection);
                 }
             }
         });
-        holder.mRemoveUser.setOnClickListener((View v) ->   {
+        holder.mAccept.setOnClickListener((View v) ->   {
+           this.notifyItemRemoved(mValues.indexOf(thisConnection));
+           mValues.remove(thisConnection);
+           //TODO backend
+           Log.d("CONNECTION REQUEST", "ACCEPT REQUEST");
+        });
+        holder.mReject.setOnClickListener((View v) ->   {
             this.notifyItemRemoved(mValues.indexOf(thisConnection));
             mValues.remove(thisConnection);
+            //TODO backend
+            Log.d("CONNECTION REQUEST", "REJECT REQUEST");
         });
     }
 
@@ -64,22 +72,24 @@ public class MyConnectionRecyclerViewAdapter extends RecyclerView.Adapter<MyConn
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mEmail;
         public final TextView mUsername;
-        public final Button mRemoveUser;
+        public final TextView mEmail;
+        public final Button mAccept;
+        public final Button mReject;
         public Connection mConnection;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mEmail = (TextView) view.findViewById(R.id.tv_connectionsfragment_email);
-            mUsername = (TextView) view.findViewById(R.id.tv_connectionsfragment_username);
-            mRemoveUser = (Button) view.findViewById(R.id.button_connectionsfragment_remove);
+            mUsername = (TextView) view.findViewById(R.id.tv_connectionrequest_username);
+            mEmail = (TextView) view.findViewById(R.id.tv_connectionrequest_email);
+            mAccept = (Button) view.findViewById(R.id.button_connectionrequest_accept);
+            mReject = (Button) view.findViewById(R.id.button_connectionrequest_reject);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mUsername.getText() + "'";
+            return super.toString() + " '" + mEmail.getText() + "'";
         }
     }
 }

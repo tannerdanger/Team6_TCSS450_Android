@@ -1,6 +1,5 @@
 package group6.tcss450.uw.edu.chatapp;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -23,16 +22,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.TextView;
-
-import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.Message;
-import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.weather.ForecastFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherMsg;
@@ -45,7 +40,9 @@ public class MainActivity extends AppCompatActivity
         ConnectionFragment.OnConnectionsFragmentInteractionListener,
         WeatherTabbedContainer.OnFragmentInteractionListener,
         WeatherFragment.OnFragmentInteractionListener,
-        ForecastFragment.OnFragmentInteractionListener {
+        ForecastFragment.OnFragmentInteractionListener,
+        ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
+        ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener   {
 
     Credentials mCredentials;
 
@@ -273,6 +270,38 @@ public class MainActivity extends AppCompatActivity
     //Weather
     @Override
     public void onWeatherFragmentInteraction(Uri uri) {
+
+    }
+
+    //Connection Search Screen (Will be unused?)
+    @Override
+    public void onConnectionSearchFragmentInteraction(Connection item) {
+
+    }
+
+    //Connections Screen -> Search Button
+    @Override
+    public void onConnectionSearchInteraction() {
+        ConnectionsSearchFragment csf = new ConnectionsSearchFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("key", mCredentials);
+        csf.setArguments(args);
+        loadFragment(csf);
+    }
+
+    //Connection screen -> Request button
+    @Override
+    public void onConnectionRequestInteraction()    {
+        ConnectionRequestsFragment crf = new ConnectionRequestsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("key", mCredentials);
+        crf.setArguments(args);
+        loadFragment(crf);
+    }
+
+    //Connection Request Screen (Will be unused?)
+    @Override
+    public void onConnectionRequestFragmentInteraction(Connection item) {
 
     }
 
