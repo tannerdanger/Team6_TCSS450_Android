@@ -5,14 +5,28 @@ import java.io.Serializable;
 public class Connection implements Serializable {
     public final String mUsername;
     public final String mEmail;
+    public final String mFirstName;
+    public final String mLastName;
 
     public static class Builder {
         private final String mUsername;
         private final String mEmail;
+        private String mFirstName;
+        private String mLastName;
 
         public Builder(String username, String email) {
             this.mUsername = username;
             this.mEmail = email;
+        }
+
+        public Builder addFirstName(final String fName)   {
+            this.mFirstName = fName;
+            return this;
+        }
+
+        public Builder addLastName(final String lName)  {
+            this.mLastName = lName;
+            return this;
         }
 
         public Connection build()  {
@@ -23,6 +37,8 @@ public class Connection implements Serializable {
     private Connection(final Builder builder)  {
         this.mUsername = builder.mUsername;
         this.mEmail = builder.mEmail;
+        this.mFirstName = builder.mFirstName;
+        this.mLastName = builder.mLastName;
     }
 
     public String getUsername() {
@@ -31,6 +47,14 @@ public class Connection implements Serializable {
 
     public String getEmail()    {
         return mEmail;
+    }
+
+    public String getFirstName()    {
+        return mFirstName;
+    }
+
+    public String getLastName() {
+        return mLastName;
     }
 
     @Override

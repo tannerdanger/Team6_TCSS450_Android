@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,9 +61,15 @@ public class ConnectionFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+           // mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+//            mSets = new ArrayList<Setlist>(Arrays.asList((Setlist[])
+//                    getArguments().getSerializable(ARG_SET_LIST)));
+            mConnections = new ArrayList<Connection>(Arrays.asList((Connection[])
+                        getArguments().getSerializable(ARG_CONNECTION_LIST)));
+        } else {
+            Log.e("BROKEN POST", "UNABLE TO FETCH CONNECTIONS.");
         }
-        mConnections = DataGenerator.CONNECTIONS;
+        //mConnections = DataGenerator.CONNECTIONS;
     }
 
     @Override

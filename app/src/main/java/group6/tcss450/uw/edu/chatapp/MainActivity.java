@@ -24,10 +24,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
+import group6.tcss450.uw.edu.chatapp.utils.GetAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.Message;
+import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.weather.ForecastFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherMsg;
@@ -42,7 +51,8 @@ public class MainActivity extends AppCompatActivity
         WeatherFragment.OnFragmentInteractionListener,
         ForecastFragment.OnFragmentInteractionListener,
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
-        ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener   {
+        ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
+        WaitFragment.OnFragmentInteractionListener  {
 
     Credentials mCredentials;
 
@@ -167,8 +177,8 @@ public class MainActivity extends AppCompatActivity
             double longitutde = location.getLongitude();
             double latitude = location.getLatitude();
 
-            Log.wtf("lon", "lon: "+longitutde);
-            Log.wtf("lat", "lat: "+latitude);
+            Log.wtf("lon", "lon: " + longitutde);
+            Log.wtf("lat", "lat: " + latitude);
 
             WeatherMsg wMsg = new WeatherMsg(latitude, longitutde);
 
@@ -180,11 +190,23 @@ public class MainActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_connections) {
-            ConnectionFragment frag = new ConnectionFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("credentials", mCredentials);
-            frag.setArguments(args);
-            loadFragment(frag);
+//            ConnectionFragment frag = new ConnectionFragment();
+//            Bundle args = new Bundle();
+//            args.putSerializable("credentials", mCredentials);
+//            frag.setArguments(args);
+//            loadFragment(frag);
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_conn))
+                    .appendPath(getString(R.string.ep_getall))
+                    .build();
+            Log.d("JSON", mCredentials.asJSONObject().toString());
+            new SendPostAsyncTask.Builder(uri.toString(), mCredentials.asJSONObject())
+                    .onPreExecute(this::onWaitFragmentInteractionShow)
+                    .onPostExecute(this::handleConnectionGetOnPostExecute)
+                    .build()
+                    .execute();
 
 
         } else if (id == R.id.nav_solo_chat) {
@@ -213,7 +235,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void loadFragment(Fragment theFragment){
+    private void loadFragment(Fragment theFragment) {
 
         //   final Bundle args = new Bundle();
         //    args.putSerializable("credentials", mCredentials);
@@ -229,8 +251,62 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void handleConnectionGetOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if (root.has("connections")) {
+                JSONArray response = root.getJSONArray("connections");
+//                if (response.has("data")) {
+//                    JSONArray data = response.getJSONArray("data");
+//                    List<BlogPost> blogs = new ArrayList<>();
+//                    for (int i = 0; i < data.length(); i++) {
+//                        JSONObject jsonBlog = data.getJSONObject(i);
+//                        blogs.add(new BlogPost.Builder(jsonBlog.getString("pubdate"),
+//                                jsonBlog.getString("title"))
+//                                .addTeaser(jsonBlog.getString("teaser"))
+//                                .addUrl(jsonBlog.getString("url"))
+//                                .build());
+//                    }
+//                    BlogPost[] blogsAsArray = new BlogPost[blogs.size()];
+//                    blogsAsArray = blogs.toArray(blogsAsArray);
+                List<Connection> conns = new ArrayList<>();
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject jsonSet = response.getJSONObject(i);
+//                    conns.add(new Connection.Builder(jsonSet.getString("long_date"),
+//                            jsonSet.getString("location"),
+//                            jsonSet.getString("venue"))
+//                            .addUrl(jsonSet.getString("url"))
+//                            .addNotes(jsonSet.getString("setlistnotes"))
+//                            .addData(jsonSet.getString("setlistdata"))
+//                            .build());
+                    conns.add(new Connection.Builder(jsonSet.getString("username"),
+                            jsonSet.getString("email"))
+                            .addFirstName(jsonSet.getString("firstname"))
+                            .addLastName(jsonSet.getString("lastname"))
+                            .build());
+                    Log.e("Testing get method", conns.get(i).getUsername());
+                }
+                Connection[] connectionsAsArray = new Connection[conns.size()];
+                connectionsAsArray = conns.toArray(connectionsAsArray);
+                Bundle args = new Bundle();
+                args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, connectionsAsArray);
+                Fragment frag = new ConnectionFragment();
+//                    args.putSerializable(BlogFragment.ARG_BLOG_LIST, blogsAsArray);
+//                    Fragment frag = new BlogFragment();
+                frag.setArguments(args);
+                onWaitFragmentInteractionHide();
+                loadFragment(frag);
+            } else {
+                Log.e("ERROR!", "No data array"); //notify user
+                onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            onWaitFragmentInteractionHide();
+        }
 
-
+    }
 
 
     //*************** FRAGMENT INTERACTION LISTENERS ***************//
@@ -263,7 +339,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onConnectionFragmentInteraction(Connection item)    {
+    public void onConnectionFragmentInteraction(Connection item) {
 
     }
 
@@ -291,7 +367,7 @@ public class MainActivity extends AppCompatActivity
 
     //Connection screen -> Request button
     @Override
-    public void onConnectionRequestInteraction()    {
+    public void onConnectionRequestInteraction() {
         ConnectionRequestsFragment crf = new ConnectionRequestsFragment();
         Bundle args = new Bundle();
         args.putSerializable("key", mCredentials);
@@ -303,6 +379,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnectionRequestFragmentInteraction(Connection item) {
 
+    }
+
+    //WAIT SCREEN
+    @Override
+    public void onWaitFragmentInteractionShow() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragmentContainer, new WaitFragment(), "WAIT")    //ACTIVITY MAY BE INCORRECT
+                .addToBackStack(null)
+                .commit();
+    }
+
+    //WAIT SCREEN
+    @Override
+    public void onWaitFragmentInteractionHide() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
     }
 
 

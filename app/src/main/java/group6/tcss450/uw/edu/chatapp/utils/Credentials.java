@@ -25,6 +25,7 @@ public class Credentials implements Serializable {
     private String mFirstName;
     private String mLastName;
     private String mEmail;
+    private int mId;
 
     /**
      * Helper class for building Credentials.
@@ -39,6 +40,7 @@ public class Credentials implements Serializable {
         private String mFirstName = "";
         private String mLastName = "";
         private String mUsername = "";
+        private int mId;
 
 
         /**
@@ -86,6 +88,11 @@ public class Credentials implements Serializable {
             return this;
         }
 
+        public Builder addId(final int id)  {
+            mId = id;
+            return this;
+        }
+
         public Credentials build() {
             return new Credentials(this);
         }
@@ -102,6 +109,7 @@ public class Credentials implements Serializable {
         mFirstName = builder.mFirstName;
         mLastName = builder.mLastName;
         mEmail = builder.mEmail;
+        mId = builder.mId;
     }
 
     /**
@@ -144,6 +152,10 @@ public class Credentials implements Serializable {
         return mEmail;
     }
 
+    public int getId()  {
+        return mId;
+    }
+
     /**
      * Get all of the fields in a single JSON object. Note, if no values were provided for the
      * optional fields via the Builder, the JSON object will include the empty string for those
@@ -162,6 +174,7 @@ public class Credentials implements Serializable {
             msg.put("first", getFirstName());
             msg.put("last", getLastName());
             msg.put("email", getEmail());
+            msg.put("sender_id", 18);
         } catch (JSONException e) {
             Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
         }
