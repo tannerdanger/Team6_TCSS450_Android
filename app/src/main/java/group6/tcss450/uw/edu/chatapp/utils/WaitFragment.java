@@ -1,12 +1,13 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.utils;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import group6.tcss450.uw.edu.chatapp.R;
 
 
 /**

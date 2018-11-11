@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
+import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 
 import java.util.Arrays;

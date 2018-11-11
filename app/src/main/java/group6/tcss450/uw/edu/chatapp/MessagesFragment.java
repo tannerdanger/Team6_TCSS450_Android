@@ -8,17 +8,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
-import group6.tcss450.uw.edu.chatapp.utils.Message;
+import group6.tcss450.uw.edu.chatapp.messages.Message;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

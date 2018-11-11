@@ -50,7 +50,6 @@
         android:ems="10"
         android:hint="@string/loginfragment_email"
         android:inputType="textEmailAddress"
-        android:text="test@test.com"
         app:layout_constraintBottom_toTopOf="@+id/edittext_loginFragment_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

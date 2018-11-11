@@ -1,4 +1,4 @@
-package group6.tcss450.uw.edu.chatapp.utils;
+package group6.tcss450.uw.edu.chatapp.messages;
 
 import java.io.Serializable;
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import group6.tcss450.uw.edu.chatapp.OpenMessagesFragment.OnOpenMessageFragmentInteractionListener;
-import group6.tcss450.uw.edu.chatapp.utils.OpenMessage;
+import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 
 import java.util.List;
 

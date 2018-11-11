@@ -6,7 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener;
+import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment;
+import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener;
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 
 import java.util.List;

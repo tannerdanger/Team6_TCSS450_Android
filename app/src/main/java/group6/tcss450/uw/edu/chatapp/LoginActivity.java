@@ -1,43 +1,28 @@
 package group6.tcss450.uw.edu.chatapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import android.widget.Button;
+import android.util.Log;
 
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
+import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 
 public class LoginActivity extends AppCompatActivity implements
         LoginFragment.OnFragmentInteractionListener,
         RegisterFragment.OnFragmentInteractionListener {
 
     Credentials mCredentials;
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-//        //TODO: this is just a temporary login option
-//        Button b = findViewById(R.id.tmp_login_button);
-//        b.setOnClickListener(v ->{
-//            Credentials cred = new Credentials.Builder("test@test.com", "test123")
-//                    .addUsername("Test UserName")
-//                    .addFirstName("Firstname")
-//                    .addLastName("Lastname")
-//                    .build();
-//            onLoginSuccess(cred);
-//        });
-//
-//        //TODO: when login fragment is created, uncomment and change ID's below
-////        if (savedInstanceState == null) {
-////            if (findViewById(R.id.frame_main_fragment_container) != null) { //Good
-////                getSupportFragmentManager().beginTransaction()
-////                        .add(R.id.frame_main_fragment_container, new LoginFragment())
-////                        .commit();
-////            }
 
         if (savedInstanceState == null) {
             if (findViewById(R.id.loginContainer) != null) { // Good
@@ -49,12 +34,25 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
+    private void saveCredentials(final Credentials credentials) {
+        SharedPreferences prefs =
+                this.getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        //Store the credentials in SharedPrefs
+        prefs.edit().putString(getString(R.string.keys_prefs_email), credentials.getEmail()).apply();
+        prefs.edit().putString(getString(R.string.keys_prefs_password), credentials.getPassword()).apply();
+    }
+
 
 
     public void onLoginSuccess(Credentials credentials) {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        saveCredentials(credentials);
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class); //TODO: If you want to change back to drawer layout, change HomeActivity.class => MainActivity.Class
         intent.putExtra("credentials", credentials);
         startActivity(intent);
+        //End this Activity and remove it from the Activity back stack.
+        finish();
     }
 
     @Override
@@ -68,5 +66,26 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     public void onRegistration(Credentials credentials) {
         onLoginSuccess(credentials);
+    }
+
+    @Override
+    public void onWaitFragmentInteractionShow() {
+        Log.wtf(TAG, "STARTED onWaitFragmentInteractionSHOW");
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.loginContainer, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
+        Log.wtf(TAG, "ENDED onWaitFragmentInteractionSHOW");
+    }
+
+    @Override
+    public void onWaitFragmentInteractionHide() {
+        Log.wtf(TAG, "STARTED onWaitFragmentInteractionHide");
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+        Log.wtf(TAG, "ENDED onWaitFragmentInteractionHide");
     }
 }

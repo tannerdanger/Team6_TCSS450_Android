@@ -1,10 +1,9 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.contacts;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import group6.tcss450.uw.edu.chatapp.MyConnectionRecyclerViewAdapter;
+import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
-import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 
 /**
  * A fragment representing a list of Items.
@@ -97,7 +97,9 @@ public class ConnectionFragment extends Fragment {
         }
         rv.setAdapter(new MyConnectionRecyclerViewAdapter(mConnections, mListener));
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
-        fab.hide();
+        if(null != fab) {
+            fab.hide();
+        }
         Button search = view.findViewById(R.id.button_connectionsfragment_search);
         Button requests = view.findViewById(R.id.button_connectionsfragment_requests);
         //Button removeInstance = view.findViewById(R.id.button_connectionsfragment_remove);

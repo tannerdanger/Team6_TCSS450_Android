@@ -5,9 +5,9 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryDark"
     android:clickable="true"
-    tools:context=".WaitFragment">
+    tools:context=".utils.WaitFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

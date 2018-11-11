@@ -1,4 +1,4 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.contacts;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import group6.tcss450.uw.edu.chatapp.MyConnectionRequestsRecyclerViewAdapter;
+import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 

@@ -1,14 +1,14 @@
 package group6.tcss450.uw.edu.chatapp;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.ConnectionFragment.OnConnectionsFragmentInteractionListener;
+import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
+import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment.OnConnectionsFragmentInteractionListener;
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 
 import java.util.List;

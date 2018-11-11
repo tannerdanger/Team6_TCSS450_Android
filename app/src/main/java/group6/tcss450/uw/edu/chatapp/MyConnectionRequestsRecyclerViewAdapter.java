@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener;
+import group6.tcss450.uw.edu.chatapp.contacts.ConnectionRequestsFragment;
+import group6.tcss450.uw.edu.chatapp.contacts.ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener;
 import group6.tcss450.uw.edu.chatapp.utils.Connection;
 
 import java.util.List;

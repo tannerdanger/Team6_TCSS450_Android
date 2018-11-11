@@ -49,7 +49,9 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
-        fab.show();
+        if(null != fab) {
+            fab.show();
+        }
 
         return view;
     }

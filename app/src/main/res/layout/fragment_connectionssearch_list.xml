@@ -15,7 +15,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".ConnectionsSearchFragment"
+        tools:context=".contacts.ConnectionsSearchFragment"
         tools:listitem="@layout/fragment_connectionssearch">
 
     </android.support.v7.widget.RecyclerView>
