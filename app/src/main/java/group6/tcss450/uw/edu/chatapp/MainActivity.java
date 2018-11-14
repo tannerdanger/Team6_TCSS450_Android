@@ -350,9 +350,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //Connection Search Screen (Will be unused?)
-    @Override
-    public void onConnectionSearchFragmentInteraction(Connection item) {
+    @Override   //unused
+    public void onConnectionSearchFragmentInteraction(Connection item)  {
 
     }
 

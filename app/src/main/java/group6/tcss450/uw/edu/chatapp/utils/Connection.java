@@ -7,12 +7,14 @@ public class Connection implements Serializable {
     public final String mEmail;
     public final String mFirstName;
     public final String mLastName;
+    public final int mId;
 
     public static class Builder {
         private final String mUsername;
         private final String mEmail;
         private String mFirstName;
         private String mLastName;
+        private int mId;
 
         public Builder(String username, String email) {
             this.mUsername = username;
@@ -29,6 +31,11 @@ public class Connection implements Serializable {
             return this;
         }
 
+        public Builder addId(final int id)  {
+            this.mId = id;
+            return this;
+        }
+
         public Connection build()  {
             return new Connection(this);
         }
@@ -39,6 +46,7 @@ public class Connection implements Serializable {
         this.mEmail = builder.mEmail;
         this.mFirstName = builder.mFirstName;
         this.mLastName = builder.mLastName;
+        this.mId = builder.mId;
     }
 
     public String getUsername() {
@@ -55,6 +63,10 @@ public class Connection implements Serializable {
 
     public String getLastName() {
         return mLastName;
+    }
+
+    public int getId()  {
+        return mId;
     }
 
     @Override

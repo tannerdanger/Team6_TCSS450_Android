@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
@@ -54,6 +55,7 @@ public class HomeActivity extends AppCompatActivity
 
     private Credentials mCredentials;
     private ActionBar mToolbar;
+    private Connection[] mSearchResults;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -84,23 +86,22 @@ public class HomeActivity extends AppCompatActivity
 
     };
 
-    protected void navigateHome(){
+    protected void navigateHome()   {
         HomeFragment frag = new HomeFragment();
         Bundle args = new Bundle();
         args.putSerializable("credentials", mCredentials);
         frag.setArguments(args);
         loadFragment(frag);
-        navigateHome();
+        //navigateHome();
     }
 
-    protected void navigateConnections(){
+    protected void navigateConnections()    {
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_conn))
                 .appendPath(getString(R.string.ep_getall))
                 .build();
-        Log.d("JSON", mCredentials.asJSONObject().toString());
         new SendPostAsyncTask.Builder(uri.toString(), mCredentials.asJSONObject())
                 .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleConnectionGetOnPostExecute)
@@ -189,6 +190,9 @@ public class HomeActivity extends AppCompatActivity
             onWaitFragmentInteractionHide();
         }
     }
+
+
+
 //*************** FRAGMENT INTERACTION LISTENERS ***************//
 
 
@@ -229,9 +233,9 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    //Connection Search Screen (Will be unused?)
+    //unused
     @Override
-    public void onConnectionSearchFragmentInteraction(Connection item) {
+    public void onConnectionSearchFragmentInteraction(Connection item)  {
 
     }
 

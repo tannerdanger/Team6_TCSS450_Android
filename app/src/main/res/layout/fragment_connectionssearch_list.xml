@@ -10,10 +10,12 @@
         android:id="@+id/list_connectionsearch_users"
         android:name="group6.tcss450.uw.edu.chatapp.ConnectionsSearchFragment"
         android:layout_width="match_parent"
-        android:layout_height="644dp"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
+        android:layout_marginTop="47dp"
         app:layoutManager="LinearLayoutManager"
         tools:context=".contacts.ConnectionsSearchFragment"
         tools:listitem="@layout/fragment_connectionssearch">
@@ -22,18 +24,26 @@
 
     <EditText
         android:id="@+id/et_connectionsearch_searchbar"
-        android:layout_width="match_parent"
+        android:layout_width="274dp"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/list_connectionsearch_users"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="106dp"
         android:ems="10"
-        android:hint="@string/connectionsearch_searchprompt"
+        android:hint="@string/connectionsearch_search"
         android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/button_connectionsearch_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/connectionsearch_search" />
 
 </RelativeLayout>
