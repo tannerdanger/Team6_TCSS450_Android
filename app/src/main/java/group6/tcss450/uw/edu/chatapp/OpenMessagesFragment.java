@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import java.util.List;
  */
 public class OpenMessagesFragment extends Fragment {
 
-    private List<OpenMessage> mConnections;
+    private List<OpenMessage> mOpenMessages;
     public static final String ARG_CONNECTION_LIST = "open messages list";
 
     // TODO: Customize parameter argument names
@@ -53,7 +54,7 @@ public class OpenMessagesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyOpenMessagesRecyclerViewAdapter(mConnections, mListener));
+            recyclerView.setAdapter(new MyOpenMessagesRecyclerViewAdapter(mOpenMessages, mListener));
         }
         return view;
     }
@@ -73,17 +74,18 @@ public class OpenMessagesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         //TODO
         //THIS CAN ONLY BE IMPLEMENTED ONCE WE'RE PULLING DATA FROM DATABASE
-//        if (getArguments() != null) {
-//            mConnections = new ArrayList<OpenMessage>(Arrays
-//                    .asList((OpenMessage[])
-//                            getArguments()
-//                                    .getSerializable(ARG_CONNECTION_LIST)));
-//        } else {
-            mConnections = Arrays.asList(DataGenerator.OPEN_MESSAGES);
-        //}
-//        if (getArguments() != null) {
-//            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-//        }
+        if (getArguments() != null) {
+            mOpenMessages = new ArrayList<OpenMessage>(Arrays
+                    .asList((OpenMessage[])
+                            getArguments()
+                                    .getSerializable(ARG_CONNECTION_LIST)));
+        } else {
+            mOpenMessages = Arrays.asList(DataGenerator.OPEN_MESSAGES);
+        }
+        if (getArguments() != null) {
+            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        }
+
     }
 
     @Override

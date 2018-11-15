@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -55,7 +56,6 @@ public class HomeActivity extends AppCompatActivity
 
     private Credentials mCredentials;
     private ActionBar mToolbar;
-    private Connection[] mSearchResults;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -111,13 +111,24 @@ public class HomeActivity extends AppCompatActivity
 
     protected void navigateNotifications(){}
 
-    protected void navigateChat(){
-        OpenMessagesFragment frag = new OpenMessagesFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("credentials", mCredentials);
-        frag.setArguments(args);
-
-        loadFragment(frag);
+    protected void navigateChat()   {
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_messages))
+                .appendPath(getString(R.string.ep_getmy))
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), mCredentials.asJSONObject())
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleOpenMessageGetOnPostExecute)
+                .build()
+                .execute();
+//        OpenMessagesFragment frag = new OpenMessagesFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable("credentials", mCredentials);
+//        frag.setArguments(args);
+//
+//        loadFragment(frag);
     }
 
     @Override
@@ -191,6 +202,97 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    //OPEN MESSAGE SCREEN
+    protected void handleOpenMessageGetOnPostExecute(final String result)   {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.has("chats"))   {
+                JSONArray response = root.getJSONArray("chats");
+                List<OpenMessage> open = new ArrayList<>();
+                for(int i = 0; i < response.length(); i++)  {
+                    JSONObject jsonSet = response.getJSONObject(i);
+                    open.add(new OpenMessage.Builder(
+                                jsonSet.getString("name"))
+                                .addDate("XX/XX/XXXX")
+                                .addTime("XX:XX PM")
+                                .addChatId(jsonSet.getInt("chatid"))
+                                .build());
+                }
+                OpenMessage[] openMessagesAsArray = new OpenMessage[open.size()];
+                openMessagesAsArray = open.toArray(openMessagesAsArray);
+                Bundle b = new Bundle();
+                b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
+                Fragment frag = new OpenMessagesFragment();
+                frag.setArguments(b);
+                onWaitFragmentInteractionHide();
+                loadFragment(frag);
+            } else {
+                Log.e("ERROR!", "No data array");
+                onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+    //MESSAGE SCREEN
+    protected void handleMessageGetOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.has("messages"))    {
+                JSONArray response = root.getJSONArray("messages");
+                List<Message> msgs = new ArrayList<>();
+                for(int i = 0; i < response.length(); i++)  {
+                    JSONObject jsonSet = response.getJSONObject(i);
+                    String date = jsonSet.getString("timestamp").substring(0,
+                            jsonSet.getString("timestamp").indexOf(" "));
+                    String time = jsonSet.getString("timestamp").substring(jsonSet.getString(
+                            "timestamp").indexOf(" "),
+                            jsonSet.getString("timestamp").indexOf("."));
+                    msgs.add(new Message.Builder(
+                            jsonSet.getString("email"))
+                            .addDate(date)
+                            .addTime(time)
+                            .addMessage(jsonSet.getString("message"))
+                            .addChatId(13)//TODO UNHARDCODE THIS
+                            .build());
+                }
+                Message[] msgsAsArray = new Message[msgs.size()];
+                msgsAsArray = msgs.toArray(msgsAsArray);
+                Bundle b = new Bundle();
+                b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, msgsAsArray);
+                b.putSerializable("credentials", mCredentials);
+                Fragment frag = new MessagesFragment();
+                frag.setArguments(b);
+                onWaitFragmentInteractionHide();
+                loadFragment(frag);
+            } else {
+                Log.e("ERROR!", "No data array");
+                onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+    protected void handleMessageSendPost(final String result)   {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.has("success")) {
+                Log.d("Message", "Message successfully sent.");
+            } else {
+                Log.d("Message", "Message FAILED to send.");
+            }
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
+        }
+    }
+
 
 
 //*************** FRAGMENT INTERACTION LISTENERS ***************//
@@ -199,17 +301,27 @@ public class HomeActivity extends AppCompatActivity
     //Home Fragment
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 
     //OpenMessage Fragment
     @Override
     public void onOpenMessageFragmentInteraction(OpenMessage item) {
-        MessagesFragment mf = new MessagesFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("key", item);
-        mf.setArguments(args);
-        loadFragment(mf);
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_messages))
+                .appendPath(getString(R.string.ep_getall))
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), item.asJSONObject())
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleMessageGetOnPostExecute)
+                .build()
+                .execute();
+//        MessagesFragment mf = new MessagesFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable("key", item);
+//        mf.setArguments(args);
+//        loadFragment(mf);
     }
 
     //Messages Fragment
@@ -220,6 +332,20 @@ public class HomeActivity extends AppCompatActivity
 //        args.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, item);
 //        mf.setArguments(args);
 //        loadFragment(mf);
+    }
+
+    @Override
+    public void onMessageSendInteraction(Message theMessage)   {
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_messages))
+                .appendPath(getString(R.string.ep_send))
+                .build();
+        new SendPostAsyncTask.Builder(uri.toString(), theMessage.asJSONObject())
+                .onPostExecute(this::handleMessageSendPost)
+                .build()
+                .execute();
     }
 
     @Override

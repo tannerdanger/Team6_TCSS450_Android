@@ -174,6 +174,7 @@ public class Credentials implements Serializable {
             msg.put("last", getLastName());
             msg.put("email", getEmail());
             msg.put("memberId", getID());
+            msg.put("memberid", getID());
             msg.put("sender_id", getID());
         } catch (JSONException e) {
             Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());

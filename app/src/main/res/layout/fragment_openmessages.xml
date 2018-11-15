@@ -16,6 +16,7 @@
             android:id="@+id/constraintlayout_connectionsfragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:background="@drawable/connectionsfragment_rectangleborder_big">
 
             <TextView

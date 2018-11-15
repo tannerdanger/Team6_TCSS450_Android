@@ -13,9 +13,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
+import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,6 +31,7 @@ import java.util.List;
 public class MessagesFragment extends Fragment {
 
     private List<Message> mMessages;
+    private Credentials mCredentials;
     public static final String ARG_MESSAGE_LIST = "message list";
 
     // TODO: Customize parameter argument names
@@ -55,37 +60,24 @@ public class MessagesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO
-        //THIS CAN ONLY BE IMPLEMENTED ONCE WE'RE PULLING DATA FROM DATABASE
-//        if (getArguments() != null) {
-//            mConnections = new ArrayList<OpenMessage>(Arrays
-//                    .asList((OpenMessage[])
-//                            getArguments()
-//                                    .getSerializable(ARG_CONNECTION_LIST)));
-//        } else {
+        if (getArguments() != null) {
+            mMessages = new ArrayList<Message>(Arrays
+                    .asList((Message[])
+                            getArguments()
+                                    .getSerializable(ARG_MESSAGE_LIST)));
+            mCredentials = (Credentials) getArguments().getSerializable("credentials");
+        } else {
         mMessages = DataGenerator.MESSAGES;
-        //}
-//        if (getArguments() != null) {
-//            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-//        }
+        }
+        if (getArguments() != null) {
+            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages_list, container, false);
-        // Set the adapter
-//        if (view instanceof RecyclerView) {
-//            Context context = view.getContext();
-//            RecyclerView recyclerView = (RecyclerView) view;
-//            if (mColumnCount <= 1) {
-//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-//            } else {
-//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-//            }
-//            recyclerView.setAdapter(new MyMessagesRecyclerViewAdapter(mMessages, mListener));
-//            recyclerView.scrollToPosition(mMessages.size() - 1);
-//        }
         Context context = view.getContext();
         RecyclerView rv = view.findViewById(R.id.list_messages_messageslist);
         if (mColumnCount <= 1) {
@@ -96,8 +88,6 @@ public class MessagesFragment extends Fragment {
         rv.setAdapter(new MyMessagesRecyclerViewAdapter(mMessages, mListener));
         rv.scrollToPosition(mMessages.size() - 1);
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
-        fab.hide();
-
         Button sendButton = view.findViewById(R.id.button_messsages_send);
         EditText messageEntry = view.findViewById(R.id.et_messages_messageinput);
         rv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -116,14 +106,13 @@ public class MessagesFragment extends Fragment {
 
         sendButton.setOnClickListener((View v) -> {
             String text = messageEntry.getText().toString();
-            String user = "Me";
-            String date = "Today";
-            String time = "Now";
-            Message m = new Message.Builder(user, date, time).addMessage(text).build();
+            String user = mCredentials.getEmail();
+            Message m = new Message.Builder(user).addMessage(text).addChatId(13).build();
             mMessages.add(m);
             rv.getAdapter().notifyItemInserted(mMessages.size() - 1);
             messageEntry.setText("");
             rv.scrollToPosition(mMessages.size() - 1);
+            mListener.onMessageSendInteraction(m);
         });
         return view;
     }
@@ -159,5 +148,8 @@ public class MessagesFragment extends Fragment {
     public interface OnMessageFragmentInteractionListener {
         // TODO: Update argument type and name
         void onMessageFragmentInteraction(Message theMessage);
+        void onMessageSendInteraction(Message theMessage);
     }
+
+
 }

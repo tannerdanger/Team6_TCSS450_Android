@@ -34,7 +34,7 @@ public final class DataGenerator {
         MESSAGES = new ArrayList<Message>();
         for(int i = 0; i < MESSAGE_COUNT; i++)    {
             String tempMessage = "This is a sample message constructed by the DataGenerator. [" + i + "]";
-            MESSAGES.add(new Message.Builder("UserSendingMessage", "00/00/0000", "00:00PM")
+            MESSAGES.add(new Message.Builder("UserSendingMessage")
                     .addMessage(tempMessage)
                     .build());
         }

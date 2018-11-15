@@ -340,6 +340,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onMessageSendInteraction(Message theMessage)   {
+
+    }
+
+    @Override
     public void onConnectionFragmentInteraction(Connection item) {
 
     }
