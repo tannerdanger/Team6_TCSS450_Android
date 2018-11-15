@@ -1,12 +1,18 @@
 package group6.tcss450.uw.edu.chatapp.weather;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.util.Objects;
 
 import group6.tcss450.uw.edu.chatapp.R;
 
@@ -21,6 +27,14 @@ public class WeatherFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private Forecast mForecast;
+    final String DEGREE  = "\u00b0";
+    private ImageView mIcon;
+    private TextView mCurrentTemp;
+    private TextView mHiTemp;
+    private TextView mLowTemp;
+    private TextView mWeatherDescription;
+
     public WeatherFragment() {
         // Required empty public constructor
     }
@@ -30,7 +44,18 @@ public class WeatherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_weather, container, false);
+        View view = inflater.inflate(R.layout.fragment_weather, container, false);
+        if(null != getArguments()){
+            mForecast = (Forecast) getArguments().getSerializable("forecast");
+        }
+
+        mIcon = (ImageView) view.findViewById(R.id.forecast_icon);
+        mCurrentTemp = (TextView)view.findViewById(R.id.forecast_temp_current);
+        mWeatherDescription = (TextView)view.findViewById(R.id.forecast_description);
+        mLowTemp = (TextView)view.findViewById(R.id.forecast_temp_lo);
+        mHiTemp = (TextView)view.findViewById(R.id.forecast_temp_hi);
+        updateForecast();
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -57,11 +82,24 @@ public class WeatherFragment extends Fragment {
         mListener = null;
     }
 
+    public void setmForecast(Forecast forecast){
+        this.mForecast = forecast;
+    }
+
     /**
      * Update all the forecast variables from the forecast object
-     * @param forecast
      */
-    public void updateForecast(Forecast forecast){
+    public void updateForecast(){
+
+        //mForecast = forecast;
+        int ID = Objects.requireNonNull(getContext()).getResources().getIdentifier(mForecast.iconCode.toString(), "drawable", getContext().getPackageName());
+        mHiTemp.setText("HI: " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMaxTemperature())) + DEGREE);
+        mLowTemp.setText("LO: " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMinTemperature())) + DEGREE);
+        mCurrentTemp.setText(String.valueOf(mForecast.convertToFahrenheit(mForecast.getCurrentTemp())) + DEGREE);
+        mWeatherDescription.setText(mForecast.getForecast());
+        mIcon.setImageResource(ID);
+
+
 
     }
 

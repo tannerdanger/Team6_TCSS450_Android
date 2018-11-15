@@ -2,6 +2,7 @@ package group6.tcss450.uw.edu.chatapp.utils;
 
 import java.util.ArrayList;
 
+import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 

@@ -2,17 +2,20 @@ package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -25,7 +28,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
@@ -33,11 +36,11 @@ import group6.tcss450.uw.edu.chatapp.contacts.ConnectionRequestsFragment;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
-import group6.tcss450.uw.edu.chatapp.utils.Connection;
+import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
+import group6.tcss450.uw.edu.chatapp.utils.JsonHelper;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
-import group6.tcss450.uw.edu.chatapp.weather.ForecastFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 
 public class HomeActivity extends AppCompatActivity
@@ -45,9 +48,7 @@ public class HomeActivity extends AppCompatActivity
         OpenMessagesFragment.OnOpenMessageFragmentInteractionListener,
         MessagesFragment.OnMessageFragmentInteractionListener,
         ConnectionFragment.OnConnectionsFragmentInteractionListener,
-        WeatherTabbedContainer.OnFragmentInteractionListener,
         WeatherFragment.OnFragmentInteractionListener,
-        ForecastFragment.OnFragmentInteractionListener,
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener  {
@@ -56,6 +57,13 @@ public class HomeActivity extends AppCompatActivity
 
     private Credentials mCredentials;
     private ActionBar mToolbar;
+    private HashMap <String, JSONObject> mJsonData;
+    private boolean mWeatherLoaded = false;
+    private boolean mChatsLoaded = false;
+    private boolean mConnectionsLoaded = false;
+
+    private HomeFragment mHomeFrag;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -115,7 +123,7 @@ public class HomeActivity extends AppCompatActivity
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_messages))
+                .appendPath(getString(R.string.ep_messaging))
                 .appendPath(getString(R.string.ep_getmy))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), mCredentials.asJSONObject())
@@ -123,19 +131,16 @@ public class HomeActivity extends AppCompatActivity
                 .onPostExecute(this::handleOpenMessageGetOnPostExecute)
                 .build()
                 .execute();
-//        OpenMessagesFragment frag = new OpenMessagesFragment();
-//        Bundle args = new Bundle();
-//        args.putSerializable("credentials", mCredentials);
-//        frag.setArguments(args);
-//
-//        loadFragment(frag);
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
+
+        
+        initializeData();
 
 
         setContentView(R.layout.activity_home);
@@ -145,12 +150,170 @@ public class HomeActivity extends AppCompatActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        HomeFragment frag = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("credentials", mCredentials);
-        frag.setArguments(args);
+        mHomeFrag = new HomeFragment();
 
-        loadFragment(frag);
+    }
+
+    private void initializeData() {
+
+        onWaitFragmentInteractionShow();
+        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
+        mJsonData = new HashMap<>();
+        getWeather();
+        getContacts();
+        getChats();
+        
+//        int i = 0;
+//        while(!mWeatherLoaded){
+//            System.out.print(i++ + "waiting...");
+//        }
+//        System.out.print("done");
+
+
+    }
+
+    private void getContacts() {
+        JSONObject msg = JsonHelper.connections_JsonObject(mCredentials.getID());
+        if (null != msg) {
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_conn))
+                    .appendPath(getString(R.string.ep_getall))
+                    .build();
+
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPostExecute(this::handleConnectionsPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+
+        }
+    }
+
+    private void handleConnectionsPost(String s) {
+        try {
+            JSONObject result = new JSONObject(s);
+            mJsonData.put("connections", result);
+        } catch (JSONException e){
+            Log.e("JSON PARSE ERROR", s + System.lineSeparator() + e.getMessage());
+        }
+        mConnectionsLoaded = true;
+    }
+
+    /** For getting weather with a specific lat/lon */
+    private void getWeather(double lat, double lon){
+        JSONObject msg = JsonHelper.weather_JsonObject(lat, lon);
+
+        if (null != msg) {
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_weather))
+                    .appendPath(getString(R.string.ep_tenday))
+                    .build();
+
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPostExecute(this::handleWeatherPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+        }
+    }
+
+    /** For getting weather with a the phone's location */
+    private void getWeather() {
+
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
+        }
+
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double longitutde = location.getLongitude();
+        double latitude = location.getLatitude();
+        JSONObject msg = JsonHelper.weather_JsonObject(latitude, longitutde);
+
+        if (null != msg) {
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_weather))
+                    .appendPath(getString(R.string.ep_tenday))
+                    .build();
+
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPostExecute(this::handleWeatherPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+        }
+
+
+    }
+
+    private void getChats(){
+        JSONObject msg = JsonHelper.chats_JsonObject(mCredentials.getID());
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_messaging))
+                .appendPath(getString(R.string.ep_getmy))
+                .build();
+
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPostExecute(this::onGetMessagesPost)
+                .onCancelled(this::handleErrorsInTask)
+                .build()
+                .execute();
+    }
+
+    private void onGetMessagesPost(String s) {
+        try {
+            JSONObject result = new JSONObject(s);
+            mJsonData.put("chats", result);
+        } catch (JSONException e){
+            Log.e("JSON PARSE ERROR", s + System.lineSeparator() + e.getMessage());
+        }
+        mChatsLoaded = true;
+        initHomeFrag();
+    }
+
+    private void initHomeFrag() {
+        Bundle args = new Bundle();
+        args.putString("forecast", mJsonData.get("forecast").toString());
+        args.putSerializable("credentials", mCredentials);
+        mHomeFrag.setArguments(args);
+        loadFragment(mHomeFrag);
+    }
+
+    private void updateHomeFrag() {
+        Bundle args = new Bundle();
+        args.putString("forecast", mJsonData.get("forecast").toString());
+        mHomeFrag.setArguments(args);
+        mHomeFrag.updateContent();
+        //args.putJ("forecast", mJsonData.get("forecast"));
+    }
+
+    private void handleWeatherPost(String s) {
+        try {
+            JSONObject result = new JSONObject(s);
+            mJsonData.put("forecast", result);
+        } catch (JSONException e){
+            Log.e("JSON PARSE ERROR", s + System.lineSeparator() + e.getMessage());
+        }
+        mWeatherLoaded = true;
+        onWaitFragmentInteractionHide();
+    }
+    private void handleErrorsInTask(String result){
+        Log.e("ASYNC_TASK_ERROR", result);
     }
 
     private void loadFragment(Fragment theFragment) {
@@ -164,6 +327,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    /** Depreciated by onGetMessagesPost ? */
     protected void handleConnectionGetOnPostExecute(final String result) {
         try {
             JSONObject root = new JSONObject(result);
@@ -189,7 +353,7 @@ public class HomeActivity extends AppCompatActivity
 //                    args.putSerializable(BlogFragment.ARG_BLOG_LIST, blogsAsArray);
 //                    Fragment frag = new BlogFragment();
                 frag.setArguments(args);
-                onWaitFragmentInteractionHide();
+             //   onWaitFragmentInteractionHide();
                 loadFragment(frag);
             } else {
                 Log.e("ERROR!", "No data array"); //notify user
@@ -198,7 +362,7 @@ public class HomeActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
-            onWaitFragmentInteractionHide();
+        //    onWaitFragmentInteractionHide();
         }
     }
 
@@ -224,16 +388,16 @@ public class HomeActivity extends AppCompatActivity
                 b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
                 Fragment frag = new OpenMessagesFragment();
                 frag.setArguments(b);
-                onWaitFragmentInteractionHide();
+          //      onWaitFragmentInteractionHide();
                 loadFragment(frag);
             } else {
                 Log.e("ERROR!", "No data array");
-                onWaitFragmentInteractionHide();
+          //      onWaitFragmentInteractionHide();
             }
         } catch (JSONException e)   {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
-            onWaitFragmentInteractionHide();
+         //   onWaitFragmentInteractionHide();
         }
     }
 
@@ -266,16 +430,16 @@ public class HomeActivity extends AppCompatActivity
                 b.putSerializable("credentials", mCredentials);
                 Fragment frag = new MessagesFragment();
                 frag.setArguments(b);
-                onWaitFragmentInteractionHide();
+      //          onWaitFragmentInteractionHide();
                 loadFragment(frag);
             } else {
                 Log.e("ERROR!", "No data array");
-                onWaitFragmentInteractionHide();
+       //         onWaitFragmentInteractionHide();
             }
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("Error!", e.getMessage());
-            onWaitFragmentInteractionHide();
+       //     onWaitFragmentInteractionHide();
         }
     }
 
@@ -309,11 +473,11 @@ public class HomeActivity extends AppCompatActivity
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_messages))
+                .appendPath(getString(R.string.ep_messaging))
                 .appendPath(getString(R.string.ep_getall))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), item.asJSONObject())
-                .onPreExecute(this::onWaitFragmentInteractionShow)
+          //      .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleMessageGetOnPostExecute)
                 .build()
                 .execute();
@@ -339,7 +503,7 @@ public class HomeActivity extends AppCompatActivity
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_messages))
+                .appendPath(getString(R.string.ep_messaging))
                 .appendPath(getString(R.string.ep_send))
                 .build();
         new SendPostAsyncTask.Builder(uri.toString(), theMessage.asJSONObject())
@@ -353,11 +517,11 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    //Weather
-    @Override
-    public void onWeatherFragmentInteraction(Uri uri) {
-
-    }
+//    //Weather
+//    @Override
+//    public void onWeatherFragmentInteraction(Uri uri) {
+//
+//    }
 
     //unused
     @Override

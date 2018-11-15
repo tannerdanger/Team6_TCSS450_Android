@@ -14,7 +14,6 @@ import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.MyConnectionRequestsRecyclerViewAdapter;
 import group6.tcss450.uw.edu.chatapp.R;
-import group6.tcss450.uw.edu.chatapp.utils.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 
 /**

@@ -1,74 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".weather.WeatherFragment">
 
-    
-    <TextView
-        android:id="@+id/city_field"
-        android:layout_width="192dp"
-        android:layout_height="43dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="94dp"
-        android:layout_marginTop="121dp"
-        android:layout_marginEnd="98dp"
-        android:layout_marginBottom="347dp"
-        android:text="Tacoma, WA"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#800080" />
 
     <TextView
-        android:id="@+id/updated_field"
-        android:text="Never"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/city_field"
-        android:layout_centerHorizontal="true"
-        android:textColor="#800080"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="13sp" />
-
-    <TextView
-        android:id="@+id/weather_icon"
+        android:id="@+id/forecast_temp_current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:textColor="#800080"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/ep_current"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="90sp"
-        />
+        android:textColor="#800080"
+        android:textSize="42sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/forecast_icon"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/current_temperature_field"
+        android:id="@+id/forecast_temp_lo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/weather_icon"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="-93dp"
-        android:layout_marginEnd="121dp"
-        android:text="53.0°F"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="Lo"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#800080"
-        android:textSize="50sp" />
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/forecast_icon"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_temp_current" />
 
     <TextView
-        android:id="@+id/details_field"
+        android:id="@+id/forecast_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="32dp"
         android:text="Light Drizzle"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#800080"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/forecast_icon"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_temp_current" />
+
+    <ImageView
+        android:id="@+id/forecast_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/current_temperature_field"
-        android:layout_centerHorizontal="true"
-        android:textColor="#800080"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        />
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="44dp"
+        android:src="@drawable/a01d"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/forecast_temp_hi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="Hi"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#800080"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/forecast_temp_lo"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_temp_current" />
+
+</android.support.constraint.ConstraintLayout>

@@ -19,7 +19,6 @@ import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.MyConnectionRecyclerViewAdapter;
 import group6.tcss450.uw.edu.chatapp.R;
-import group6.tcss450.uw.edu.chatapp.utils.Connection;
 
 /**
  * A fragment representing a list of Items.

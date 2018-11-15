@@ -11,6 +11,7 @@
     <string name="ep_conn">conn</string>
     <string name="ep_getall">getall</string>
     <string name="ep_search">search</string>
+    <string name="ep_messaging">messaging</string>
     <string name="ep_messages">messaging</string>
     <string name="ep_getmy">getmy</string>
     <string name="ep_send">send</string>

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment.OnConnectionsFragmentInteractionListener;
-import group6.tcss450.uw.edu.chatapp.utils.Connection;
+import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 
 import java.util.List;
 

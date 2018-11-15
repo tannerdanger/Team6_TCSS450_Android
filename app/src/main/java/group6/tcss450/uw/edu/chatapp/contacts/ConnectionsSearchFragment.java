@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +22,6 @@ import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.MyConnectionsSearchRecyclerViewAdapter;
 import group6.tcss450.uw.edu.chatapp.R;
-import group6.tcss450.uw.edu.chatapp.utils.Connection;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -32,7 +30,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
