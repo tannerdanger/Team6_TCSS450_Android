@@ -67,7 +67,7 @@ public class MessagesFragment extends Fragment {
                     .asList((Message[])
                             getArguments()
                                     .getSerializable(ARG_MESSAGE_LIST)));
-            mCredentials = (Credentials) getArguments().getSerializable("credentials");
+            mCredentials = (Credentials) getArguments().getSerializable(getString(R.string.ARGS_CREDENTIALS));
             mChatId = getArguments().getInt(ARG_CHAT_ID);
         } else {
             mMessages = DataGenerator.MESSAGES;

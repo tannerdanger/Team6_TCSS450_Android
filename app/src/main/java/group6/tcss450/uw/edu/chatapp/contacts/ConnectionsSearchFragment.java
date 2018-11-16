@@ -171,7 +171,7 @@ public class ConnectionsSearchFragment extends Fragment {
             //Construct a JSONObject to build a formatted message to send.
             JSONObject msg = new JSONObject();
             try {
-                msg.put("memberid", Integer.parseInt(args));
+                msg.put(getString(R.string.JSON_USERS_MEMBER_ID), Integer.parseInt(args));
             } catch (JSONException e)   {
                 e.printStackTrace();
             }

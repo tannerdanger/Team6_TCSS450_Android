@@ -46,7 +46,7 @@ public class WeatherFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
         if(null != getArguments()){
-            mForecast = (Forecast) getArguments().getSerializable("forecast");
+            mForecast = (Forecast) getArguments().getSerializable(getString(R.string.ARGS_FORECAST_DATA));
         }
 
         mIcon = (ImageView) view.findViewById(R.id.forecast_icon);

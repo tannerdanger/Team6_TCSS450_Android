@@ -163,12 +163,6 @@ public class HomeActivity extends AppCompatActivity
         getWeather();
         getContacts();
         getChats();
-        
-//        int i = 0;
-//        while(!mWeatherLoaded){
-//            System.out.print(i++ + "waiting...");
-//        }
-//        System.out.print("done");
 
 
     }
@@ -289,15 +283,15 @@ public class HomeActivity extends AppCompatActivity
 
     private void initHomeFrag() {
         Bundle args = new Bundle();
-        args.putString("forecast", mJsonData.get("forecast").toString());
-        args.putSerializable("credentials", mCredentials);
+        args.putString(getString(R.string.ARGS_FORECAST_DATA), mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)).toString());
+        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
         mHomeFrag.setArguments(args);
         loadFragment(mHomeFrag);
     }
 
     private void updateHomeFrag() {
         Bundle args = new Bundle();
-        args.putString("forecast", mJsonData.get("forecast").toString());
+        args.putString(getString(R.string.ARGS_FORECAST_DATA), mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)).toString());
         mHomeFrag.setArguments(args);
         mHomeFrag.updateContent();
         //args.putJ("forecast", mJsonData.get("forecast"));
@@ -306,7 +300,7 @@ public class HomeActivity extends AppCompatActivity
     private void handleWeatherPost(String s) {
         try {
             JSONObject result = new JSONObject(s);
-            mJsonData.put("forecast", result);
+            mJsonData.put(getString(R.string.ARGS_FORECAST_DATA), result);
         } catch (JSONException e){
             Log.e("JSON PARSE ERROR", s + System.lineSeparator() + e.getMessage());
         }
@@ -429,7 +423,7 @@ public class HomeActivity extends AppCompatActivity
                 msgsAsArray = msgs.toArray(msgsAsArray);
                 Bundle b = new Bundle();
                 b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, msgsAsArray);
-                b.putSerializable("credentials", mCredentials);
+                b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
                 b.putInt(MessagesFragment.ARG_CHAT_ID, mChatId);
                 Fragment frag = new MessagesFragment();
                 frag.setArguments(b);
@@ -450,9 +444,9 @@ public class HomeActivity extends AppCompatActivity
         try {
             JSONObject root = new JSONObject(result);
             if(root.getBoolean("success"))   {
-                Log.d("Conneciton", "Connection successfully ADDED/REMOVED.");
+                Log.d("ConnectIon", "Connection successfully ADDED/REMOVED.");
             } else {
-                Log.d("Conneciton", "Connection ADD/REMOVE failed.");
+                Log.d("ConnectIon", "Connection ADD/REMOVE failed.");
             }
         } catch (JSONException e)   {
             e.printStackTrace();
@@ -535,11 +529,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-//    //Weather
-//    @Override
-//    public void onWeatherFragmentInteraction(Uri uri) {
-//
-//    }
+
 
     //unused
     @Override
@@ -552,7 +542,7 @@ public class HomeActivity extends AppCompatActivity
     public void onConnectionSearchInteraction(Bundle b) {
         ConnectionsSearchFragment csf = new ConnectionsSearchFragment();
         Bundle args = new Bundle();
-        args.putSerializable("key", mCredentials);
+        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
         args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
                 b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
         csf.setArguments(args);
@@ -564,7 +554,7 @@ public class HomeActivity extends AppCompatActivity
     public void onConnectionRequestInteraction(Bundle b) {
         ConnectionRequestsFragment crf = new ConnectionRequestsFragment();
         Bundle args = new Bundle();
-        args.putSerializable("key", mCredentials);
+        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
         args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
                 b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
         crf.setArguments(args);
@@ -582,8 +572,8 @@ public class HomeActivity extends AppCompatActivity
                 .build();
         JSONObject msg = new JSONObject();
         try {
-            msg.put("sender_id", mCredentials.getID());
-            msg.put("recipient_id", receiver.getId());
+            msg.put(getString(R.string.JSON_USERS_MEMBER_ID), mCredentials.getID());
+            msg.put(getString(R.string.JSON_OTHERS_MEMBER_ID), receiver.getId());
         } catch (JSONException e) {
             Log.e("Connection:Accept", "Unable to accept connection request");
             e.printStackTrace();
@@ -604,8 +594,8 @@ public class HomeActivity extends AppCompatActivity
                 .build();
         JSONObject msg = new JSONObject();
         try {
-            msg.put("sender_id", mCredentials.getID());
-            msg.put("recipient_id", receiver.getId());
+            msg.put(getString(R.string.JSON_USERS_MEMBER_ID), mCredentials.getID());
+            msg.put(getString(R.string.JSON_OTHERS_MEMBER_ID), receiver.getId());
         } catch (JSONException e) {
             Log.e("Connection:Reject", "Unable to reject/remove connection ");
             e.printStackTrace();

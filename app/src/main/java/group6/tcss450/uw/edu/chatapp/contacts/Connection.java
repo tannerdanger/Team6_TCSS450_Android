@@ -1,5 +1,6 @@
 package group6.tcss450.uw.edu.chatapp.contacts;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -7,7 +8,9 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-public class Connection implements Serializable {
+import group6.tcss450.uw.edu.chatapp.R;
+
+public class Connection extends AppCompatActivity implements Serializable {
     public final String mUsername;
     public final String mEmail;
     public final String mFirstName;
@@ -100,11 +103,11 @@ public class Connection implements Serializable {
     public JSONObject asJSONObject()    {
         JSONObject msg = new JSONObject();
         try{
-            msg.put("username", getUsername());
-            msg.put("email", getEmail());
-            msg.put("firstname", getFirstName());
-            msg.put("lastname", getLastName());
-            msg.put("memberId", getId());
+            msg.put(getString(R.string.JSON_USERS_USERNAME), getUsername());
+            msg.put(getString(R.string.JSON_EMAIL), getEmail());
+            msg.put(getString(R.string.JSON_FNAME), getFirstName());
+            msg.put(getString(R.string.JSON_LNAME), getLastName());
+            msg.put(getString(R.string.JSON_USERS_MEMBER_ID), getId());
         } catch (JSONException e)   {
             Log.wtf("MESSAGE", "Error creating Message JSON");
         }

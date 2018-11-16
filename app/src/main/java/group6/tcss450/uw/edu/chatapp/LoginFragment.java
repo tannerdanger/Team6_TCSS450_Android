@@ -126,29 +126,6 @@ public class LoginFragment extends Fragment {
                 mListener.onLoginSuccess(creds);
             } else {
 
-                /*Tanner commented out these things to more closely match lab 5 for messaging.*/
-
-                /*
-                Credentials credentials = new Credentials.Builder(
-                        emailEdit.getText().toString(),
-                        passwordEdit.getText().toString())
-                        .build();
-
-                Uri uri = new Uri.Builder()
-                        .scheme("https")
-                        .appendPath(getString(R.string.ep_base_url))
-                        .appendPath(getString(R.string.ep_login))
-                        .build();
-
-                JSONObject msg = credentials.asJSONObject();
-
-                mCredentials = credentials;
-
-                new SendPostAsyncTask.Builder(uri.toString(), msg)
-                        .onPostExecute(this::handleLoginOnPost)
-                        .onCancelled(this::handleErrorsInTask)
-                        .build().execute();
-                        */
 
                 getFirebaseToken(emailEdit.getText().toString(), passwordEdit.getText().toString());
             }
@@ -189,24 +166,31 @@ public class LoginFragment extends Fragment {
     private void doLogin(String email, String password){
         Log.wtf(TAG, "STARTED doLogin");
         //create credentials
-        Credentials cred = new Credentials.Builder(email, password).build();
-
-        //build web service URL
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_login))
+        Credentials cred = new Credentials.Builder(email, password)
+                .addFirebaseToken(mFirebaseToken)
                 .build();
 
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_login))
+                    .appendPath(getString(R.string.ep_withToken))
+                    .build();
+
+
         //build JSON Object
-        JSONObject msg = cred.asJSONObject();
+        JSONObject msg = new JSONObject();
         try{
-            msg.put("token", mFirebaseToken);
+            msg.put(getString(R.string.JSON_TOKEN), mFirebaseToken);
+            msg.put(getString(R.string.JSON_EMAIL), email);
+            msg.put(getString(R.string.JSON_PASSWORD), password);
         }catch (JSONException e) {
             e.printStackTrace();
         }
+        System.out.print(msg.toString());
 
         mCredentials = cred;
+        System.out.print(uri.toString());
 
         //instantiate and execute AsyncTask
         //Feel free to add a handler for onPreExecution so that a progress bar
@@ -240,15 +224,14 @@ public class LoginFragment extends Fragment {
 
             JSONObject userdata = resultsJSON.getJSONObject("user");
 
-            boolean isVerified = true;
 
             //if (userdata.getInt("verified") == 0){ isVerified = false); //this was missed, will fix the node.js endpoint to return verified
 
-            if(!isVerified){
-                //TODO: Create a fragment or popup thing that prompts user to resend verification email.
-                //endpoint: tcss450group6-backend.herokuapp.com/register/resend
-                //body just needs email address passed in { "email": "user@gmail.com" }
-            }
+//            if(!isVerified){
+//                //TODO: Create a fragment or popup thing that prompts user to resend verification email.
+//                //endpoint: tcss450group6-backend.herokuapp.com/register/resend
+//                //body just needs email address passed in { "email": "user@gmail.com" }
+//            }
 
             System.out.print(userdata);
 
@@ -262,6 +245,7 @@ public class LoginFragment extends Fragment {
                         .addUsername(userdata.getString("username"))
                         .build();
                 mCredentials = cred;
+                mCredentials.addToken(mFirebaseToken);
                 mListener.onLoginSuccess(mCredentials);
 
             } else {

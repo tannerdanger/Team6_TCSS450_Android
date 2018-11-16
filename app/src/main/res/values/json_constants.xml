@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="JSON_USERS_MEMBER_ID">memberid</string>
+    <string name="JSON_OTHERS_MEMBER_ID">their_id</string>
+    <string name="JSON_QUERY">query</string>
+    <string name="JSON_EMAIL">email</string>
+    <string name="JSON_TOKEN">token</string>
+    <string name="JSON_PASSWORD">password</string>
+    <string name="JSON_MESSAGE">message</string>
+    <string name="JSON_CHAT_ID">chatid</string>
+    <string name="JSON_USERS_USERNAME">username</string>
+    <string name="JSON_OTHERS_USERNAME">their_username</string>
+    <string name="JSON_LAT">lat</string>
+    <string name="JSON_LON">lon</string>
+    <string name="JSON_KEY">key</string>
+    <string name="JSON_FNAME">firstname</string>
+    <string name="JSON_LNAME">lastname</string>
+</resources>

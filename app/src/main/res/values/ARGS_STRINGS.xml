@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ARGS_FORECAST_DATA">forecast</string>
+    <string name="ARGS_CREDENTIALS">credentials</string>
+    <string name="ARGS_CONNECTIONS">connections</string>
+</resources>

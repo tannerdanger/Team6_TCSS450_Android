@@ -1,5 +1,6 @@
 package group6.tcss450.uw.edu.chatapp.messages;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -7,10 +8,12 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import group6.tcss450.uw.edu.chatapp.R;
+
 //Not sure if this will need serializable. Just basing this off of Credentials.
 //@author Nathan Rueschenberg
 
-public class OpenMessage implements Serializable {
+public class OpenMessage extends AppCompatActivity implements Serializable {
 
     /** The user the connection was established with. */
     private final String mOtherUser;
@@ -25,6 +28,8 @@ public class OpenMessage implements Serializable {
     private final String mLastMessage;
 
     private final int mChatId;
+
+    public final String CHATID = "chatid";
 
     public static class Builder {
         private final String mOtherUser;
@@ -97,7 +102,7 @@ public class OpenMessage implements Serializable {
     public JSONObject asJSONObject()    {
         JSONObject msg = new JSONObject();
         try{
-            msg.put("chatId", getChatId());
+            msg.put(CHATID, getChatId());
         } catch (JSONException e)   {
             Log.wtf("CREDENTIALS", "Error creating JSON in OpenMessage");
         }

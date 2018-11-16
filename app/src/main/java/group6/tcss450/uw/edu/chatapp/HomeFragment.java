@@ -68,8 +68,8 @@ public class HomeFragment extends Fragment {
 
         //get credentials and forecast
         if(getArguments() != null){
-            mCredentials = (Credentials)getArguments().getSerializable("credentials");
-            mForecast = JsonHelper.parse_Forecast(getArguments().getString("forecast"));
+            mCredentials = (Credentials)getArguments().getSerializable(getString(R.string.ARGS_CREDENTIALS));
+            mForecast = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
         }
         mWeatherFrags = new ArrayList<>();
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
@@ -99,7 +99,7 @@ public class HomeFragment extends Fragment {
             }
             WeatherFragment frag = new WeatherFragment();
             Bundle args = new Bundle();
-            args.putSerializable("forecast",mForecast[i]);
+            args.putSerializable(getString(R.string.ARGS_FORECAST_DATA) ,mForecast[i]);
             frag.setArguments(args);
             mWeatherFrags.add(frag);
             adapter.addFragment(frag, dates[fragdate]);
@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment {
         mForecast = new Forecast[10];
         JSONObject forcastJson;
         if (getArguments() != null){
-            mForecast = JsonHelper.parse_Forecast(getArguments().getString("forecast"));
+            mForecast = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
         }
         int i = 0;
 

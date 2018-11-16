@@ -1,11 +1,14 @@
 package group6.tcss450.uw.edu.chatapp.utils;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+
+import group6.tcss450.uw.edu.chatapp.R;
 
 /**
  * Class to encapsulate credentials fields. Building an Object requires a email and password.
@@ -16,8 +19,17 @@ import java.io.Serializable;
  * @author Charles Bryan
  * @version 1 October 2018
  */
-public class Credentials implements Serializable {
+public class Credentials extends AppCompatActivity implements Serializable {
     private static final long serialVersionUID = -1634677417576883013L;
+
+    //Cant access R strings? Hardcoded json values
+    private final String MYID =  "memberid";
+    private final String EMAIL =     "email";
+    private final String TOKEN =     "token";
+    private final String PASSWORD =  "password";
+    private final String MYUN =      "username";
+    private final String LASTNAME =  "lastname";
+    private final String FIRSTNAME=  "firstname";
 
     private final String mUsername;
     private final String mPassword;
@@ -25,6 +37,7 @@ public class Credentials implements Serializable {
     private String mFirstName;
     private String mLastName;
     private String mEmail;
+    private String mFirebaseToken;
 
     private int mID;
 
@@ -42,6 +55,7 @@ public class Credentials implements Serializable {
         private String mLastName = "";
         private String mUsername = "";
         private int mID = -1;
+        private String mFirebaseToken = "";
 
 
         /**
@@ -66,6 +80,11 @@ public class Credentials implements Serializable {
          */
         public Builder addFirstName(final String val) {
             mFirstName = val;
+            return this;
+        }
+
+        public Builder addFirebaseToken(final String val){
+            mFirebaseToken = val;
             return this;
         }
 
@@ -95,6 +114,7 @@ public class Credentials implements Serializable {
         }
 
         public Credentials build() {
+
             return new Credentials(this);
         }
     }
@@ -111,6 +131,12 @@ public class Credentials implements Serializable {
         mLastName = builder.mLastName;
         mEmail = builder.mEmail;
         mID = builder.mID;
+        mFirebaseToken = builder.mFirebaseToken;
+
+    }
+
+    public void addToken(String val){
+        this.mFirebaseToken = val;
     }
 
     /**
@@ -155,6 +181,8 @@ public class Credentials implements Serializable {
 
     public int getID(){return mID;}
 
+    public String getToken() { return mFirebaseToken; }
+
     /**
      * Get all of the fields in a single JSON object. Note, if no values were provided for the
      * optional fields via the Builder, the JSON object will include the empty string for those
@@ -168,14 +196,13 @@ public class Credentials implements Serializable {
         //build the JSONObject
         JSONObject msg = new JSONObject();
         try {
-            msg.put("username", getUsername());
-            msg.put("password", mPassword);
-            msg.put("first", getFirstName());
-            msg.put("last", getLastName());
-            msg.put("email", getEmail());
-            msg.put("memberId", getID());
-            msg.put("memberid", getID());
-            msg.put("sender_id", getID());
+            msg.put(MYUN, getUsername());
+            msg.put(PASSWORD, getPassword());
+            msg.put(FIRSTNAME, getFirstName());
+            msg.put(LASTNAME, getLastName());
+            msg.put(EMAIL, getEmail());
+            msg.put(MYID, getID());
+            msg.put(TOKEN, getToken());
         } catch (JSONException e) {
             Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
         }

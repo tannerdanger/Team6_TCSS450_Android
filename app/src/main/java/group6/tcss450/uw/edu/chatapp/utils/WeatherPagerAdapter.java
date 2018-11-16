@@ -25,19 +25,7 @@ public class WeatherPagerAdapter extends FragmentPagerAdapter {
         this.numberOfTabs = tabCount;
     }
 
-    //    @Override
-//    public Fragment getItem(int thePosition) {
-//        switch (thePosition){
-//            case 0:
-//                WeatherFragment tab1 = new WeatherFragment();
-//                return tab1;
-//            case 1:
-//                ForecastFragment tab2 = new ForecastFragment();
-//                return tab2;
-//            default:
-//                return null;
-//        }
-//    }
+
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);
