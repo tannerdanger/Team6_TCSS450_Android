@@ -61,6 +61,7 @@ public class HomeActivity extends AppCompatActivity
     private boolean mWeatherLoaded = false;
     private boolean mChatsLoaded = false;
     private boolean mConnectionsLoaded = false;
+    private int mChatId;
 
     private HomeFragment mHomeFrag;
 
@@ -151,7 +152,7 @@ public class HomeActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mHomeFrag = new HomeFragment();
-
+        mChatId = -1;
     }
 
     private void initializeData() {
@@ -420,7 +421,7 @@ public class HomeActivity extends AppCompatActivity
                             .addDate(date)
                             .addTime(time)
                             .addMessage(jsonSet.getString("message"))
-                            .addChatId(13)//TODO UNHARDCODE THIS
+                            .addChatId(mChatId)
                             .build());
                 }
                 Message[] msgsAsArray = new Message[msgs.size()];
@@ -428,6 +429,7 @@ public class HomeActivity extends AppCompatActivity
                 Bundle b = new Bundle();
                 b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, msgsAsArray);
                 b.putSerializable("credentials", mCredentials);
+                b.putInt(MessagesFragment.ARG_CHAT_ID, mChatId);
                 Fragment frag = new MessagesFragment();
                 frag.setArguments(b);
       //          onWaitFragmentInteractionHide();
@@ -476,6 +478,7 @@ public class HomeActivity extends AppCompatActivity
                 .appendPath(getString(R.string.ep_messaging))
                 .appendPath(getString(R.string.ep_getall))
                 .build();
+        mChatId = item.getChatId();
         new SendPostAsyncTask.Builder(uri.toString(), item.asJSONObject())
           //      .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleMessageGetOnPostExecute)

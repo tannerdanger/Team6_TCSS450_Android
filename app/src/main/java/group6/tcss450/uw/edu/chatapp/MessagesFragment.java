@@ -32,6 +32,8 @@ public class MessagesFragment extends Fragment {
 
     private List<Message> mMessages;
     private Credentials mCredentials;
+    private int mChatId;
+    public static final String ARG_CHAT_ID = "chat id";
     public static final String ARG_MESSAGE_LIST = "message list";
 
     // TODO: Customize parameter argument names
@@ -66,8 +68,9 @@ public class MessagesFragment extends Fragment {
                             getArguments()
                                     .getSerializable(ARG_MESSAGE_LIST)));
             mCredentials = (Credentials) getArguments().getSerializable("credentials");
+            mChatId = getArguments().getInt(ARG_CHAT_ID);
         } else {
-        mMessages = DataGenerator.MESSAGES;
+            mMessages = DataGenerator.MESSAGES;
         }
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -93,7 +96,7 @@ public class MessagesFragment extends Fragment {
         rv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if ( bottom < oldBottom) {
+                if (bottom < oldBottom) {
                     rv.post(new Runnable() {
                         @Override
                         public void run() {
@@ -107,7 +110,7 @@ public class MessagesFragment extends Fragment {
         sendButton.setOnClickListener((View v) -> {
             String text = messageEntry.getText().toString();
             String user = mCredentials.getEmail();
-            Message m = new Message.Builder(user).addMessage(text).addChatId(13).build();
+            Message m = new Message.Builder(user).addMessage(text).addChatId(mChatId).build();
             mMessages.add(m);
             rv.getAdapter().notifyItemInserted(mMessages.size() - 1);
             messageEntry.setText("");
@@ -148,6 +151,7 @@ public class MessagesFragment extends Fragment {
     public interface OnMessageFragmentInteractionListener {
         // TODO: Update argument type and name
         void onMessageFragmentInteraction(Message theMessage);
+
         void onMessageSendInteraction(Message theMessage);
     }
 
