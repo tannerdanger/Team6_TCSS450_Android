@@ -1,5 +1,10 @@
 package group6.tcss450.uw.edu.chatapp.contacts;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class Connection implements Serializable {
@@ -8,6 +13,7 @@ public class Connection implements Serializable {
     public final String mFirstName;
     public final String mLastName;
     public final int mId;
+    public final int mVerified;
 
     public static class Builder {
         private final String mUsername;
@@ -15,6 +21,7 @@ public class Connection implements Serializable {
         private String mFirstName;
         private String mLastName;
         private int mId;
+        private int mVerified;
 
         public Builder(String username, String email) {
             this.mUsername = username;
@@ -36,6 +43,11 @@ public class Connection implements Serializable {
             return this;
         }
 
+        public Builder addVerified(final int v) {
+            this.mVerified = v;
+            return this;
+        }
+
         public Connection build()  {
             return new Connection(this);
         }
@@ -47,6 +59,7 @@ public class Connection implements Serializable {
         this.mFirstName = builder.mFirstName;
         this.mLastName = builder.mLastName;
         this.mId = builder.mId;
+        this.mVerified = builder.mVerified;
     }
 
     public String getUsername() {
@@ -69,6 +82,10 @@ public class Connection implements Serializable {
         return mId;
     }
 
+    public int getVerified()    {
+        return mVerified;
+    }
+
     @Override
     public boolean equals(Object theOther)  {
         return (theOther instanceof Connection) && (this.hashCode() == theOther.hashCode());
@@ -78,6 +95,20 @@ public class Connection implements Serializable {
     public int hashCode()   {
         int hash = this.mUsername.hashCode() + this.mEmail.hashCode();
         return hash * 31;
+    }
+
+    public JSONObject asJSONObject()    {
+        JSONObject msg = new JSONObject();
+        try{
+            msg.put("username", getUsername());
+            msg.put("email", getEmail());
+            msg.put("firstname", getFirstName());
+            msg.put("lastname", getLastName());
+            msg.put("memberId", getId());
+        } catch (JSONException e)   {
+            Log.wtf("MESSAGE", "Error creating Message JSON");
+        }
+        return msg;
     }
 
 }

@@ -23,16 +23,19 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
 
     private final List<Connection> mValues;
     private final OnConnectionRequestFragmentInteractionListener mListener;
+    private TextView noRequests;
 
-    public MyConnectionRequestsRecyclerViewAdapter(List<Connection> items, ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener listener) {
+    public MyConnectionRequestsRecyclerViewAdapter(List<Connection> items, ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener listener, TextView tv) {
         mValues = items;
         mListener = listener;
+        noRequests = tv;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_connectionrequests, parent, false);
+        //noRequests = view.findViewById(R.id.tv_connectionrequest_none);
         return new ViewHolder(view);
     }
 
@@ -42,27 +45,35 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
         holder.mUsername.setText(mValues.get(position).getUsername());
         holder.mEmail.setText(mValues.get(position).getEmail());
         Connection thisConnection = mValues.get(position);
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onConnectionRequestFragmentInteraction(holder.mConnection);
-                }
-            }
-        });
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (null != mListener) {
+//                    // Notify the active callbacks interface (the activity, if the
+//                    // fragment is attached to one) that an item has been selected.
+//                    //mListener.onConnectionRequestAccept(holder.mConnection);
+//                }
+//            }
+//        });
         holder.mAccept.setOnClickListener((View v) ->   {
            this.notifyItemRemoved(mValues.indexOf(thisConnection));
            mValues.remove(thisConnection);
            //TODO backend
+            mListener.onConnectionRequestAccept(thisConnection);
            Log.d("CONNECTION REQUEST", "ACCEPT REQUEST");
+           if(noRequests.getVisibility() == TextView.INVISIBLE && mValues.isEmpty()) {
+               noRequests.setVisibility(TextView.VISIBLE);
+           }
         });
         holder.mReject.setOnClickListener((View v) ->   {
             this.notifyItemRemoved(mValues.indexOf(thisConnection));
             mValues.remove(thisConnection);
             //TODO backend
+            mListener.onConnectionRequestReject(thisConnection);
             Log.d("CONNECTION REQUEST", "REJECT REQUEST");
+            if(noRequests.getVisibility() == TextView.INVISIBLE && mValues.isEmpty()) {
+                noRequests.setVisibility(TextView.VISIBLE);
+            }
         });
     }
 

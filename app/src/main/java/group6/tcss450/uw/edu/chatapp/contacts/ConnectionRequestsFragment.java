@@ -6,10 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.MyConnectionRequestsRecyclerViewAdapter;
@@ -29,6 +33,8 @@ public class ConnectionRequestsFragment extends Fragment {
 
     private List<Connection> mConnections;
 
+    private RecyclerView mRecyclerView;
+
     private OnConnectionRequestFragmentInteractionListener mListener;
 
     /**
@@ -41,7 +47,22 @@ public class ConnectionRequestsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mConnections = DataGenerator.CONNECTIONS;
+
+        if (getArguments() != null) {
+            mConnections = new ArrayList<Connection>(Arrays.asList((Connection[])
+                    getArguments().getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)));
+            List<Connection> removeMe = new ArrayList<Connection>();
+            for (Connection c : mConnections) {
+                if (c.getVerified() == 1) {
+                    //Remove all connections that are already verified.
+                    removeMe.add(c);
+                }
+            }
+            //This is to avoid a ConcurrentModificationException.
+            mConnections.removeAll(removeMe);
+        } else {
+            Log.e("BROKEN POST", "UNABLE TO FETCH CONNECTIONS.");
+        }
 
     }
 
@@ -49,17 +70,21 @@ public class ConnectionRequestsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_connectionrequests_list, container, false);
-
+        Context context = view.getContext();
+        mRecyclerView = view.findViewById(R.id.list_connectionrequests);
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyConnectionRequestsRecyclerViewAdapter(mConnections, mListener));
+        if (mColumnCount <= 1) {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+        TextView noRequests = view.findViewById(R.id.tv_connectionrequest_none);
+        mRecyclerView.setAdapter(new MyConnectionRequestsRecyclerViewAdapter(mConnections, mListener, noRequests));
+
+        if(mConnections.size() == 0)    {
+            noRequests.setVisibility(TextView.VISIBLE);
+        } else {
+            noRequests.setVisibility(TextView.INVISIBLE);
         }
         return view;
     }
@@ -94,6 +119,7 @@ public class ConnectionRequestsFragment extends Fragment {
      */
     public interface OnConnectionRequestFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onConnectionRequestFragmentInteraction(Connection item);
+        void onConnectionRequestAccept(Connection receiver);
+        void onConnectionRequestReject(Connection receiver);
     }
 }

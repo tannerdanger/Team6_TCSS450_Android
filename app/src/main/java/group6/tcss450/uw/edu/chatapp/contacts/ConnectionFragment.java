@@ -65,6 +65,11 @@ public class ConnectionFragment extends Fragment {
 //                    getArguments().getSerializable(ARG_SET_LIST)));
             mConnections = new ArrayList<Connection>(Arrays.asList((Connection[])
                         getArguments().getSerializable(ARG_CONNECTION_LIST)));
+            for(Connection c : mConnections)    {
+                if(c.getVerified() == 0)    {
+                    mConnections.remove(c);
+                }
+            }
         } else {
             Log.e("BROKEN POST", "UNABLE TO FETCH CONNECTIONS.");
         }
@@ -106,7 +111,7 @@ public class ConnectionFragment extends Fragment {
             mListener.onConnectionSearchInteraction();
         });
         requests.setOnClickListener((View v) -> {
-            mListener.onConnectionRequestInteraction();
+            mListener.onConnectionRequestInteraction(getArguments());
         });
         return view;
     }
@@ -143,6 +148,6 @@ public class ConnectionFragment extends Fragment {
         // TODO: Update argument type and name
         void onConnectionFragmentInteraction(Connection connection);
         void onConnectionSearchInteraction();
-        void onConnectionRequestInteraction();
+        void onConnectionRequestInteraction(Bundle b);
     }
 }

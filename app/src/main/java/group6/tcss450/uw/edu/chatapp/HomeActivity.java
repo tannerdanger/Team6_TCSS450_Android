@@ -338,11 +338,12 @@ public class HomeActivity extends AppCompatActivity
                 List<Connection> conns = new ArrayList<>();
                 for (int i = 0; i < response.length(); i++) {
                     JSONObject jsonSet = response.getJSONObject(i);
-
                     conns.add(new Connection.Builder(jsonSet.getString("username"),
                             jsonSet.getString("email"))
                             .addFirstName(jsonSet.getString("firstname"))
                             .addLastName(jsonSet.getString("lastname"))
+                            .addVerified(jsonSet.getInt("verified"))
+                            .addId(jsonSet.getInt("memberid"))
                             .build());
                     Log.e("Testing get method", conns.get(i).getUsername());
                 }
@@ -445,6 +446,20 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    protected void handleConnectionAccept(final String result)  {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.getBoolean("success"))   {
+                Log.d("Conneciton", "Connection successfully ADDED.");
+            } else {
+                Log.d("Conneciton", "Connection successfully REJECTED.");
+            }
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
+        }
+    }
+
     protected void handleMessageSendPost(final String result)   {
         try {
             JSONObject root = new JSONObject(result);
@@ -544,17 +559,41 @@ public class HomeActivity extends AppCompatActivity
 
     //Connection screen -> Request button
     @Override
-    public void onConnectionRequestInteraction() {
+    public void onConnectionRequestInteraction(Bundle b) {
         ConnectionRequestsFragment crf = new ConnectionRequestsFragment();
         Bundle args = new Bundle();
         args.putSerializable("key", mCredentials);
+        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
+                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
         crf.setArguments(args);
         loadFragment(crf);
     }
 
     //Connection Request Screen (Will be unused?)
     @Override
-    public void onConnectionRequestFragmentInteraction(Connection item) {
+    public void onConnectionRequestAccept(Connection receiver) {
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_conn))
+                .appendPath(getString(R.string.ep_approve))
+                .build();
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("sender_id", mCredentials.getID());
+            msg.put("recipient_id", receiver.getId());
+        } catch (JSONException e) {
+            Log.e("ConnectionRequest:Accept", "Unable to accept connection request");
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPostExecute(this::handleConnectionAccept)
+                .build()
+                .execute();
+    }
+
+    @Override
+    public void onConnectionRequestReject(Connection receiver)  {
 
     }
 
