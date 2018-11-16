@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.MyConnectionsSearchRecyclerViewAdapter;
 import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -30,6 +31,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,6 +48,10 @@ public class ConnectionsSearchFragment extends Fragment {
 
     /** Connection search results. */
     private List<Connection> mConnections;
+
+    private List<Connection> currentConnections;
+
+    private Credentials mCredentials;
 
     /** Default List View parameter. */
     private int mColumnCount = 1;
@@ -72,6 +78,9 @@ public class ConnectionsSearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mConnections = new ArrayList<Connection>();
+        mCredentials = (Credentials) getArguments().getSerializable("key");
+        currentConnections = new ArrayList<Connection>(Arrays.asList((Connection[])
+                getArguments().getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)));
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
     }
@@ -109,7 +118,7 @@ public class ConnectionsSearchFragment extends Fragment {
             //Initialize AsyncTask
             AsyncTask<String, Void, String> mTask = new PostWebServiceTask();
             //Execute POST query
-            mTask.execute(uri.toString());;
+            mTask.execute(uri.toString(), String.valueOf(mCredentials.getID()));
         });
         return view;
     }
@@ -150,16 +159,22 @@ public class ConnectionsSearchFragment extends Fragment {
          */
         @Override
         protected String doInBackground(String... string) {
-            if (string.length != 1) {
+            if (string.length != 2) {
                 throw new IllegalArgumentException("One String argument required.");
             }
             String response = "";
             HttpURLConnection urlConnection = null;
             String url = string[0];
+            String args = string[1];
             //build the url
             Uri uri = Uri.parse(url);
             //Construct a JSONObject to build a formatted message to send.
             JSONObject msg = new JSONObject();
+            try {
+                msg.put("memberid", Integer.parseInt(args));
+            } catch (JSONException e)   {
+                e.printStackTrace();
+            }
             try {
                 URL urlObject = new URL(uri.toString());
                 urlConnection = (HttpURLConnection) urlObject.openConnection();
@@ -198,17 +213,21 @@ public class ConnectionsSearchFragment extends Fragment {
                 JSONObject root = new JSONObject(result);
                 //If search query is valid and returned a user
                 if (root.getBoolean("success")) {
-                    JSONArray response = root.getJSONArray("data");
+                    JSONArray response = root.getJSONArray("user");
                     List<Connection> conns = new ArrayList<>();
                     //Get all the users returned from the search query
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject jsonSet = response.getJSONObject(i);
-                        conns.add(new Connection.Builder(jsonSet.getString("username"),
+                        //if(!currentConnections.contains)
+                        Connection temp = new Connection.Builder(jsonSet.getString("username"),
                                 jsonSet.getString("email"))
                                 .addFirstName(jsonSet.getString("firstname"))
                                 .addLastName(jsonSet.getString("lastname"))
                                 .addId(jsonSet.getInt("memberid"))
-                                .build());
+                                .build();
+                        if(!currentConnections.contains(temp))  {
+                            conns.add(temp);
+                        }
                     }
                     //Add them to our connection array
                     Connection[] connectionsAsArray = new Connection[conns.size()];

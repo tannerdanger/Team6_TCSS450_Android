@@ -446,13 +446,13 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    protected void handleConnectionAccept(final String result)  {
+    protected void handleConnectionAcceptReject(final String result)  {
         try {
             JSONObject root = new JSONObject(result);
             if(root.getBoolean("success"))   {
-                Log.d("Conneciton", "Connection successfully ADDED.");
+                Log.d("Conneciton", "Connection successfully ADDED/REMOVED.");
             } else {
-                Log.d("Conneciton", "Connection successfully REJECTED.");
+                Log.d("Conneciton", "Connection ADD/REMOVE failed.");
             }
         } catch (JSONException e)   {
             e.printStackTrace();
@@ -549,10 +549,12 @@ public class HomeActivity extends AppCompatActivity
 
     //Connections Screen -> Search Button
     @Override
-    public void onConnectionSearchInteraction() {
+    public void onConnectionSearchInteraction(Bundle b) {
         ConnectionsSearchFragment csf = new ConnectionsSearchFragment();
         Bundle args = new Bundle();
         args.putSerializable("key", mCredentials);
+        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
+                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
         csf.setArguments(args);
         loadFragment(csf);
     }
@@ -583,18 +585,35 @@ public class HomeActivity extends AppCompatActivity
             msg.put("sender_id", mCredentials.getID());
             msg.put("recipient_id", receiver.getId());
         } catch (JSONException e) {
-            Log.e("ConnectionRequest:Accept", "Unable to accept connection request");
+            Log.e("Connection:Accept", "Unable to accept connection request");
             e.printStackTrace();
         }
         new SendPostAsyncTask.Builder(uri.toString(), msg)
-                .onPostExecute(this::handleConnectionAccept)
+                .onPostExecute(this::handleConnectionAcceptReject)
                 .build()
                 .execute();
     }
 
     @Override
     public void onConnectionRequestReject(Connection receiver)  {
-
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_conn))
+                .appendPath(getString(R.string.ep_remove))
+                .build();
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("sender_id", mCredentials.getID());
+            msg.put("recipient_id", receiver.getId());
+        } catch (JSONException e) {
+            Log.e("Connection:Reject", "Unable to reject/remove connection ");
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPostExecute(this::handleConnectionAcceptReject)
+                .build()
+                .execute();
     }
 
     //WAIT SCREEN

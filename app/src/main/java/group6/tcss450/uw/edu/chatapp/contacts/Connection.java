@@ -93,7 +93,7 @@ public class Connection implements Serializable {
 
     @Override
     public int hashCode()   {
-        int hash = this.mUsername.hashCode() + this.mEmail.hashCode();
+        int hash = this.mId;
         return hash * 31;
     }
 

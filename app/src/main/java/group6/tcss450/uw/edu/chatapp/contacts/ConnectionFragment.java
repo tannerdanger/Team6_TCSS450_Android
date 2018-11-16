@@ -108,7 +108,7 @@ public class ConnectionFragment extends Fragment {
         Button requests = view.findViewById(R.id.button_connectionsfragment_requests);
         //Button removeInstance = view.findViewById(R.id.button_connectionsfragment_remove);
         search.setOnClickListener((View v) ->   {
-            mListener.onConnectionSearchInteraction();
+            mListener.onConnectionSearchInteraction(getArguments());
         });
         requests.setOnClickListener((View v) -> {
             mListener.onConnectionRequestInteraction(getArguments());
@@ -147,7 +147,7 @@ public class ConnectionFragment extends Fragment {
     public interface OnConnectionsFragmentInteractionListener {
         // TODO: Update argument type and name
         void onConnectionFragmentInteraction(Connection connection);
-        void onConnectionSearchInteraction();
+        void onConnectionSearchInteraction(Bundle b);
         void onConnectionRequestInteraction(Bundle b);
     }
 }
