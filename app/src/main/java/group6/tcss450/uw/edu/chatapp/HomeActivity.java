@@ -65,6 +65,8 @@ public class HomeActivity extends AppCompatActivity
     private int mChatId;
     private String mOpenChatWith;
     private HomeFragment mHomeFrag;
+    private double mLon;
+    private double mLat;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -89,6 +91,9 @@ public class HomeActivity extends AppCompatActivity
                     mToolbar.setTitle("CHAT");
                     navigateChat();
                     return true;
+
+                case R.id.navigation_logout:
+                    logout();
             }
 
             return false;
@@ -140,8 +145,9 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        
+        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
+        mLat = (Double) getIntent().getDoubleExtra("lat", -1 );
+        mLon = (Double) getIntent().getDoubleExtra("lon", -1 );
         initializeData();
 
 
@@ -160,8 +166,14 @@ public class HomeActivity extends AppCompatActivity
 
         onWaitFragmentInteractionShow();
         mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
+        if(0 == mLat)
+            mLat = (Double) getIntent().getDoubleExtra("lat", -1 );
+        if(0 == mLon)
+            mLon = (Double) getIntent().getDoubleExtra("lon", -1 );
         mJsonData = new HashMap<>();
-        getWeather();
+
+        //    logout(); //to clear logout et
+        getWeather(mLat, mLon);
         getContacts();
         getChats();
 
@@ -350,7 +362,7 @@ public class HomeActivity extends AppCompatActivity
 //                    args.putSerializable(BlogFragment.ARG_BLOG_LIST, blogsAsArray);
 //                    Fragment frag = new BlogFragment();
                 frag.setArguments(args);
-             //   onWaitFragmentInteractionHide();
+                //   onWaitFragmentInteractionHide();
                 loadFragment(frag);
             } else {
                 Log.e("ERROR!", "No data array"); //notify user
@@ -359,7 +371,7 @@ public class HomeActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
-        //    onWaitFragmentInteractionHide();
+            //    onWaitFragmentInteractionHide();
         }
     }
 
@@ -373,11 +385,11 @@ public class HomeActivity extends AppCompatActivity
                 for(int i = 0; i < response.length(); i++)  {
                     JSONObject jsonSet = response.getJSONObject(i);
                     OpenMessage om = new OpenMessage.Builder(
-                                jsonSet.getString("name"))
-                                .addDate("XX/XX/XXXX")
-                                .addTime("XX:XX PM")
-                                .addChatId(jsonSet.getInt("chatid"))
-                                .build();
+                            jsonSet.getString("name"))
+                            .addDate("XX/XX/XXXX")
+                            .addTime("XX:XX PM")
+                            .addChatId(jsonSet.getInt("chatid"))
+                            .build();
                     open.add(om);
                 }
                 OpenMessage[] openMessagesAsArray = new OpenMessage[open.size()];
@@ -386,16 +398,16 @@ public class HomeActivity extends AppCompatActivity
                 b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
                 Fragment frag = new OpenMessagesFragment();
                 frag.setArguments(b);
-          //      onWaitFragmentInteractionHide();
+                //      onWaitFragmentInteractionHide();
                 loadFragment(frag);
             } else {
                 Log.e("ERROR!", "No data array");
-          //      onWaitFragmentInteractionHide();
+                //      onWaitFragmentInteractionHide();
             }
         } catch (JSONException e)   {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
-         //   onWaitFragmentInteractionHide();
+            //   onWaitFragmentInteractionHide();
         }
     }
 
@@ -429,16 +441,16 @@ public class HomeActivity extends AppCompatActivity
                 b.putInt(MessagesFragment.ARG_CHAT_ID, mChatId);
                 Fragment frag = new MessagesFragment();
                 frag.setArguments(b);
-      //          onWaitFragmentInteractionHide();
+                //          onWaitFragmentInteractionHide();
                 loadFragment(frag);
             } else {
                 Log.e("ERROR!", "No data array");
-       //         onWaitFragmentInteractionHide();
+                //         onWaitFragmentInteractionHide();
             }
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("Error!", e.getMessage());
-       //     onWaitFragmentInteractionHide();
+            //     onWaitFragmentInteractionHide();
         }
     }
 
@@ -526,7 +538,7 @@ public class HomeActivity extends AppCompatActivity
                 .build();
         mChatId = item.getChatId();
         new SendPostAsyncTask.Builder(uri.toString(), item.asJSONObject())
-          //      .onPreExecute(this::onWaitFragmentInteractionShow)
+                //      .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleMessageGetOnPostExecute)
                 .build()
                 .execute();

@@ -22,14 +22,6 @@ import group6.tcss450.uw.edu.chatapp.R;
 public class Credentials extends AppCompatActivity implements Serializable {
     private static final long serialVersionUID = -1634677417576883013L;
 
-    //Cant access R strings? Hardcoded json values
-    private final String MYID =  "memberid";
-    private final String EMAIL =     "email";
-    private final String TOKEN =     "token";
-    private final String PASSWORD =  "password";
-    private final String MYUN =      "username";
-    private final String LASTNAME =  "lastname";
-    private final String FIRSTNAME=  "firstname";
 
     private final String mUsername;
     private final String mPassword;
@@ -125,6 +117,7 @@ public class Credentials extends AppCompatActivity implements Serializable {
      * @param builder the builder used to construct this object
      */
     private Credentials(final Builder builder) {
+
         mUsername = builder.mUsername;
         mPassword = builder.mPassword;
         mFirstName = builder.mFirstName;
@@ -196,13 +189,13 @@ public class Credentials extends AppCompatActivity implements Serializable {
         //build the JSONObject
         JSONObject msg = new JSONObject();
         try {
-            msg.put(MYUN, getUsername());
-            msg.put(PASSWORD, getPassword());
-            msg.put(FIRSTNAME, getFirstName());
-            msg.put(LASTNAME, getLastName());
-            msg.put(EMAIL, getEmail());
-            msg.put(MYID, getID());
-            msg.put(TOKEN, getToken());
+            msg.put("username", getUsername());
+            msg.put("password", getPassword());
+            msg.put("firstname", getFirstName());
+            msg.put("lastname", getLastName());
+            msg.put("email", getEmail());
+            msg.put("memberid", getID());
+            msg.put("token", getToken());
         } catch (JSONException e) {
             Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
         }

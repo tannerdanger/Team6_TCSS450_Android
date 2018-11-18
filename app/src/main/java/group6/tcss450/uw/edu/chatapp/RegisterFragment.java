@@ -96,7 +96,17 @@ public class RegisterFragment extends Fragment {
                         .build();
 
                 //Build JSON object
-                JSONObject msg = cred.asJSONObject();
+                //JSONObject msg = cred.asJSONObject(); //TODO: Fix backend to match cred JSON values
+                JSONObject msg = new JSONObject();
+                try {
+                    msg.put("first", firstnameEdit.getText().toString());
+                    msg.put("last", lastnameEdit.getText().toString());
+                    msg.put("username", usernameEdit.getText().toString());
+                    msg.put("email", emailEdit.getText().toString());
+                    msg.put("password", passwordEdit.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 mCredentials = cred;
                 new SendPostAsyncTask.Builder(uri.toString(), msg)
