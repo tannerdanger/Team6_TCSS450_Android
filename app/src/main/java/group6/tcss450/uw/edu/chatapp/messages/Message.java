@@ -32,7 +32,7 @@ public class Message extends AppCompatActivity implements Serializable    {
      */
     private final String mMessage;
 
-    private final int mChatId;
+    private int mChatId;
 
     public static class Builder {
         private final String mUser;
@@ -110,9 +110,9 @@ public class Message extends AppCompatActivity implements Serializable    {
     public JSONObject asJSONObject()    {
         JSONObject msg = new JSONObject();
         try{
-            msg.put(getString(R.string.JSON_CHAT_ID), getChatId());
-            msg.put(getString(R.string.JSON_MESSAGE), getMessage());
-            msg.put(getString(R.string.JSON_EMAIL), getUser());
+            msg.put("chatid", getChatId());
+            msg.put("message", getMessage());
+            msg.put("email", getUser());
         } catch (JSONException e)   {
             Log.wtf("MESSAGE", "Error creating Message JSON");
         }

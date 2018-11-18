@@ -47,13 +47,17 @@ public class MyConnectionRecyclerViewAdapter extends RecyclerView.Adapter<MyConn
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onConnectionFragmentInteraction(holder.mConnection);
+                    mListener.onConnectionFragmentRemove(holder.mConnection);
                 }
             }
         });
         holder.mRemoveUser.setOnClickListener((View v) ->   {
             this.notifyItemRemoved(mValues.indexOf(thisConnection));
             mValues.remove(thisConnection);
+            mListener.onConnectionFragmentRemove(thisConnection);
+        });
+        holder.mStartChat.setOnClickListener((View v) ->    {
+            mListener.onConnectionFragmentStartChat(thisConnection);
         });
     }
 
@@ -67,6 +71,7 @@ public class MyConnectionRecyclerViewAdapter extends RecyclerView.Adapter<MyConn
         public final TextView mEmail;
         public final TextView mUsername;
         public final Button mRemoveUser;
+        public final Button mStartChat;
         public Connection mConnection;
 
         public ViewHolder(View view) {
@@ -75,6 +80,7 @@ public class MyConnectionRecyclerViewAdapter extends RecyclerView.Adapter<MyConn
             mEmail = (TextView) view.findViewById(R.id.tv_connectionsfragment_email);
             mUsername = (TextView) view.findViewById(R.id.tv_connectionsfragment_username);
             mRemoveUser = (Button) view.findViewById(R.id.button_connectionsfragment_remove);
+            mStartChat = (Button) view.findViewById(R.id.button_connectionfragment_startchat);
         }
 
         @Override

@@ -46,4 +46,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="connectionsearch_search">Search</string>
     <string name="connectionrequest_none">No pending requests.</string>
+    <string name="button_connectionfragment_startchat">Open Chat</string>
 </resources>

@@ -78,7 +78,7 @@ public class ConnectionsSearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mConnections = new ArrayList<Connection>();
-        mCredentials = (Credentials) getArguments().getSerializable("key");
+        mCredentials = (Credentials) getArguments().getSerializable(getString(R.string.ARGS_CREDENTIALS));
         currentConnections = new ArrayList<Connection>(Arrays.asList((Connection[])
                 getArguments().getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)));
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);

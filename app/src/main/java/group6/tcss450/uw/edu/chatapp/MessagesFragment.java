@@ -100,7 +100,9 @@ public class MessagesFragment extends Fragment {
                     rv.post(new Runnable() {
                         @Override
                         public void run() {
-                            rv.smoothScrollToPosition(mMessages.size() - 1);
+                            if(mMessages.size() > 0) {
+                                rv.smoothScrollToPosition(mMessages.size() - 1);
+                            }
                         }
                     });
                 }

@@ -65,9 +65,19 @@ public class ConnectionFragment extends Fragment {
 //                    getArguments().getSerializable(ARG_SET_LIST)));
             mConnections = new ArrayList<Connection>(Arrays.asList((Connection[])
                         getArguments().getSerializable(ARG_CONNECTION_LIST)));
-            for(Connection c : mConnections)    {
-                if(c.getVerified() == 0)    {
-                    mConnections.remove(c);
+//            mConnections = new ArrayList<Connection>();
+//            Connection[] arg = (Connection[])getArguments().getSerializable(ARG_CONNECTION_LIST);
+//            for(Connection c : arg) {
+//                mConnections.add(c);
+//            }
+//            for(Connection c : mConnections)    {
+//                if(c.getVerified() == 0)    {
+//                    mConnections.remove(c);
+//                }
+//            }
+            for(int i = 0; i < mConnections.size(); i++)    {
+                if(mConnections.get(i).getVerified() == 0)  {
+                    mConnections.remove(i);
                 }
             }
         } else {
@@ -146,7 +156,8 @@ public class ConnectionFragment extends Fragment {
      */
     public interface OnConnectionsFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onConnectionFragmentInteraction(Connection connection);
+        void onConnectionFragmentRemove(Connection connection);
+        void onConnectionFragmentStartChat(Connection connection);
         void onConnectionSearchInteraction(Bundle b);
         void onConnectionRequestInteraction(Bundle b);
     }

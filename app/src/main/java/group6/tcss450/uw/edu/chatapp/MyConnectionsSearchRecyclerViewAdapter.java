@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment;
@@ -46,9 +47,12 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onConnectionSearchFragmentInteraction(holder.mConnection);
                 }
             }
+        });
+        Connection thisConnection = mValues.get(position);
+        holder.mAdd.setOnClickListener((View v) ->  {
+            mListener.onConnectionSearchFragmentInteraction(thisConnection);
         });
 
     }
@@ -62,6 +66,7 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
         public final View mView;
         public final TextView mUsername;
         public final TextView mEmail;
+        public final Button mAdd;
         public Connection mConnection;
 
         public ViewHolder(View view) {
@@ -69,6 +74,7 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
             mView = view;
             mUsername = (TextView) view.findViewById(R.id.tv_connectionsearch_user);
             mEmail = (TextView) view.findViewById(R.id.tv_connectionsearch_email);
+            mAdd = (Button) view.findViewById(R.id.button_connectionsearch_add);
         }
 
         @Override

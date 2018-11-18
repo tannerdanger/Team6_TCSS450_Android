@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class HomeActivity extends AppCompatActivity
     private boolean mChatsLoaded = false;
     private boolean mConnectionsLoaded = false;
     private int mChatId;
-
+    private String mOpenChatWith;
     private HomeFragment mHomeFrag;
 
 
@@ -371,12 +372,13 @@ public class HomeActivity extends AppCompatActivity
                 List<OpenMessage> open = new ArrayList<>();
                 for(int i = 0; i < response.length(); i++)  {
                     JSONObject jsonSet = response.getJSONObject(i);
-                    open.add(new OpenMessage.Builder(
+                    OpenMessage om = new OpenMessage.Builder(
                                 jsonSet.getString("name"))
                                 .addDate("XX/XX/XXXX")
                                 .addTime("XX:XX PM")
                                 .addChatId(jsonSet.getInt("chatid"))
-                                .build());
+                                .build();
+                    open.add(om);
                 }
                 OpenMessage[] openMessagesAsArray = new OpenMessage[open.size()];
                 openMessagesAsArray = open.toArray(openMessagesAsArray);
@@ -468,6 +470,41 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    protected void handleConnectionToMessaging(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.getBoolean("success"))  {
+                mChatId = root.getInt("chatid");
+            } else {
+                JSONObject currentConnections = mJsonData.get("chats");
+                JSONArray currentConnectionArray = currentConnections.getJSONArray("chats");
+                for(int i = 0; i < currentConnectionArray.length(); i++)    {
+                    JSONObject j = currentConnectionArray.getJSONObject(i);
+                    if(j.getString("name").contains((mOpenChatWith)))   {
+                        mChatId = j.getInt("chatid");
+                    }
+                }
+            }
+            OpenMessage om = new OpenMessage.Builder(mOpenChatWith).addChatId(mChatId).build();
+            onOpenMessageFragmentInteraction(om);
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
+        }
+    }
+
+    protected void handleProposeFriend(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.getBoolean("success")) {
+                Log.d("Propose", "Propose friend successful");
+            } else {
+                Log.d("Propose", "Propose friend failed");
+            }
+        } catch (JSONException e)   {
+            Log.e("ERROR!", "Propose friend failed");
+        }
+    }
 
 
 //*************** FRAGMENT INTERACTION LISTENERS ***************//
@@ -518,6 +555,7 @@ public class HomeActivity extends AppCompatActivity
                 .appendPath(getString(R.string.ep_messaging))
                 .appendPath(getString(R.string.ep_send))
                 .build();
+        mChatId = theMessage.getChatId();
         new SendPostAsyncTask.Builder(uri.toString(), theMessage.asJSONObject())
                 .onPostExecute(this::handleMessageSendPost)
                 .build()
@@ -525,8 +563,33 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @Override
-    public void onConnectionFragmentInteraction(Connection item) {
+    public void onConnectionFragmentStartChat(Connection connection)    {
+        mOpenChatWith = connection.getUsername();
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_messages))
+                .appendPath(getString(R.string.ep_new))
+                .build();
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("memberid", mCredentials.getID());
+            msg.put("username", mCredentials.getUsername());
+            msg.put("their_id", connection.getId());
+            msg.put("their_username", connection.getUsername());
+        } catch (JSONException e)   {
+            Log.e("ERROR!", "Unable to create new chat JSON to send");
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPostExecute(this::handleConnectionToMessaging)
+                .build()
+                .execute();
+    }
 
+    @Override
+    public void onConnectionFragmentRemove(Connection item) {
+        onConnectionRequestReject(item);
     }
 
 
@@ -534,7 +597,25 @@ public class HomeActivity extends AppCompatActivity
     //unused
     @Override
     public void onConnectionSearchFragmentInteraction(Connection item)  {
-
+        //onConnectionRequestReject(item);
+        Uri uri = new Uri.Builder()
+                .scheme("http")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_conn))
+                .appendPath(getString(R.string.ep_propose))
+                .build();
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("memberid", mCredentials.getID());
+            msg.put("their_id", item.getId());
+        } catch (JSONException e)   {
+            Log.e("ERROR!", "Search add button failed creating JSON to send");
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPostExecute(this::handleProposeFriend)
+                .build()
+                .execute();
     }
 
     //Connections Screen -> Search Button
