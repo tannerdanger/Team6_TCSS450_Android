@@ -67,6 +67,7 @@ public class HomeActivity extends AppCompatActivity
     private HomeFragment mHomeFrag;
     private double mLon;
     private double mLat;
+    public static final int MIN_PASSWORD_LENGTH = 3;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

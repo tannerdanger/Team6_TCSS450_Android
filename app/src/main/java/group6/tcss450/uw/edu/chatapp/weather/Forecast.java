@@ -7,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @Author Tanner Brown
@@ -102,6 +104,9 @@ public class Forecast implements Serializable {
      * @return Fahrenheit converted value
      */
     public double convertToFahrenheit(double theCelcius){
-        return 32 + (theCelcius * 9 / 5);
+        BigDecimal bd = new BigDecimal(32 + (theCelcius * 9 / 5)).setScale(1, RoundingMode.HALF_UP);
+
+
+        return bd.doubleValue();
     }
 }

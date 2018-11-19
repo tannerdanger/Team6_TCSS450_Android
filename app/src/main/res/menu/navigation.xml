@@ -29,6 +29,6 @@
     <item
         android:id="@+id/navigation_logout"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
-        android:title="@string/tab_logout" />
+        android:title="@string/action_logout" />
 
 </menu>

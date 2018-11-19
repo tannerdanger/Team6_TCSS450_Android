@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -84,7 +85,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         Button loginButton = (Button) view.findViewById(R.id.button_loginfragment_login);
-        loginButton.setOnClickListener(v -> attemptLogin());
+        loginButton.setOnClickListener(v -> onLoginAttempt());
 
         Button registerButton = (Button) view.findViewById(R.id.button_loginfragment_register);
         registerButton.setOnClickListener(v -> mListener.onRegisterClicked());
@@ -92,44 +93,26 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    private void attemptLogin() {
+    private void onLoginAttempt() {
         EditText emailEdit = getActivity().findViewById(R.id.edittext_loginfragment_email);
         EditText passwordEdit = getActivity().findViewById(R.id.edittext_loginFragment_password);
-        boolean hasError = false;
+        boolean areValidCredentials = true;
 
         if (emailEdit.getText().length() == 0) {
-            hasError = true;
-            emailEdit.setError("Email must not be empty.");
+            areValidCredentials = false;
+            emailEdit.setError("Please provide a valid email address.");
+
         } else if (emailEdit.getText().toString().chars().filter(ch -> ch == '@').count() != 1) {
-            hasError = true;
-            emailEdit.setError("Email must be valid.");
+            areValidCredentials = false;
+            emailEdit.setError("The email address you provided is invalid.");
         }
         if (passwordEdit.getText().length() == 0) {
-            hasError = true;
-            passwordEdit.setError("Password must not be empty.");
+            areValidCredentials = false;
+            passwordEdit.setError("Please enter a password.");
         }
 
-        /*
-         * TEST MARKER
-         */
-        boolean isATest = false;
-
-        // TODO CHANGE THIS LATER!!!
-        if (!hasError) {
-            if (isATest) {
-                Credentials creds = new Credentials.Builder(emailEdit.getText().toString(),
-                        passwordEdit.getText().toString())
-                        .addUsername("Test UserName")
-                        .addFirstName("First name")
-                        .addLastName("Last name")
-                        .build();
-                mListener.onLoginSuccess(creds);
-            } else {
-
-
-                getFirebaseToken(emailEdit.getText().toString(), passwordEdit.getText().toString());
-            }
-        }
+        if(areValidCredentials)
+            getFirebaseToken(emailEdit.getText().toString(), passwordEdit.getText().toString());
     }
 
     private void getFirebaseToken(final String email, final String password){
@@ -163,10 +146,10 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void doLogin(String email, String password){
+    private void doLogin(final String email, final String password){
         Log.wtf(TAG, "STARTED doLogin");
         //create credentials
-        Credentials cred = new Credentials.Builder(email, password)
+        final Credentials cred = new Credentials.Builder(email, password)
                 .addFirebaseToken(mFirebaseToken)
                 .build();
 
@@ -248,6 +231,11 @@ public class LoginFragment extends Fragment {
                 mCredentials.addToken(mFirebaseToken);
                 mListener.onLoginSuccess(mCredentials);
 
+                if (userdata.getInt("verified") == 0 ) {
+                    
+                    sendVerificationRequest(mCredentials.getEmail());
+                }
+
             } else {
                 ((TextView) getView().findViewById(R.id.edittext_loginfragment_email))
                         .setError("Log In unsuccessful.");
@@ -259,6 +247,40 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    private void sendVerificationRequest(String email) {
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_register))
+                .appendPath(getString(R.string.ep_resend))
+                .build();
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put(getString(R.string.JSON_EMAIL), email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPostExecute(this::sendVerificationToEmailAddress)
+                .onCancelled(this::handleErrorsInTask)
+                .build()
+                .execute();
+    }
+
+    private void sendVerificationToEmailAddress(final String result) {
+        try {
+            JSONObject resultsJSON = new JSONObject(result);
+            if (resultsJSON.getBoolean("success")) {
+                Toast.makeText(
+                        getContext(),
+                        "Verification email sent. Please check your email and verify your account.",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     /**
