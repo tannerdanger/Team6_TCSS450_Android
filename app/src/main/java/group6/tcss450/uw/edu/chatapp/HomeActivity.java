@@ -103,12 +103,19 @@ public class HomeActivity extends AppCompatActivity
     };
 
     protected void navigateHome()   {
-        HomeFragment frag = new HomeFragment();
+
         Bundle args = new Bundle();
-        args.putSerializable("credentials", mCredentials);
-        frag.setArguments(args);
-        loadFragment(frag);
-        //navigateHome();
+        args.putString(getString(R.string.ARGS_FORECAST_DATA), mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)).toString());
+        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+        mHomeFrag.setArguments(args);
+        loadFragment(mHomeFrag);
+
+//        HomeFragment frag = new HomeFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable("credentials", mCredentials);
+//        frag.setArguments(args);
+//        loadFragment(frag);
+//        //navigateHome();
     }
 
     protected void navigateConnections()    {

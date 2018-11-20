@@ -231,7 +231,7 @@ public class LoginFragment extends Fragment {
                 mCredentials.addToken(mFirebaseToken);
                 mListener.onLoginSuccess(mCredentials);
 
-                if (userdata.getInt("verified") == 0 ) {
+                if (userdata.getInt("verification") == 0 ) {
                     
                     sendVerificationRequest(mCredentials.getEmail());
                 }
