@@ -75,11 +75,14 @@ public class ConnectionFragment extends Fragment {
 //                    mConnections.remove(c);
 //                }
 //            }
-            for(int i = 0; i < mConnections.size(); i++)    {
-                if(mConnections.get(i).getVerified() == 0)  {
-                    mConnections.remove(i);
-                }
-            }
+            System.out.print("");
+            mConnections.removeIf(c -> (c.getVerified() == 0)); //TODO: Check out this shiz. Removes all unverified connections.
+//            for(int i = 0; i < mConnections.size(); i++)    {
+//                if(mConnections.get(i).getVerified() == 0)  {
+//                    mConnections.removeIf()
+//                    mConnections.remove(i);
+//                }
+//            }
         } else {
             Log.e("BROKEN POST", "UNABLE TO FETCH CONNECTIONS.");
         }

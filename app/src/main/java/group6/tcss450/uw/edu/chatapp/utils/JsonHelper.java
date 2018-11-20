@@ -27,6 +27,15 @@ public class JsonHelper extends AppCompatActivity {
     private static final String LON = "lon";
     private static final String KEY = "key";
 
+    public static JSONObject messages_JsonObject(int chatid){
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put(CHAT, chatid);
+        } catch (JSONException e) {
+            Log.wtf("JSON HELPER", "Error creating JSON: " + e.getMessage());
+        }
+        return msg;
+    }
 
     public static JSONObject weather_JsonObject(double lat, double lon){
         //build the JSONObject
@@ -46,7 +55,7 @@ public class JsonHelper extends AppCompatActivity {
         try {
             msg.put(MYID, id);
         } catch (JSONException e) {
-            Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
+            Log.wtf("JSON HELPER", "Error creating JSON: " + e.getMessage());
         }
         return msg;
     }

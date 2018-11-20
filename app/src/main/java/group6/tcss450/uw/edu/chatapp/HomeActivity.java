@@ -2,18 +2,13 @@ package group6.tcss450.uw.edu.chatapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,9 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionRequestsFragment;
@@ -39,7 +32,7 @@ import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
-import group6.tcss450.uw.edu.chatapp.utils.JsonHelper;
+import group6.tcss450.uw.edu.chatapp.utils.DataHandler;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
@@ -52,21 +45,22 @@ public class HomeActivity extends AppCompatActivity
         WeatherFragment.OnFragmentInteractionListener,
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
-        WaitFragment.OnFragmentInteractionListener  {
+        WaitFragment.OnFragmentInteractionListener,
+        DataHandler.OnDataLoadedListener {
 
     private TextView mTextMessage;
 
     private Credentials mCredentials;
+    private DataHandler mDataHandler;
     private ActionBar mToolbar;
     private HashMap <String, JSONObject> mJsonData;
-    private boolean mWeatherLoaded = false;
-    private boolean mChatsLoaded = false;
-    private boolean mConnectionsLoaded = false;
+    private boolean mIsInit;
     private int mChatId;
     private String mOpenChatWith;
     private HomeFragment mHomeFrag;
     private double mLon;
     private double mLat;
+    private HashMap<Integer, ArrayList<Message>> mMessageListMap;
     public static final int MIN_PASSWORD_LENGTH = 3;
 
 
@@ -90,7 +84,8 @@ public class HomeActivity extends AppCompatActivity
                     return true;
                 case R.id.nav_solo_chat:
                     mToolbar.setTitle("CHAT");
-                    navigateChat();
+                    mDataHandler.getChats(true);
+//                    navigateChat(); //called by async task
                     return true;
 
                 case R.id.navigation_logout:
@@ -104,48 +99,67 @@ public class HomeActivity extends AppCompatActivity
 
     protected void navigateHome()   {
 
+
+
         Bundle args = new Bundle();
         args.putString(getString(R.string.ARGS_FORECAST_DATA), mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)).toString());
         args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
         mHomeFrag.setArguments(args);
         loadFragment(mHomeFrag);
 
-//        HomeFragment frag = new HomeFragment();
-//        Bundle args = new Bundle();
-//        args.putSerializable("credentials", mCredentials);
-//        frag.setArguments(args);
-//        loadFragment(frag);
-//        //navigateHome();
     }
 
-    protected void navigateConnections()    {
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_conn))
-                .appendPath(getString(R.string.ep_getall))
-                .build();
-        new SendPostAsyncTask.Builder(uri.toString(), mCredentials.asJSONObject())
-                .onPreExecute(this::onWaitFragmentInteractionShow)
-                .onPostExecute(this::handleConnectionGetOnPostExecute)
-                .build()
-                .execute();
+    protected void navigateConnections() {
+
+
+
+        mDataHandler.updateContacts(); //THIS REPLACED EVERYTHING
+        Connection[] conns = mDataHandler.getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS))); //TODO: MAY RETURN NULL IF CONNECTIONS
+        if(null == conns){
+            conns = new Connection[0];
+        }
+        Bundle args = new Bundle();
+        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, conns);
+        Fragment frag = new ConnectionFragment();
+        frag.setArguments(args);
+
+
+
+        loadFragment(frag);
+
     }
 
     protected void navigateNotifications(){}
 
-    protected void navigateChat()   {
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_messaging))
-                .appendPath(getString(R.string.ep_getmy))
-                .build();
-        new SendPostAsyncTask.Builder(uri.toString(), mCredentials.asJSONObject())
-                .onPreExecute(this::onWaitFragmentInteractionShow)
-                .onPostExecute(this::handleOpenMessageGetOnPostExecute)
-                .build()
-                .execute();
+    public void navigateChat()   {
+
+        OpenMessage[] chats = mDataHandler.getChatArray(mJsonData.get(getString(R.string.ARGS_CHATROOMS)));
+
+        Fragment frag = new OpenMessagesFragment();
+
+        if(chats != null){
+            Bundle b = new Bundle();
+            b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, chats);
+            frag.setArguments(b);
+        }
+        loadFragment(frag);
+
+    }
+
+    public void navigateMessages(int chatid){
+
+
+        Message[] messages = new Message[mMessageListMap.get(chatid).size()];
+        mMessageListMap.get(chatid).toArray(messages);
+        System.out.print(" BREAKPOINT ");
+
+        Bundle b = new Bundle();
+        b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, messages);
+        b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+        b.putInt(MessagesFragment.ARG_CHAT_ID, chatid);
+        Fragment frag = new MessagesFragment();
+        frag.setArguments(b);
+        loadFragment(frag);
 
     }
 
@@ -153,10 +167,17 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
         mLat = (Double) getIntent().getDoubleExtra("lat", -1 );
         mLon = (Double) getIntent().getDoubleExtra("lon", -1 );
-        initializeData();
+
+        mJsonData = new HashMap<>();
+        mMessageListMap = new HashMap<>();
+        mIsInit = false;
+        mDataHandler = new DataHandler(this, mCredentials, mLat, mLon, true);
+
+
 
 
         setContentView(R.layout.activity_home);
@@ -166,172 +187,62 @@ public class HomeActivity extends AppCompatActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mHomeFrag = new HomeFragment();
         mChatId = -1;
-    }
-
-    private void initializeData() {
-
-        onWaitFragmentInteractionShow();
-        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
-        if(0 == mLat)
-            mLat = (Double) getIntent().getDoubleExtra("lat", -1 );
-        if(0 == mLon)
-            mLon = (Double) getIntent().getDoubleExtra("lon", -1 );
-        mJsonData = new HashMap<>();
-
-        //    logout(); //to clear logout et
-        getWeather(mLat, mLon);
-        getContacts();
-        getChats();
-
 
     }
 
-    private void getContacts() {
-        JSONObject msg = JsonHelper.connections_JsonObject(mCredentials.getID());
-        if (null != msg) {
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_conn))
-                    .appendPath(getString(R.string.ep_getall))
-                    .build();
 
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPostExecute(this::handleConnectionsPost)
-                    .onCancelled(this::handleErrorsInTask)
-                    .build()
-                    .execute();
+    /**
+     * This method is called from the DataHandler class to update data in the mJsonData map.
+     *
+     * @param key the key identifying the data in the hashmap
+     * @param obj the JSONObject beting added to the map.
+     */
+    public void updateJsonData(String key, JSONObject obj){
+
+        if(null != obj){
+            mJsonData.put(key, obj);
+        }
+
+    }
+
+    /**
+     * Adds a message to the proper message list
+     * @param chatid the id the message belongs to
+     * @param message the message to be added.
+     */
+    public void addMessage(Integer chatid, Message message){
+
+        if(null != message){
+
+            // If map doesn't contain messages for this chat id, create empty LL
+            if (!mMessageListMap.containsKey(chatid)) {
+                ArrayList<Message> tmp = new ArrayList<>();
+                mMessageListMap.put(chatid, tmp);
+            }
+
+            mMessageListMap.get(chatid).add(message);
 
         }
     }
 
-    private void handleConnectionsPost(String s) {
-        try {
-            JSONObject result = new JSONObject(s);
-            mJsonData.put("connections", result);
-        } catch (JSONException e){
-            Log.e("JSON PARSE ERROR", s + System.lineSeparator() + e.getMessage());
-        }
-        mConnectionsLoaded = true;
-    }
-
-    /** For getting weather with a specific lat/lon */
-    private void getWeather(double lat, double lon){
-        JSONObject msg = JsonHelper.weather_JsonObject(lat, lon);
-
-        if (null != msg) {
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_weather))
-                    .appendPath(getString(R.string.ep_tenday))
-                    .build();
-
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPostExecute(this::handleWeatherPost)
-                    .onCancelled(this::handleErrorsInTask)
-                    .build()
-                    .execute();
+    /**
+     * Insures data is loaded after data initialization, then loads next fragment.
+     */
+    public void finishInit() {
+        if(!mIsInit) {
+            mHomeFrag = new HomeFragment();
+            onWaitFragmentInteractionHide();
+            mIsInit = true;
+            navigateHome();
         }
     }
 
-    /** For getting weather with a the phone's location */
-    private void getWeather() {
 
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
-
-        }
-
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double longitutde = location.getLongitude();
-        double latitude = location.getLatitude();
-        JSONObject msg = JsonHelper.weather_JsonObject(latitude, longitutde);
-
-        if (null != msg) {
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_weather))
-                    .appendPath(getString(R.string.ep_tenday))
-                    .build();
-
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPostExecute(this::handleWeatherPost)
-                    .onCancelled(this::handleErrorsInTask)
-                    .build()
-                    .execute();
-        }
-
-
-    }
-
-    private void getChats(){
-        JSONObject msg = JsonHelper.chats_JsonObject(mCredentials.getID());
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_messaging))
-                .appendPath(getString(R.string.ep_getmy))
-                .build();
-
-        new SendPostAsyncTask.Builder(uri.toString(), msg)
-                .onPostExecute(this::onGetMessagesPost)
-                .onCancelled(this::handleErrorsInTask)
-                .build()
-                .execute();
-    }
-
-    private void onGetMessagesPost(String s) {
-        try {
-            JSONObject result = new JSONObject(s);
-            mJsonData.put("chats", result);
-        } catch (JSONException e){
-            Log.e("JSON PARSE ERROR", s + System.lineSeparator() + e.getMessage());
-        }
-        mChatsLoaded = true;
-        initHomeFrag();
-    }
-
-    private void initHomeFrag() {
-        Bundle args = new Bundle();
-        args.putString(getString(R.string.ARGS_FORECAST_DATA), mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)).toString());
-        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-        mHomeFrag.setArguments(args);
-        loadFragment(mHomeFrag);
-    }
-
-    private void updateHomeFrag() {
-        Bundle args = new Bundle();
-        args.putString(getString(R.string.ARGS_FORECAST_DATA), mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)).toString());
-        mHomeFrag.setArguments(args);
-        mHomeFrag.updateContent();
-        //args.putJ("forecast", mJsonData.get("forecast"));
-    }
-
-    private void handleWeatherPost(String s) {
-        try {
-            JSONObject result = new JSONObject(s);
-            mJsonData.put(getString(R.string.ARGS_FORECAST_DATA), result);
-        } catch (JSONException e){
-            Log.e("JSON PARSE ERROR", s + System.lineSeparator() + e.getMessage());
-        }
-        mWeatherLoaded = true;
-        onWaitFragmentInteractionHide();
-    }
-    private void handleErrorsInTask(String result){
-        Log.e("ASYNC_TASK_ERROR", result);
-    }
-
+    /**
+     * Switches to a new fragment.
+     * @param theFragment the new fragment to be displayed.
+     */
     private void loadFragment(Fragment theFragment) {
 
         FragmentTransaction transaction = getSupportFragmentManager()
@@ -342,125 +253,6 @@ public class HomeActivity extends AppCompatActivity
         transaction.commit();
     }
 
-
-    /** Depreciated by onGetMessagesPost ? */
-    protected void handleConnectionGetOnPostExecute(final String result) {
-        try {
-            JSONObject root = new JSONObject(result);
-            if (root.has("connections")) {
-                JSONArray response = root.getJSONArray("connections");
-
-                List<Connection> conns = new ArrayList<>();
-                for (int i = 0; i < response.length(); i++) {
-                    JSONObject jsonSet = response.getJSONObject(i);
-                    conns.add(new Connection.Builder(jsonSet.getString("username"),
-                            jsonSet.getString("email"))
-                            .addFirstName(jsonSet.getString("firstname"))
-                            .addLastName(jsonSet.getString("lastname"))
-                            .addVerified(jsonSet.getInt("verified"))
-                            .addId(jsonSet.getInt("memberid"))
-                            .build());
-                    Log.e("Testing get method", conns.get(i).getUsername());
-                }
-                Connection[] connectionsAsArray = new Connection[conns.size()];
-                connectionsAsArray = conns.toArray(connectionsAsArray);
-                Bundle args = new Bundle();
-                args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, connectionsAsArray);
-                Fragment frag = new ConnectionFragment();
-//                    args.putSerializable(BlogFragment.ARG_BLOG_LIST, blogsAsArray);
-//                    Fragment frag = new BlogFragment();
-                frag.setArguments(args);
-                //   onWaitFragmentInteractionHide();
-                loadFragment(frag);
-            } else {
-                Log.e("ERROR!", "No data array"); //notify user
-                onWaitFragmentInteractionHide();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("ERROR!", e.getMessage());
-            //    onWaitFragmentInteractionHide();
-        }
-    }
-
-    //OPEN MESSAGE SCREEN
-    protected void handleOpenMessageGetOnPostExecute(final String result)   {
-        try {
-            JSONObject root = new JSONObject(result);
-            if(root.has("chats"))   {
-                JSONArray response = root.getJSONArray("chats");
-                List<OpenMessage> open = new ArrayList<>();
-                for(int i = 0; i < response.length(); i++)  {
-                    JSONObject jsonSet = response.getJSONObject(i);
-                    OpenMessage om = new OpenMessage.Builder(
-                            jsonSet.getString("name"))
-                            .addDate("XX/XX/XXXX")
-                            .addTime("XX:XX PM")
-                            .addChatId(jsonSet.getInt("chatid"))
-                            .build();
-                    open.add(om);
-                }
-                OpenMessage[] openMessagesAsArray = new OpenMessage[open.size()];
-                openMessagesAsArray = open.toArray(openMessagesAsArray);
-                Bundle b = new Bundle();
-                b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
-                Fragment frag = new OpenMessagesFragment();
-                frag.setArguments(b);
-                //      onWaitFragmentInteractionHide();
-                loadFragment(frag);
-            } else {
-                Log.e("ERROR!", "No data array");
-                //      onWaitFragmentInteractionHide();
-            }
-        } catch (JSONException e)   {
-            e.printStackTrace();
-            Log.e("ERROR!", e.getMessage());
-            //   onWaitFragmentInteractionHide();
-        }
-    }
-
-    //MESSAGE SCREEN
-    protected void handleMessageGetOnPostExecute(final String result) {
-        try {
-            JSONObject root = new JSONObject(result);
-            if(root.has("messages"))    {
-                JSONArray response = root.getJSONArray("messages");
-                List<Message> msgs = new ArrayList<>();
-                for(int i = 0; i < response.length(); i++)  {
-                    JSONObject jsonSet = response.getJSONObject(i);
-                    String date = jsonSet.getString("timestamp").substring(0,
-                            jsonSet.getString("timestamp").indexOf(" "));
-                    String time = jsonSet.getString("timestamp").substring(jsonSet.getString(
-                            "timestamp").indexOf(" "),
-                            jsonSet.getString("timestamp").indexOf("."));
-                    msgs.add(new Message.Builder(
-                            jsonSet.getString("email"))
-                            .addDate(date)
-                            .addTime(time)
-                            .addMessage(jsonSet.getString("message"))
-                            .addChatId(mChatId)
-                            .build());
-                }
-                Message[] msgsAsArray = new Message[msgs.size()];
-                msgsAsArray = msgs.toArray(msgsAsArray);
-                Bundle b = new Bundle();
-                b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, msgsAsArray);
-                b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-                b.putInt(MessagesFragment.ARG_CHAT_ID, mChatId);
-                Fragment frag = new MessagesFragment();
-                frag.setArguments(b);
-                //          onWaitFragmentInteractionHide();
-                loadFragment(frag);
-            } else {
-                Log.e("ERROR!", "No data array");
-                //         onWaitFragmentInteractionHide();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("Error!", e.getMessage());
-            //     onWaitFragmentInteractionHide();
-        }
-    }
 
     protected void handleConnectionAcceptReject(final String result)  {
         try {
@@ -538,23 +330,20 @@ public class HomeActivity extends AppCompatActivity
     //OpenMessage Fragment
     @Override
     public void onOpenMessageFragmentInteraction(OpenMessage item) {
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_messaging))
-                .appendPath(getString(R.string.ep_getall))
-                .build();
-        mChatId = item.getChatId();
-        new SendPostAsyncTask.Builder(uri.toString(), item.asJSONObject())
-                //      .onPreExecute(this::onWaitFragmentInteractionShow)
-                .onPostExecute(this::handleMessageGetOnPostExecute)
-                .build()
-                .execute();
-//        MessagesFragment mf = new MessagesFragment();
-//        Bundle args = new Bundle();
-//        args.putSerializable("key", item);
-//        mf.setArguments(args);
-//        loadFragment(mf);
+
+        mDataHandler.getMessages(item.getChatId(), true);
+
+//        Uri uri = new Uri.Builder()
+//                .scheme("https")
+//                .appendPath(getString(R.string.ep_base_url))
+//                .appendPath(getString(R.string.ep_messaging))
+//                .appendPath(getString(R.string.ep_getall))
+//                .build();
+//        mChatId = item.getChatId();
+//        new SendPostAsyncTask.Builder(uri.toString(), item.asJSONObject())
+//                .onPostExecute(this::handleMessageGetOnPostExecute)
+//                .build()
+//                .execute();
     }
 
     //Messages Fragment
@@ -717,6 +506,13 @@ public class HomeActivity extends AppCompatActivity
                 .commit();
     }
 
+    @Override
+    public void onWeatherUpdated(JSONObject result) {
+        if(null != result){
+            mJsonData.put(getString(R.string.ARGS_FORECAST_DATA), result);
+        }
+    }
+
     //WAIT SCREEN
     @Override
     public void onWaitFragmentInteractionHide() {
@@ -789,3 +585,104 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+        SAVED OLD CODE
+
+
+            //OPEN MESSAGE SCREEN (displaying all message groups)
+    protected void handleOpenMessageGetOnPostExecute(final String result)   {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.has("chats"))   {
+                JSONArray response = root.getJSONArray("chats");
+                List<OpenMessage> open = new ArrayList<>();
+                for(int i = 0; i < response.length(); i++)  {
+                    JSONObject jsonSet = response.getJSONObject(i);
+                    OpenMessage om = new OpenMessage.Builder(
+                            jsonSet.getString("name"))
+                            .addDate("XX/XX/XXXX")
+                            .addTime("XX:XX PM")
+                            .addChatId(jsonSet.getInt("chatid"))
+                            .build();
+                    open.add(om);
+                }
+                OpenMessage[] openMessagesAsArray = new OpenMessage[open.size()];
+                openMessagesAsArray = open.toArray(openMessagesAsArray);
+                Bundle b = new Bundle();
+                b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
+                Fragment frag = new OpenMessagesFragment();
+                frag.setArguments(b);
+                //      onWaitFragmentInteractionHide();
+                loadFragment(frag);
+            } else {
+                Log.e("ERROR!", "No data array");
+                //      onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //   onWaitFragmentInteractionHide();
+        }
+    }
+
+    //MESSAGE SCREEN (displaying all messages in a chat)
+    protected void handleMessageGetOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.has("messages"))    {
+                JSONArray response = root.getJSONArray("messages");
+                List<Message> msgs = new ArrayList<>();
+                for(int i = 0; i < response.length(); i++)  {
+                    JSONObject jsonSet = response.getJSONObject(i);
+                    String date = jsonSet.getString("timestamp").substring(0,
+                            jsonSet.getString("timestamp").indexOf(" "));
+                    String time = jsonSet.getString("timestamp").substring(jsonSet.getString(
+                            "timestamp").indexOf(" "),
+                            jsonSet.getString("timestamp").indexOf("."));
+                    msgs.add(new Message.Builder(
+                            jsonSet.getString("email"))
+                            .addDate(date)
+                            .addTime(time)
+                            .addMessage(jsonSet.getString("message"))
+                            .addChatId(mChatId)
+                            .build());
+                }
+                Message[] msgsAsArray = new Message[msgs.size()];
+                msgsAsArray = msgs.toArray(msgsAsArray);
+                Bundle b = new Bundle();
+                b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, msgsAsArray);
+                b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+                b.putInt(MessagesFragment.ARG_CHAT_ID, mChatId);
+                Fragment frag = new MessagesFragment();
+                frag.setArguments(b);
+                //          onWaitFragmentInteractionHide();
+                loadFragment(frag);
+            } else {
+                Log.e("ERROR!", "No data array");
+                //         onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
+            //     onWaitFragmentInteractionHide();
+        }
+    }
+ */

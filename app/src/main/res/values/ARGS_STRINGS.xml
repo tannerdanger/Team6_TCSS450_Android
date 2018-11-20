@@ -3,4 +3,5 @@
     <string name="ARGS_FORECAST_DATA">forecast</string>
     <string name="ARGS_CREDENTIALS">credentials</string>
     <string name="ARGS_CONNECTIONS">connections</string>
+    <string name="ARGS_CHATROOMS">chats</string>
 </resources>
