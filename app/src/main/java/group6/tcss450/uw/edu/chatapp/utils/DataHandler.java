@@ -74,12 +74,7 @@ public class DataHandler {
 
         JSONObject msg = JsonHelper.connections_JsonObject(mCredentials.getID());
         if (null != msg){
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath("tcss450group6-backend.herokuapp.com")
-                    .appendPath("conn")
-                    .appendPath("getall")
-                    .build();
+            Uri uri = UriHelper.CONNECTIONS_GETALL();
 
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     .onPostExecute(this::updateConnectionsJsonData)
@@ -110,12 +105,8 @@ public class DataHandler {
 
     public void getChats(boolean isFragTransition){
         JSONObject msg = JsonHelper.chats_JsonObject(mCredentials.getID());
-        Uri uri = new Uri.Builder()
-                .scheme(SCHEME)
-                .appendPath(BASE)
-                .appendPath(MESSAGING)
-                .appendPath(GETMY)
-                .build();
+
+        Uri uri = UriHelper.MESSAGING_GETMY();
 
         if(!isFragTransition) {
 
@@ -141,12 +132,8 @@ public class DataHandler {
      */
     public void getMessages(int chatid, boolean isFragTransition){
         JSONObject msg = JsonHelper.messages_JsonObject(chatid);
-        Uri uri = new Uri.Builder()
-                .scheme(SCHEME)
-                .appendPath(BASE)
-                .appendPath("messaging")
-                .appendPath("getall")
-                .build();
+
+        Uri uri = UriHelper.MESSAGING_GETALL();
 
         if(isFragTransition) {
 
@@ -277,19 +264,24 @@ public class DataHandler {
                 JSONArray response = root.getJSONArray("messages");
                 Message message;
 
-                for(int i = 0; i < response.length(); i++)  {
-                    JSONObject jsonSet = response.getJSONObject(i);
-                    String[] timedate = jsonSet.getString("timestamp").split(" ", 2);
-                    timedate[1] = timedate[1].substring(0, timedate[1].lastIndexOf(":"));
+                if(response.length() < 1){
+                    mHomeActivity.addMessage(chatid, null);
+                }else {
 
-                    message = new Message.Builder(jsonSet.getString("email"))
-                            .addDate(timedate[0])
-                            .addTime(timedate[1])
-                            .addChatId(chatid)
-                            .addMessage(jsonSet.getString("message"))
-                            .build();
+                    for (int i = 0; i < response.length(); i++) {
+                        JSONObject jsonSet = response.getJSONObject(i);
+                        String[] timedate = jsonSet.getString("timestamp").split(" ", 2);
+                        timedate[1] = timedate[1].substring(0, timedate[1].lastIndexOf(":"));
 
-                    mHomeActivity.addMessage(chatid, message);
+                        message = new Message.Builder(jsonSet.getString("email"))
+                                .addDate(timedate[0])
+                                .addTime(timedate[1])
+                                .addChatId(chatid)
+                                .addMessage(jsonSet.getString("message"))
+                                .build();
+
+                        mHomeActivity.addMessage(chatid, message);
+                    }
                 }
 
             }

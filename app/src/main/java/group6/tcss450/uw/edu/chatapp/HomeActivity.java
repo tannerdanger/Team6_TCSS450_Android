@@ -1,6 +1,9 @@
 package group6.tcss450.uw.edu.chatapp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,6 +39,9 @@ import group6.tcss450.uw.edu.chatapp.utils.DataHandler;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
+import group6.tcss450.uw.edu.chatapp.utils.MyFirebaseMessagingService;
+
+import static android.util.Log.i;
 
 public class HomeActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
@@ -49,7 +55,7 @@ public class HomeActivity extends AppCompatActivity
         DataHandler.OnDataLoadedListener {
 
     private TextView mTextMessage;
-
+    private FirebaseMessageReciever mFirebaseMessageReciever;
     private Credentials mCredentials;
     private DataHandler mDataHandler;
     private ActionBar mToolbar;
@@ -148,10 +154,15 @@ public class HomeActivity extends AppCompatActivity
 
     public void navigateMessages(int chatid){
 
+        int msgs = mMessageListMap.get(chatid).size();
+        Message[] messages = new Message[msgs];
+        if(msgs > 0) {
 
-        Message[] messages = new Message[mMessageListMap.get(chatid).size()];
-        mMessageListMap.get(chatid).toArray(messages);
-        System.out.print(" BREAKPOINT ");
+            mMessageListMap.get(chatid).toArray(messages);
+
+        } else {
+//            Message[] messages = new M
+        }
 
         Bundle b = new Bundle();
         b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, messages);
@@ -166,6 +177,11 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mFirebaseMessageReciever = new FirebaseMessageReciever();
+        IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
+        registerReceiver(mFirebaseMessageReciever, iFilter);
+
 
 
         mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
@@ -213,16 +229,15 @@ public class HomeActivity extends AppCompatActivity
      */
     public void addMessage(Integer chatid, Message message){
 
+        //if ArrayList of messages for chatid doesn't yet exist, create it.
+        if (!mMessageListMap.containsKey(chatid)) {
+            ArrayList<Message> tmp = new ArrayList<>();
+            mMessageListMap.put(chatid, tmp);
+        }
+
         if(null != message){
-
             // If map doesn't contain messages for this chat id, create empty LL
-            if (!mMessageListMap.containsKey(chatid)) {
-                ArrayList<Message> tmp = new ArrayList<>();
-                mMessageListMap.put(chatid, tmp);
-            }
-
             mMessageListMap.get(chatid).add(message);
-
         }
     }
 
@@ -417,6 +432,7 @@ public class HomeActivity extends AppCompatActivity
         try {
             msg.put("memberid", mCredentials.getID());
             msg.put("their_id", item.getId());
+            msg.put(getString(R.string.JSON_USERS_USERNAME), mCredentials.getUsername());
         } catch (JSONException e)   {
             Log.e("ERROR!", "Search add button failed creating JSON to send");
             e.printStackTrace();
@@ -543,6 +559,68 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    /**
+     * A BroadcastReceiver setup to listen for messages sent from MyFirebaseMessagingService
+     * that Android allows to run all the time.
+     */
+    private class FirebaseMessageReciever extends BroadcastReceiver {
+        private static final String CONNECTION_REQ_TYPE = "connection_req";
+        private static final String MESSAGE_TYPE = "msg";
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.print("ON RECIEVE");
+            if(intent.hasExtra("DATA")) {
+
+                String data = intent.getStringExtra("DATA");
+                JSONObject jObj = null;
+                try {
+                    jObj = new JSONObject(data);
+                    System.out.println("jObj: " + jObj.toString());
+
+                    if(jObj.has("type")){
+                        String type = jObj.getString("type");
+
+                        if(CONNECTION_REQ_TYPE.compareTo(type)== 0){ //it is a new contact notification
+
+                            if(jObj.has("sender") ){
+
+                                int senderID = Integer.valueOf(jObj.getString("sender"));
+                                System.out.print("New contact request from: " + senderID);
+                                mDataHandler.updateContacts();
+
+                                //TODO: Add notification object to notification page.
+
+                            }
+
+                        }else if(MESSAGE_TYPE.compareTo(type) == 0){ //it is a new text message
+
+
+                            if(jObj.has("message") && jObj.has("sender") && jObj.has("chatid")) {
+
+                                String sender = jObj.getString("sender");
+                                String msg = jObj.getString("message");
+
+                                int chatid = Integer.valueOf(jObj.getString("chatid"));
+
+
+                                //mDataHandler.
+                                mDataHandler.getMessages(chatid, false); //does not transition after loading message
+
+
+                                Log.i("New Message", sender + " " + msg);
+                            }
+
+                        }//TODO: delete connection? Delete chat?
+
+
+
+                    }
+                } catch (JSONException e) {
+                    Log.e("JSON PARSE", e.toString());
+                }
+            }
+        }
+    }
 
 
     // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing
