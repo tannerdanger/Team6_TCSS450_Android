@@ -14,6 +14,7 @@ public class UriHelper {
     private static final String GETMY = "getmy";
     private static final String GETALL = "getall";
     private static final String CONN = "conn";
+    private static final String WEATHER = "weather";
 
     public static Uri CONNECTIONS_GETALL(){
 
@@ -40,6 +41,15 @@ public class UriHelper {
                 .appendPath(BASE)
                 .appendPath(MESSAGING)
                 .appendPath(GETALL)
+                .build();
+    }
+
+    public static Uri WEATHER_BY_LAT_LONG(){
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(WEATHER)
+                .appendPath("tenday") //todo: adjust this to latlon
                 .build();
     }
 

@@ -86,14 +86,12 @@ public class DataHandler {
 
 
     public void updateWeatherByLatLon(double lat, double lon){
+
         JSONObject msg = JsonHelper.weather_JsonObject(lat, lon);
+
         if(null != msg){
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath("tcss450group6-backend.herokuapp.com")
-                    .appendPath("weather")
-                    .appendPath("tenday") //todo: adjust this to latlon
-                    .build();
+
+            Uri uri = UriHelper.WEATHER_BY_LAT_LONG();
 
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     //.onPreExecute() //todo: wait fragment
@@ -330,12 +328,7 @@ public class DataHandler {
         startAsync();
         //init weather
         JSONObject wMsg = JsonHelper.weather_JsonObject(mLat, mLon);
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath("tcss450group6-backend.herokuapp.com")
-                .appendPath("weather")
-                .appendPath("tenday") //todo: adjust this to latlon
-                .build();
+        Uri uri = UriHelper.WEATHER_BY_LAT_LONG();
 
         new SendPostAsyncTask.Builder(uri.toString(), wMsg)
                 //.onPreExecute() //todo: wait fragment
@@ -355,7 +348,10 @@ public class DataHandler {
             //init contacts
             JSONObject msg = JsonHelper.connections_JsonObject(mCredentials.getID());
             if (null != msg) {
-                Uri uri = new Uri.Builder()
+                Uri uri = UriHelper.CONNECTIONS_GETALL();
+
+
+                        new Uri.Builder()
                         .scheme("https")
                         .appendPath("tcss450group6-backend.herokuapp.com")
                         .appendPath("conn")
