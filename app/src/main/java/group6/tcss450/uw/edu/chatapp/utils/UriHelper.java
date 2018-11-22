@@ -15,42 +15,52 @@ public class UriHelper {
     private static final String GETALL = "getall";
     private static final String CONN = "conn";
     private static final String WEATHER = "weather";
+    private static final String NEW = "new";
 
-    public static Uri CONNECTIONS_GETALL(){
+    public static String CONNECTIONS_GETALL(){
 
         return new Uri.Builder()
                 .scheme(SCHEME)
                 .appendPath(BASE)
                 .appendPath(CONN)
                 .appendPath(GETALL)
-                .build();
+                .build().toString();
     }
 
-    public static Uri MESSAGING_GETMY(){
+    public static String MESSAGING_GETMY(){
         return new Uri.Builder()
                 .scheme(SCHEME)
                 .appendPath(BASE)
                 .appendPath(MESSAGING)
                 .appendPath(GETMY)
-                .build();
+                .build().toString();
     }
 
-    public static Uri MESSAGING_GETALL(){
+    public static String MESSAGING_GETALL(){
         return new Uri.Builder()
                 .scheme(SCHEME)
                 .appendPath(BASE)
                 .appendPath(MESSAGING)
                 .appendPath(GETALL)
-                .build();
+                .build().toString();
     }
 
-    public static Uri WEATHER_BY_LAT_LONG(){
+    public static String WEATHER_BY_LAT_LONG(){
         return new Uri.Builder()
                 .scheme(SCHEME)
                 .appendPath(BASE)
                 .appendPath(WEATHER)
                 .appendPath("tenday") //todo: adjust this to latlon
-                .build();
+                .build().toString();
+    }
+
+    public static String MESSAGES_NEW(){
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(MESSAGING)
+                .appendPath(NEW)
+                .build().toString();
     }
 
 

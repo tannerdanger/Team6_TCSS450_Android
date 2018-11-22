@@ -75,7 +75,7 @@ public class ConnectionFragment extends Fragment {
 //                    mConnections.remove(c);
 //                }
 //            }
-            System.out.print("");
+
             mConnections.removeIf(c -> (c.getVerified() == 0)); //TODO: Check out this shiz. Removes all unverified connections.
 //            for(int i = 0; i < mConnections.size(); i++)    {
 //                if(mConnections.get(i).getVerified() == 0)  {

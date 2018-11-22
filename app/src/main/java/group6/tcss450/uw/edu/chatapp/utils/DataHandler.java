@@ -35,7 +35,7 @@ public class DataHandler {
     private HomeActivity mHomeActivity;
     private Credentials mCredentials;
     private double mLat, mLon;
-    private boolean mIsWaitFragActive;
+    private static boolean mIsWaitFragActive;
 
     /**
      * When created, the datahandler starts by initializing some data
@@ -74,9 +74,9 @@ public class DataHandler {
 
         JSONObject msg = JsonHelper.connections_JsonObject(mCredentials.getID());
         if (null != msg){
-            Uri uri = UriHelper.CONNECTIONS_GETALL();
+            String uri = UriHelper.CONNECTIONS_GETALL();
 
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
+            new SendPostAsyncTask.Builder(uri, msg)
                     .onPostExecute(this::updateConnectionsJsonData)
                     .onCancelled(this::handleErrorsInTask)
                     .build()
@@ -91,7 +91,7 @@ public class DataHandler {
 
         if(null != msg){
 
-            Uri uri = UriHelper.WEATHER_BY_LAT_LONG();
+            String uri = UriHelper.WEATHER_BY_LAT_LONG();
 
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     //.onPreExecute() //todo: wait fragment
@@ -104,17 +104,17 @@ public class DataHandler {
     public void getChats(boolean isFragTransition){
         JSONObject msg = JsonHelper.chats_JsonObject(mCredentials.getID());
 
-        Uri uri = UriHelper.MESSAGING_GETMY();
+        String uri = UriHelper.MESSAGING_GETMY();
 
         if(!isFragTransition) {
 
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
+            new SendPostAsyncTask.Builder(uri, msg)
                     .onPostExecute(this::updateChatsJsonData)
                     .onCancelled(this::handleErrorsInTask)
                     .build()
                     .execute();
         } else {
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
+            new SendPostAsyncTask.Builder(uri, msg)
                     .onPostExecute(this::updateChatsTransition)
                     .onCancelled(this::handleErrorsInTask)
                     .build()
@@ -131,11 +131,11 @@ public class DataHandler {
     public void getMessages(int chatid, boolean isFragTransition){
         JSONObject msg = JsonHelper.messages_JsonObject(chatid);
 
-        Uri uri = UriHelper.MESSAGING_GETALL();
+        String uri = UriHelper.MESSAGING_GETALL();
 
         if(isFragTransition) {
 
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
+            new SendPostAsyncTask.Builder(uri, msg)
                     .onPostExecute(this::updateMessagesTransition)
                     .onCancelled(this::handleErrorsInTask)
                     .build()
@@ -143,7 +143,7 @@ public class DataHandler {
 
         } else {
 
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
+            new SendPostAsyncTask.Builder(uri, msg)
                     .onPostExecute(this::updateMessages)
                     .onCancelled(this::handleErrorsInTask)
                     .build()
@@ -152,15 +152,76 @@ public class DataHandler {
         }
     }
 
+    public void createOrOpenChatRoom(int therid, String theirUsername, boolean isTransition){
+
+        startAsync();
+
+        String uri = UriHelper.MESSAGES_NEW();
+        JSONObject msg = JsonHelper.create_newChat_JsonObject(
+                mCredentials.getID(),
+                mCredentials.getUsername(),
+                therid, theirUsername);
+
+        if(null != uri && null != msg){
+
+            if(isTransition) {
+
+                new SendPostAsyncTask.Builder(uri, msg)
+                        .onPostExecute(this::createChatTransition)
+                        .onCancelled(this::handleErrorsInTask)
+                        .build()
+                        .execute();
+
+            } else {
+
+                new SendPostAsyncTask.Builder(uri, msg)
+                        .onPostExecute(this::createChat)
+                        .onCancelled(this::handleErrorsInTask)
+                        .build()
+                        .execute();
+
+            }
+
+        }
+
+
+    }
+
+    private int createChat(String s){
+
+        try {
+            JSONObject result = new JSONObject(s);
+            int chatid = result.getInt("chatid");
+            getChats(false); //reload chats behind the scenes
+            getMessages(chatid, false);
+            return chatid;
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private void createChatTransition(String s){
+        int chatid = createChat(s);
+        if(chatid != -1){
+            getMessages(chatid, true); //update messages and navigate
+        }
+    }
+
     private void updateMessagesTransition(String s) {
         int chatid = updateMessages(s);
         mHomeActivity.navigateMessages(chatid);
+        endAsync();
     }
 
     private void updateChatsTransition(String s){
         updateChatsJsonData(s);
         mHomeActivity.navigateChat();
+        endAsync();
     }
+
+
 
     /////////////// METHODS FOR CONVERTING JSON INTO OBJECTS ////////////////
 
@@ -299,6 +360,8 @@ public class DataHandler {
 
 
 
+
+
     private void handleWeatherPost(String s){
         System.out.print("");
         try {
@@ -328,9 +391,9 @@ public class DataHandler {
         startAsync();
         //init weather
         JSONObject wMsg = JsonHelper.weather_JsonObject(mLat, mLon);
-        Uri uri = UriHelper.WEATHER_BY_LAT_LONG();
+        String uri = UriHelper.WEATHER_BY_LAT_LONG();
 
-        new SendPostAsyncTask.Builder(uri.toString(), wMsg)
+        new SendPostAsyncTask.Builder(uri, wMsg)
                 //.onPreExecute() //todo: wait fragment
                 .onPostExecute(this::initForecast)
                 .onCancelled(this::handleErrorsInTask)
@@ -348,7 +411,7 @@ public class DataHandler {
             //init contacts
             JSONObject msg = JsonHelper.connections_JsonObject(mCredentials.getID());
             if (null != msg) {
-                Uri uri = UriHelper.CONNECTIONS_GETALL();
+                String uri = UriHelper.CONNECTIONS_GETALL();
 
 
                         new Uri.Builder()
@@ -358,7 +421,7 @@ public class DataHandler {
                         .appendPath("getall")
                         .build();
 
-                new SendPostAsyncTask.Builder(uri.toString(), msg)
+                new SendPostAsyncTask.Builder(uri, msg)
                         .onPostExecute(this::initConnections)
                         .onCancelled(this::handleErrorsInTask)
                         .build()

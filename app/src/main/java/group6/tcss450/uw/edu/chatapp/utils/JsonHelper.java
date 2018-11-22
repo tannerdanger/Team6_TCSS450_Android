@@ -37,6 +37,24 @@ public class JsonHelper extends AppCompatActivity {
         return msg;
     }
 
+    public static JSONObject create_newChat_JsonObject(int memberid, String username, int their_id, String their_Username){
+
+        JSONObject msg = new JSONObject();
+
+        try{
+            msg.put(MYID,memberid);
+            msg.put(MYUN, username);
+            msg.put(THERID, their_id);
+            msg.put(THEIRUN, their_Username);
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return msg;
+
+    }
+
     public static JSONObject weather_JsonObject(double lat, double lon){
         //build the JSONObject
         JSONObject msg = new JSONObject();
