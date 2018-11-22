@@ -7,12 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
 import group6.tcss450.uw.edu.chatapp.HomeActivity;
-import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
@@ -27,10 +22,6 @@ public class DataHandler {
     private static final String ARGS_MESSAGES = "messages";
 
 
-    private static final String SCHEME = "https";
-    private static final String BASE ="tcss450group6-backend.herokuapp.com";
-    private static final String MESSAGING = "messaging";
-    private static final String GETMY = "getmy";
 
     private HomeActivity mHomeActivity;
     private Credentials mCredentials;
@@ -58,8 +49,8 @@ public class DataHandler {
         if(isInit)
             initAll();
 
-       // getMessages(14, false);
-       // getMessages(10, false);
+        // getMessages(14, false);
+        // getMessages(10, false);
     }
 
 
@@ -149,6 +140,35 @@ public class DataHandler {
                     .build()
                     .execute();
 
+        }
+    }
+
+    public void proposeConnection(int memberid, String senderUsername, int recieverID){
+        String uri = UriHelper.CONNECTION_PROPOSE();
+        JSONObject msg = JsonHelper.conn_ProposeAndApprove_JsonObject(memberid, senderUsername, recieverID);
+
+        if(null != uri && null != msg){
+            new SendPostAsyncTask.Builder(uri, msg)
+                    .onPostExecute(this::handleProposeFriend)
+                    .build()
+                    .execute();
+        }
+    }
+
+    public void acceptOrDenyConnectionRequest(int memberid, int their_id, boolean isApproved){
+        String uri;
+        if(isApproved)
+            uri = UriHelper.CONNECTION_APPROVE();
+        else
+            uri = UriHelper.CONNECTION_REMOVE();
+
+        JSONObject msg = JsonHelper.conn_ProposeAndApprove_JsonObject(memberid, "", their_id); //uname not needed for approve
+
+        if(null != uri && null != msg){
+            new SendPostAsyncTask.Builder(uri, msg  )
+                    .onPostExecute(this::handleConnectionAcceptReject)
+                    .build()
+                    .execute();
         }
     }
 
@@ -269,7 +289,7 @@ public class DataHandler {
                     System.out.print(" ");
                     OpenMessage m = new OpenMessage.Builder(jsonSet.getString("name"))
                             .addChatId(jsonSet.getInt("chatid"))
-                           // .addLastMessage("fake last message")
+                            // .addLastMessage("fake last message")
                             .build();
                     chats[i] = m;
                 }
@@ -347,7 +367,7 @@ public class DataHandler {
 
 
 
-        //mHomeActivity.addMessage(chatid, new Message("", "", "")); //add the message data to the JsonMap
+            //mHomeActivity.addMessage(chatid, new Message("", "", "")); //add the message data to the JsonMap
 
             return chatid;
         }catch (JSONException e){
@@ -357,10 +377,18 @@ public class DataHandler {
         return -1;
     }
 
-
-
-
-
+    private void handleProposeFriend(final String result){
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.getBoolean("success")) {
+                Log.d("Propose", "Propose friend successful");
+            } else {
+                Log.d("Propose", "Propose friend failed");
+            }
+        } catch (JSONException e)   {
+            Log.e("ERROR!", "Propose friend failed");
+        }
+    }
 
     private void handleWeatherPost(String s){
         System.out.print("");
@@ -372,6 +400,20 @@ public class DataHandler {
         }
     }
 
+    //TODO: DOES THIS NEED TO DO SOMETHING WHEN REQUEST APPROVED?
+    private void handleConnectionAcceptReject(String s){
+        try {
+            JSONObject root = new JSONObject(s);
+            if(root.getBoolean("success"))   {
+                Log.d("ConnectIon", "Connection successfully ADDED/REMOVED.");
+            } else {
+                Log.d("ConnectIon", "Connection ADD/REMOVE failed.");
+            }
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
+        }
+    }
 
     public interface OnDataLoadedListener {
         void onWeatherUpdated(JSONObject result);
@@ -414,7 +456,7 @@ public class DataHandler {
                 String uri = UriHelper.CONNECTIONS_GETALL();
 
 
-                        new Uri.Builder()
+                new Uri.Builder()
                         .scheme("https")
                         .appendPath("tcss450group6-backend.herokuapp.com")
                         .appendPath("conn")

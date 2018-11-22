@@ -37,6 +37,7 @@ import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.DataHandler;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
+import group6.tcss450.uw.edu.chatapp.utils.UriHelper;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 import group6.tcss450.uw.edu.chatapp.utils.MyFirebaseMessagingService;
@@ -103,8 +104,9 @@ public class HomeActivity extends AppCompatActivity
 
     };
 
-    protected void navigateHome()   {
 
+    /** For navigating to the home fragment */
+    protected void navigateHome()   {
 
 
         Bundle args = new Bundle();
@@ -115,6 +117,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    /** For navigating to the connections fragment */
     protected void navigateConnections() {
 
 
@@ -135,11 +138,10 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    /** For navigating to the notifications fragment */
     protected void navigateNotifications(){}
 
-    /**
-     * For navigating to the chat fragment
-     */
+    /** For navigating to the chat fragment */
     public void navigateChat()   {
 
         OpenMessage[] chats = mDataHandler.getChatArray(mJsonData.get(getString(R.string.ARGS_CHATROOMS)));
@@ -178,507 +180,366 @@ public class HomeActivity extends AppCompatActivity
 
         }
 
-            Bundle b = new Bundle();
-            b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, messages);
-            b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-            b.putInt(MessagesFragment.ARG_CHAT_ID, chatid);
-            Fragment frag = new MessagesFragment();
-            frag.setArguments(b);
-            loadFragment(frag);
+        Bundle b = new Bundle();
+        b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, messages);
+        b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+        b.putInt(MessagesFragment.ARG_CHAT_ID, chatid);
+        Fragment frag = new MessagesFragment();
+        frag.setArguments(b);
+        loadFragment(frag);
 
+    }
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mFirebaseMessageReciever = new FirebaseMessageReciever();
+        IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
+        registerReceiver(mFirebaseMessageReciever, iFilter);
+
+
+
+        mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
+        mLat = (Double) getIntent().getDoubleExtra("lat", -1 );
+        mLon = (Double) getIntent().getDoubleExtra("lon", -1 );
+
+        mJsonData = new HashMap<>();
+        mMessageListMap = new HashMap<>();
+        mIsInit = false;
+        mDataHandler = new DataHandler(this, mCredentials, mLat, mLon, true);
+
+
+
+
+        setContentView(R.layout.activity_home);
+        mToolbar = getSupportActionBar();
+        mToolbar.setTitle("Home");
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        mChatId = -1;
+
+    }
+
+
+    /**
+     * This method is called from the DataHandler class to update data in the mJsonData map.
+     *
+     * @param key the key identifying the data in the hashmap
+     * @param obj the JSONObject beting added to the map.
+     */
+    public void updateJsonData(String key, JSONObject obj){
+
+        if(null != obj){
+            mJsonData.put(key, obj);
         }
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+    }
 
-            mFirebaseMessageReciever = new FirebaseMessageReciever();
-            IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
-            registerReceiver(mFirebaseMessageReciever, iFilter);
+    /**
+     * Adds a message to the proper message list
+     * @param chatid the id the message belongs to
+     * @param message the message to be added.
+     */
+    public void addMessage(Integer chatid, Message message){
 
-
-
-            mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
-            mLat = (Double) getIntent().getDoubleExtra("lat", -1 );
-            mLon = (Double) getIntent().getDoubleExtra("lon", -1 );
-
-            mJsonData = new HashMap<>();
-            mMessageListMap = new HashMap<>();
-            mIsInit = false;
-            mDataHandler = new DataHandler(this, mCredentials, mLat, mLon, true);
-
-
-
-
-            setContentView(R.layout.activity_home);
-            mToolbar = getSupportActionBar();
-            mToolbar.setTitle("Home");
-
-            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-            mChatId = -1;
-
+        //if ArrayList of messages for chatid doesn't yet exist, create it.
+        if (!mMessageListMap.containsKey(chatid)) {
+            ArrayList<Message> tmp = new ArrayList<>();
+            mMessageListMap.put(chatid, tmp);
         }
 
+        if(null != message){
+            // If map doesn't contain messages for this chat id, create empty LL
+            mMessageListMap.get(chatid).add(message);
+        }
+    }
 
-        /**
-         * This method is called from the DataHandler class to update data in the mJsonData map.
-         *
-         * @param key the key identifying the data in the hashmap
-         * @param obj the JSONObject beting added to the map.
-         */
-        public void updateJsonData(String key, JSONObject obj){
+    /**
+     * Insures data is loaded after data initialization, then loads next fragment.
+     */
+    public void finishInit() {
+        if(!mIsInit) {
+            mHomeFrag = new HomeFragment();
+            onWaitFragmentInteractionHide();
+            mIsInit = true;
+            navigateHome();
+        }
+    }
 
-            if(null != obj){
-                mJsonData.put(key, obj);
+
+    /**
+     * Switches to a new fragment.
+     * @param theFragment the new fragment to be displayed.
+     */
+    private void loadFragment(Fragment theFragment) {
+
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, theFragment)
+                .addToBackStack(null);
+
+        transaction.commit();
+    }
+
+
+    protected void handleMessageSendPost(final String result)   {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.has("success")) {
+                Log.d("Message", "Message successfully sent.");
+            } else {
+                Log.d("Message", "Message FAILED to send.");
             }
-
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
         }
-
-        /**
-         * Adds a message to the proper message list
-         * @param chatid the id the message belongs to
-         * @param message the message to be added.
-         */
-        public void addMessage(Integer chatid, Message message){
-
-            //if ArrayList of messages for chatid doesn't yet exist, create it.
-            if (!mMessageListMap.containsKey(chatid)) {
-                ArrayList<Message> tmp = new ArrayList<>();
-                mMessageListMap.put(chatid, tmp);
-            }
-
-            if(null != message){
-                // If map doesn't contain messages for this chat id, create empty LL
-                mMessageListMap.get(chatid).add(message);
-            }
-        }
-
-        /**
-         * Insures data is loaded after data initialization, then loads next fragment.
-         */
-        public void finishInit() {
-            if(!mIsInit) {
-                mHomeFrag = new HomeFragment();
-                onWaitFragmentInteractionHide();
-                mIsInit = true;
-                navigateHome();
-            }
-        }
+    }
 
 
-        /**
-         * Switches to a new fragment.
-         * @param theFragment the new fragment to be displayed.
-         */
-        private void loadFragment(Fragment theFragment) {
-
-            FragmentTransaction transaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, theFragment)
-                    .addToBackStack(null);
-
-            transaction.commit();
-        }
-
-
-        protected void handleConnectionAcceptReject(final String result)  {
-            try {
-                JSONObject root = new JSONObject(result);
-                if(root.getBoolean("success"))   {
-                    Log.d("ConnectIon", "Connection successfully ADDED/REMOVED.");
-                } else {
-                    Log.d("ConnectIon", "Connection ADD/REMOVE failed.");
-                }
-            } catch (JSONException e)   {
-                e.printStackTrace();
-                Log.e("Error!", e.getMessage());
-            }
-        }
-
-        protected void handleMessageSendPost(final String result)   {
-            try {
-                JSONObject root = new JSONObject(result);
-                if(root.has("success")) {
-                    Log.d("Message", "Message successfully sent.");
-                } else {
-                    Log.d("Message", "Message FAILED to send.");
-                }
-            } catch (JSONException e)   {
-                e.printStackTrace();
-                Log.e("Error!", e.getMessage());
-            }
-        }
-
-        protected void handleConnectionToMessaging(final String result) {
-            try {
-                JSONObject root = new JSONObject(result);
-                if(root.getBoolean("success"))  {
-                    mChatId = root.getInt("chatid");
-                } else {
-                    JSONObject currentConnections = mJsonData.get("chats");
-                    JSONArray currentConnectionArray = currentConnections.getJSONArray("chats");
-                    for(int i = 0; i < currentConnectionArray.length(); i++)    {
-                        JSONObject j = currentConnectionArray.getJSONObject(i);
-                        if(j.getString("name").contains((mOpenChatWith)))   {
-                            mChatId = j.getInt("chatid");
-                        }
-                    }
-                }
-                OpenMessage om = new OpenMessage.Builder(mOpenChatWith).addChatId(mChatId).build();
-                onOpenMessageFragmentInteraction(om);
-            } catch (JSONException e)   {
-                e.printStackTrace();
-                Log.e("Error!", e.getMessage());
-            }
-        }
-
-        protected void handleProposeFriend(final String result) {
-            try {
-                JSONObject root = new JSONObject(result);
-                if(root.getBoolean("success")) {
-                    Log.d("Propose", "Propose friend successful");
-                } else {
-                    Log.d("Propose", "Propose friend failed");
-                }
-            } catch (JSONException e)   {
-                Log.e("ERROR!", "Propose friend failed");
-            }
-        }
 
 
 //*************** FRAGMENT INTERACTION LISTENERS ***************//
 
 
-        //Home Fragment
-        @Override
-        public void onFragmentInteraction(Uri uri) {
+    //Home Fragment
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+    }
+
+    //OpenMessage Fragment
+    @Override
+    public void onOpenMessageFragmentInteraction(OpenMessage item) {
+        mDataHandler.getMessages(item.getChatId(), true); //gets messages then navigates to it.
+    }
+
+    //Messages Fragment
+    @Override
+    public void onMessageFragmentInteraction(Message item) {
+        System.out.print(" "); //Is this supposed to do anything
+    }
+
+    @Override
+    public void onMessageSendInteraction(Message theMessage)   {
+        String uri = UriHelper.MESSAGES_SEND();
+        //mChatId = theMessage.getChatId();
+
+        new SendPostAsyncTask.Builder(uri, theMessage.asJSONObject())
+                .onPostExecute(this::handleMessageSendPost)
+                .build()
+                .execute();
+    }
+
+    @Override
+    public void onConnectionFragmentStartChat(Connection connection)    {
+        // mOpenChatWith = connection.getUsername();
+        mDataHandler.createOrOpenChatRoom(connection.getId(), connection.getUsername(), true);
+    }
+
+    @Override
+    public void onConnectionFragmentRemove(Connection item) {
+        onConnectionRequestReject(item);
+    }
+
+
+
+    //unused
+    @Override
+    public void onConnectionSearchFragmentInteraction(Connection item)  {
+        mDataHandler.proposeConnection(mCredentials.getID(), item.getUsername(), item.getId());
+    }
+
+    //Connections Screen -> Search Button
+    @Override
+    public void onConnectionSearchInteraction(Bundle b) {
+        ConnectionsSearchFragment csf = new ConnectionsSearchFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
+                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
+        csf.setArguments(args);
+        loadFragment(csf);
+    }
+
+    //Connection screen -> Request button
+    @Override
+    public void onConnectionRequestInteraction(Bundle b) {
+        ConnectionRequestsFragment crf = new ConnectionRequestsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
+                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
+        crf.setArguments(args);
+        loadFragment(crf);
+    }
+
+    //Connection Request Screen (Will be unused?)
+    @Override
+    public void onConnectionRequestAccept(Connection receiver) {
+        mDataHandler.acceptOrDenyConnectionRequest(mCredentials.getID(), receiver.getId(), true);
+    }
+
+    @Override
+    public void onConnectionRequestReject(Connection receiver)  {
+        mDataHandler.acceptOrDenyConnectionRequest(mCredentials.getID(), receiver.getId(), false);
+    }
+
+    //WAIT SCREEN
+    @Override
+    public void onWaitFragmentInteractionShow() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragmentContainer, new WaitFragment(), "WAIT")    //ACTIVITY MAY BE INCORRECT
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onWeatherUpdated(JSONObject result) {
+        if(null != result){
+            mJsonData.put(getString(R.string.ARGS_FORECAST_DATA), result);
         }
+    }
 
-        //OpenMessage Fragment
+    //WAIT SCREEN
+    @Override
+    public void onWaitFragmentInteractionHide() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+    }
+
+
+    //*************** ASYNC METHODS ***************//
+
+    private void logout(){
+        SharedPreferences prefs =
+                getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        //remove the saved credentials from StoredPrefs
+        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+        //close the app
+        finishAndRemoveTask();
+        //or close this activity and bring back the Login
+// Intent i = new Intent(this, MainActivity.class);
+// startActivity(i);
+// //Ends this Activity and removes it from the Activity back stack.
+// finish();
+    }
+
+
+    /**
+     * A BroadcastReceiver setup to listen for messages sent from MyFirebaseMessagingService
+     * that Android allows to run all the time.
+     */
+    private class FirebaseMessageReciever extends BroadcastReceiver {
+        private static final String CONNECTION_REQ_TYPE = "connection_req";
+        private static final String MESSAGE_TYPE = "msg";
         @Override
-        public void onOpenMessageFragmentInteraction(OpenMessage item) {
+        public void onReceive(Context context, Intent intent) {
+            System.out.print("ON RECIEVE");
+            if(intent.hasExtra("DATA")) {
 
-            mDataHandler.getMessages(item.getChatId(), true);
+                String data = intent.getStringExtra("DATA");
+                JSONObject jObj = null;
+                try {
+                    jObj = new JSONObject(data);
+                    System.out.println("jObj: " + jObj.toString());
 
-//        Uri uri = new Uri.Builder()
-//                .scheme("https")
-//                .appendPath(getString(R.string.ep_base_url))
-//                .appendPath(getString(R.string.ep_messaging))
-//                .appendPath(getString(R.string.ep_getall))
-//                .build();
-//        mChatId = item.getChatId();
-//        new SendPostAsyncTask.Builder(uri.toString(), item.asJSONObject())
-//                .onPostExecute(this::handleMessageGetOnPostExecute)
-//                .build()
-//                .execute();
-        }
+                    if(jObj.has("type")){
+                        String type = jObj.getString("type");
 
-        //Messages Fragment
-        @Override
-        public void onMessageFragmentInteraction(Message item) {
-            System.out.print(" ");
-//        MessagesFragment mf = new MessagesFragment();
-//        Bundle args = new Bundle();
-//        args.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, item);
-//        mf.setArguments(args);
-//        loadFragment(mf);
-        }
+                        if(CONNECTION_REQ_TYPE.compareTo(type)== 0){ //it is a new contact notification
 
-        @Override
-        public void onMessageSendInteraction(Message theMessage)   {
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_messaging))
-                    .appendPath(getString(R.string.ep_send))
-                    .build();
-            mChatId = theMessage.getChatId();
-            new SendPostAsyncTask.Builder(uri.toString(), theMessage.asJSONObject())
-                    .onPostExecute(this::handleMessageSendPost)
-                    .build()
-                    .execute();
-        }
+                            if(jObj.has("sender") ){
 
-        @Override
-        public void onConnectionFragmentStartChat(Connection connection)    {
-            // mOpenChatWith = connection.getUsername();
+                                int senderID = Integer.valueOf(jObj.getString("sender"));
+                                System.out.print("New contact request from: " + senderID);
+                                mDataHandler.updateContacts();
 
-            mDataHandler.createOrOpenChatRoom(connection.getId(), connection.getUsername(), true);
+                                //TODO: Add notification object to notification page.
 
-//        //new chat,
-//        //if fails, open chat with id
-//
-//
-//        JSONObject msg = new JSONObject();
-//        try {
-//            msg.put("memberid", mCredentials.getID());
-//            msg.put("username", mCredentials.getUsername());
-//            msg.put("their_id", connection.getId());
-//            msg.put("their_username", connection.getUsername());
-//        } catch (JSONException e)   {
-//            Log.e("ERROR!", "Unable to create new chat JSON to send");
-//            e.printStackTrace();
-//        }
-//        new SendPostAsyncTask.Builder(uri.toString(), msg)
-//                .onPostExecute(this::handleConnectionToMessaging)
-//                .build()
-//                .execute();
-        }
+                            }
 
-        @Override
-        public void onConnectionFragmentRemove(Connection item) {
-            onConnectionRequestReject(item);
-        }
+                        }else if(MESSAGE_TYPE.compareTo(type) == 0){ //it is a new text message
+
+
+                            if(jObj.has("message") && jObj.has("sender") && jObj.has("chatid")) {
+
+                                String sender = jObj.getString("sender");
+                                String msg = jObj.getString("message");
+
+                                int chatid = Integer.valueOf(jObj.getString("chatid"));
+
+
+                                //mDataHandler.
+                                mDataHandler.getMessages(chatid, false); //does not transition after loading message
+
+
+                                Log.i("New Message", sender + " " + msg);
+                            }
+
+                        }//TODO: delete connection? Delete chat?
 
 
 
-        //unused
-        @Override
-        public void onConnectionSearchFragmentInteraction(Connection item)  {
-            //onConnectionRequestReject(item);
-            Uri uri = new Uri.Builder()
-                    .scheme("http")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_conn))
-                    .appendPath(getString(R.string.ep_propose))
-                    .build();
-            JSONObject msg = new JSONObject();
-            try {
-                msg.put("memberid", mCredentials.getID());
-                msg.put("their_id", item.getId());
-                msg.put(getString(R.string.JSON_USERS_USERNAME), mCredentials.getUsername());
-            } catch (JSONException e)   {
-                Log.e("ERROR!", "Search add button failed creating JSON to send");
-                e.printStackTrace();
-            }
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPostExecute(this::handleProposeFriend)
-                    .build()
-                    .execute();
-        }
-
-        //Connections Screen -> Search Button
-        @Override
-        public void onConnectionSearchInteraction(Bundle b) {
-            ConnectionsSearchFragment csf = new ConnectionsSearchFragment();
-            Bundle args = new Bundle();
-            args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-            args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
-                    b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
-            csf.setArguments(args);
-            loadFragment(csf);
-        }
-
-        //Connection screen -> Request button
-        @Override
-        public void onConnectionRequestInteraction(Bundle b) {
-            ConnectionRequestsFragment crf = new ConnectionRequestsFragment();
-            Bundle args = new Bundle();
-            args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-            args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
-                    b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
-            crf.setArguments(args);
-            loadFragment(crf);
-        }
-
-        //Connection Request Screen (Will be unused?)
-        @Override
-        public void onConnectionRequestAccept(Connection receiver) {
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_conn))
-                    .appendPath(getString(R.string.ep_approve))
-                    .build();
-            JSONObject msg = new JSONObject();
-            try {
-                msg.put(getString(R.string.JSON_USERS_MEMBER_ID), mCredentials.getID());
-                msg.put(getString(R.string.JSON_OTHERS_MEMBER_ID), receiver.getId());
-            } catch (JSONException e) {
-                Log.e("Connection:Accept", "Unable to accept connection request");
-                e.printStackTrace();
-            }
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPostExecute(this::handleConnectionAcceptReject)
-                    .build()
-                    .execute();
-        }
-
-        @Override
-        public void onConnectionRequestReject(Connection receiver)  {
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_conn))
-                    .appendPath(getString(R.string.ep_remove))
-                    .build();
-            JSONObject msg = new JSONObject();
-            try {
-                msg.put(getString(R.string.JSON_USERS_MEMBER_ID), mCredentials.getID());
-                msg.put(getString(R.string.JSON_OTHERS_MEMBER_ID), receiver.getId());
-            } catch (JSONException e) {
-                Log.e("Connection:Reject", "Unable to reject/remove connection ");
-                e.printStackTrace();
-            }
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPostExecute(this::handleConnectionAcceptReject)
-                    .build()
-                    .execute();
-        }
-
-        //WAIT SCREEN
-        @Override
-        public void onWaitFragmentInteractionShow() {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragmentContainer, new WaitFragment(), "WAIT")    //ACTIVITY MAY BE INCORRECT
-                    .addToBackStack(null)
-                    .commit();
-        }
-
-        @Override
-        public void onWeatherUpdated(JSONObject result) {
-            if(null != result){
-                mJsonData.put(getString(R.string.ARGS_FORECAST_DATA), result);
+                    }
+                } catch (JSONException e) {
+                    Log.e("JSON PARSE", e.toString());
+                }
             }
         }
+    }
 
-        //WAIT SCREEN
+
+    // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing
+// we have something that allows us to do that.
+    class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
         @Override
-        public void onWaitFragmentInteractionHide() {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
-                    .commit();
+        protected void onPreExecute() {
+            super.onPreExecute();
+            onWaitFragmentInteractionShow();
         }
-
-
-        //*************** ASYNC METHODS ***************//
-
-        private void logout(){
+        @Override
+        protected Void doInBackground(Void... voids) {
+            //since we are already doing stuff in the background, go ahead
+            //and remove the credentials from shared prefs here.
             SharedPreferences prefs =
                     getSharedPreferences(
                             getString(R.string.keys_shared_prefs),
                             Context.MODE_PRIVATE);
-            //remove the saved credentials from StoredPrefs
             prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
             prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+            try {
+                //this call must be done asynchronously.
+                FirebaseInstanceId.getInstance().deleteInstanceId();
+            } catch (IOException e) {
+                Log.e("FCM", "Delete error!");
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             //close the app
             finishAndRemoveTask();
             //or close this activity and bring back the Login
-// Intent i = new Intent(this, MainActivity.class);
-// startActivity(i);
-// //Ends this Activity and removes it from the Activity back stack.
-// finish();
-        }
-
-
-        /**
-         * A BroadcastReceiver setup to listen for messages sent from MyFirebaseMessagingService
-         * that Android allows to run all the time.
-         */
-        private class FirebaseMessageReciever extends BroadcastReceiver {
-            private static final String CONNECTION_REQ_TYPE = "connection_req";
-            private static final String MESSAGE_TYPE = "msg";
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                System.out.print("ON RECIEVE");
-                if(intent.hasExtra("DATA")) {
-
-                    String data = intent.getStringExtra("DATA");
-                    JSONObject jObj = null;
-                    try {
-                        jObj = new JSONObject(data);
-                        System.out.println("jObj: " + jObj.toString());
-
-                        if(jObj.has("type")){
-                            String type = jObj.getString("type");
-
-                            if(CONNECTION_REQ_TYPE.compareTo(type)== 0){ //it is a new contact notification
-
-                                if(jObj.has("sender") ){
-
-                                    int senderID = Integer.valueOf(jObj.getString("sender"));
-                                    System.out.print("New contact request from: " + senderID);
-                                    mDataHandler.updateContacts();
-
-                                    //TODO: Add notification object to notification page.
-
-                                }
-
-                            }else if(MESSAGE_TYPE.compareTo(type) == 0){ //it is a new text message
-
-
-                                if(jObj.has("message") && jObj.has("sender") && jObj.has("chatid")) {
-
-                                    String sender = jObj.getString("sender");
-                                    String msg = jObj.getString("message");
-
-                                    int chatid = Integer.valueOf(jObj.getString("chatid"));
-
-
-                                    //mDataHandler.
-                                    mDataHandler.getMessages(chatid, false); //does not transition after loading message
-
-
-                                    Log.i("New Message", sender + " " + msg);
-                                }
-
-                            }//TODO: delete connection? Delete chat?
-
-
-
-                        }
-                    } catch (JSONException e) {
-                        Log.e("JSON PARSE", e.toString());
-                    }
-                }
-            }
-        }
-
-
-        // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing
-// we have something that allows us to do that.
-        class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                onWaitFragmentInteractionShow();
-            }
-            @Override
-            protected Void doInBackground(Void... voids) {
-                //since we are already doing stuff in the background, go ahead
-                //and remove the credentials from shared prefs here.
-                SharedPreferences prefs =
-                        getSharedPreferences(
-                                getString(R.string.keys_shared_prefs),
-                                Context.MODE_PRIVATE);
-                prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
-                prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
-                try {
-                    //this call must be done asynchronously.
-                    FirebaseInstanceId.getInstance().deleteInstanceId();
-                } catch (IOException e) {
-                    Log.e("FCM", "Delete error!");
-                    e.printStackTrace();
-                }
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                //close the app
-                finishAndRemoveTask();
-                //or close this activity and bring back the Login
-// Intent i = new Intent(this, MainActivity.class);
-// startActivity(i);
-// //Ends this Activity and removes it from the Activity back stack.
-// finish();
-            }
+            // Intent i = new Intent(this, MainActivity.class);
+            // startActivity(i);
+            // //Ends this Activity and removes it from the Activity back stack.
+            // finish();
         }
     }
+}
 
 
 

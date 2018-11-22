@@ -16,6 +16,10 @@ public class UriHelper {
     private static final String CONN = "conn";
     private static final String WEATHER = "weather";
     private static final String NEW = "new";
+    private static final String SEND = "send";
+    private static final String PROPOSE = "propose";
+    private static final String APPROVE = "approve";
+    private static final String REMOVE = "remove";
 
     public static String CONNECTIONS_GETALL(){
 
@@ -60,6 +64,42 @@ public class UriHelper {
                 .appendPath(BASE)
                 .appendPath(MESSAGING)
                 .appendPath(NEW)
+                .build().toString();
+    }
+
+    public static String MESSAGES_SEND(){
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(MESSAGING)
+                .appendPath(SEND)
+                .build().toString();
+    }
+
+    public static String CONNECTION_PROPOSE(){
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(CONN)
+                .appendPath(PROPOSE)
+                .build().toString();
+    }
+
+    public static String CONNECTION_APPROVE(){
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(CONN)
+                .appendPath(APPROVE)
+                .build().toString();
+    }
+
+    public static String CONNECTION_REMOVE(){
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(CONN)
+                .appendPath(REMOVE)
                 .build().toString();
     }
 

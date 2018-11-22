@@ -89,6 +89,23 @@ public class JsonHelper extends AppCompatActivity {
         return msg;
     }
 
+    public static JSONObject conn_ProposeAndApprove_JsonObject(int memberid, String username, int their_id){
+
+        JSONObject msg = new JSONObject();
+
+        try{
+            msg.put(MYID,memberid);
+            msg.put(MYUN, username);
+            msg.put(THERID, their_id);
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return msg;
+
+    }
+
     public static Forecast[] parse_Forecast(String s){
         Forecast[] forecasts = new Forecast[10];
         try {
