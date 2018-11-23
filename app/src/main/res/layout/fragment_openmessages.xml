@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:background="@drawable/connectionsfragment_rectangleborder_big">
+            android:background="@drawable/rectangleborder_nofill">
 
             <TextView
                 android:id="@+id/tv_connectionsfragment_otheruser"

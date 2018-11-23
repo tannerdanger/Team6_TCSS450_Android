@@ -88,7 +88,8 @@ public class MessagesFragment extends Fragment {
         } else {
             rv.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        rv.setAdapter(new MyMessagesRecyclerViewAdapter(mMessages, mListener));
+        MyMessagesRecyclerViewAdapter adapter = new MyMessagesRecyclerViewAdapter(mMessages, mListener);
+        rv.setAdapter(adapter);
         rv.scrollToPosition(mMessages.size() - 1);
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         Button sendButton = view.findViewById(R.id.button_messsages_send);
@@ -119,6 +120,7 @@ public class MessagesFragment extends Fragment {
             rv.scrollToPosition(mMessages.size() - 1);
             mListener.onMessageSendInteraction(m);
         });
+        adapter.setCredentials(mCredentials);
         return view;
     }
 

@@ -10,12 +10,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -53,7 +55,7 @@ public class HomeActivity extends AppCompatActivity
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener,
-        DataHandler.OnDataLoadedListener {
+        DataHandler.OnDataLoadedListener, NewChatFragment.OnListFragmentInteractionListener {
 
     private TextView mTextMessage;
     private FirebaseMessageReciever mFirebaseMessageReciever;
@@ -69,6 +71,7 @@ public class HomeActivity extends AppCompatActivity
     private double mLat;
     private HashMap<Integer, ArrayList<Message>> mMessageListMap;
     public static final int MIN_PASSWORD_LENGTH = 3;
+    public FloatingActionButton mFab;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -80,19 +83,23 @@ public class HomeActivity extends AppCompatActivity
                 case R.id.navigation_home:
                     mToolbar.setTitle("HOME");
                     navigateHome();
+                    mFab.show();
                     return true;
                 case R.id.nav_connections:
                     mToolbar.setTitle("CONTACTS");
                     navigateConnections();
+                    mFab.show();
                     return true;
                 case R.id.navigation_notifications:
                     mToolbar.setTitle("NOTIFICATIONS");
                     navigateNotifications();
+                    mFab.show();
                     return true;
                 case R.id.nav_solo_chat:
                     mToolbar.setTitle("CHAT");
                     mDataHandler.getChats(true);
 //                    navigateChat(); //called by async task
+                    mFab.show();
                     return true;
 
                 case R.id.navigation_logout:
@@ -186,6 +193,7 @@ public class HomeActivity extends AppCompatActivity
         b.putInt(MessagesFragment.ARG_CHAT_ID, chatid);
         Fragment frag = new MessagesFragment();
         frag.setArguments(b);
+        mFab.hide();
         loadFragment(frag);
 
     }
@@ -223,6 +231,18 @@ public class HomeActivity extends AppCompatActivity
 
         mChatId = -1;
 
+        mFab = findViewById(R.id.fab);
+
+        mFab.setOnClickListener((View v) -> {
+            Fragment frag = new NewChatFragment();
+            Bundle args = new Bundle();
+            args.putSerializable(getString(R.string.ARGS_CONNECTIONS),
+                    mDataHandler.getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS))));
+            args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+            frag.setArguments(args);
+            loadFragment(frag);
+            mFab.hide();
+        });
     }
 
 
@@ -389,6 +409,12 @@ public class HomeActivity extends AppCompatActivity
         mDataHandler.acceptOrDenyConnectionRequest(mCredentials.getID(), receiver.getId(), false);
     }
 
+
+    @Override
+    public void onNewChatFragmentInteraction(Connection item) {
+
+    }
+
     //WAIT SCREEN
     @Override
     public void onWaitFragmentInteractionShow() {
@@ -434,6 +460,7 @@ public class HomeActivity extends AppCompatActivity
 // //Ends this Activity and removes it from the Activity back stack.
 // finish();
     }
+
 
 
     /**
