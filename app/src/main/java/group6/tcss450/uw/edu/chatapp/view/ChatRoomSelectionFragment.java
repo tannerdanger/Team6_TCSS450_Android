@@ -24,7 +24,7 @@ import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
  * Activities containing this fragment MUST implement the {@link OnOpenMessageFragmentInteractionListener}
  * interface.
  */
-public class OpenMessagesFragment extends Fragment {
+public class ChatRoomSelectionFragment extends Fragment {
 
     private List<OpenMessage> mOpenMessages;
     public static final String ARG_CONNECTION_LIST = "open messages list";
@@ -39,13 +39,13 @@ public class OpenMessagesFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public OpenMessagesFragment() {
+    public ChatRoomSelectionFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_openmessages_list, container,
+        View view = inflater.inflate(R.layout.fragment_chatroomselection_list, container,
                 false);
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -55,15 +55,15 @@ public class OpenMessagesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyOpenMessagesRecyclerViewAdapter(mOpenMessages, mListener));
+            recyclerView.setAdapter(new MyChatRoomSelectionRecyclerViewAdapter(mOpenMessages, mListener));
         }
         return view;
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static OpenMessagesFragment newInstance(int columnCount) {
-        OpenMessagesFragment fragment = new OpenMessagesFragment();
+    public static ChatRoomSelectionFragment newInstance(int columnCount) {
+        ChatRoomSelectionFragment fragment = new ChatRoomSelectionFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);

@@ -10,19 +10,19 @@ import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
-import group6.tcss450.uw.edu.chatapp.view.OpenMessagesFragment.OnOpenMessageFragmentInteractionListener;
+import group6.tcss450.uw.edu.chatapp.view.ChatRoomSelectionFragment.OnOpenMessageFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link OpenMessage} and makes a call to the
  * specified {@link OnOpenMessageFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyOpenMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyOpenMessagesRecyclerViewAdapter.ViewHolder> {
+public class MyChatRoomSelectionRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRoomSelectionRecyclerViewAdapter.ViewHolder> {
 
     private final List<OpenMessage> mValues;
     private final OnOpenMessageFragmentInteractionListener mListener;
 
-    public MyOpenMessagesRecyclerViewAdapter(List<OpenMessage> items, OnOpenMessageFragmentInteractionListener listener) {
+    public MyChatRoomSelectionRecyclerViewAdapter(List<OpenMessage> items, OnOpenMessageFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -30,7 +30,7 @@ public class MyOpenMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyOp
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_openmessages, parent, false);
+                .inflate(R.layout.fragment_chatroomselection, parent, false);
         return new ViewHolder(view);
     }
 

@@ -46,7 +46,7 @@ import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 
 public class HomeActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
-        OpenMessagesFragment.OnOpenMessageFragmentInteractionListener,
+        ChatRoomSelectionFragment.OnOpenMessageFragmentInteractionListener,
         MessagesFragment.OnMessageFragmentInteractionListener,
         ConnectionFragment.OnConnectionsFragmentInteractionListener,
         WeatherFragment.OnFragmentInteractionListener,
@@ -151,11 +151,11 @@ public class HomeActivity extends AppCompatActivity
 
         OpenMessage[] chats = mDataHandler.getChatArray(mJsonData.get(getString(R.string.ARGS_CHATROOMS)));
 
-        Fragment frag = new OpenMessagesFragment();
+        Fragment frag = new ChatRoomSelectionFragment();
 
         if(chats != null){
             Bundle b = new Bundle();
-            b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, chats);
+            b.putSerializable(ChatRoomSelectionFragment.ARG_CONNECTION_LIST, chats);
             frag.setArguments(b);
         }
         loadFragment(frag);
@@ -607,8 +607,8 @@ public class HomeActivity extends AppCompatActivity
                 OpenMessage[] openMessagesAsArray = new OpenMessage[open.size()];
                 openMessagesAsArray = open.toArray(openMessagesAsArray);
                 Bundle b = new Bundle();
-                b.putSerializable(OpenMessagesFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
-                Fragment frag = new OpenMessagesFragment();
+                b.putSerializable(ChatRoomSelectionFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
+                Fragment frag = new ChatRoomSelectionFragment();
                 frag.setArguments(b);
                 //      onWaitFragmentInteractionHide();
                 loadFragment(frag);
