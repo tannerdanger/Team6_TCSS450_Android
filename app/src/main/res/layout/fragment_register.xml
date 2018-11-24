@@ -6,34 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".view.RegisterFragment">
 
-    <TextView
-        android:id="@+id/TV_registerfragment_welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/welcomefrag_img_hooli"
+        android:layout_width="268dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/hooli_wide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.038" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/TV_registerfragment_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/registerfragment_instruction"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TV_registerfragment_welcome" />
+        app:layout_constraintTop_toBottomOf="@+id/welcomefrag_img_hooli" />
 
     <EditText
         android:id="@+id/edittext_registerfragment_firstname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/registerfragment_firstname"
         android:inputType="textPersonName"
@@ -45,7 +46,9 @@
         android:id="@+id/edittext_registerfragment_lastname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/registerfragment_lastname"
         android:inputType="textPersonName"
@@ -58,7 +61,9 @@
         android:id="@+id/edittext_registerfragment_username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/registerfragment_username"
         android:inputType="text"
@@ -71,7 +76,9 @@
         android:id="@+id/edittext_registerfragment_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/registerfragment_email"
         android:inputType="textEmailAddress"
@@ -84,7 +91,9 @@
         android:id="@+id/edittext_registerfragment_password1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/registerfragment_password"
         android:inputType="textPassword"
@@ -97,7 +106,9 @@
         android:id="@+id/edittext_registerfragment_password2"
         android:layout_width="0dp"
         android:layout_height="50dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/registerfragment_password"
         android:inputType="textPassword"
@@ -107,7 +118,7 @@
 
     <Button
         android:id="@+id/button_registerfragment_register"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
