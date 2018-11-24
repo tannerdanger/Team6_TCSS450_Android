@@ -36,10 +36,11 @@ import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
  */
 public class LoginFragment extends Fragment {
 
+    private static final String TAG = LoginFragment.class.getSimpleName();
+
     private OnFragmentInteractionListener mListener;
     private Credentials mCredentials;
     private String mFirebaseToken;
-    private static final String TAG = LoginFragment.class.getSimpleName();
 
     public LoginFragment() {
         // Required empty public constructor
