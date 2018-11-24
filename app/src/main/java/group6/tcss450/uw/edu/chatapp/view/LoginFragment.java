@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
@@ -47,7 +50,7 @@ public class LoginFragment extends Fragment {
     public void onStart(){
         super.onStart();
         SharedPreferences prefs =
-                getActivity().getSharedPreferences(
+                Objects.requireNonNull(getActivity()).getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
                         Context.MODE_PRIVATE);
         //retrieve the stored credentials from SharedPrefs
@@ -56,6 +59,8 @@ public class LoginFragment extends Fragment {
             final String email = prefs.getString(getString(R.string.keys_prefs_email), "");
             final String password = prefs.getString(getString(R.string.keys_prefs_password), "");
 
+            assert email != null;
+            assert password != null;
             if (email.compareTo("") != 0 && "".compareTo(password) != 0) {
                 getFirebaseToken(email, password);
             } else {
@@ -80,22 +85,23 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        Button loginButton = (Button) view.findViewById(R.id.button_loginfragment_login);
+        Button loginButton = view.findViewById(R.id.button_loginfragment_login);
         loginButton.setOnClickListener(v -> onLoginAttempt());
 
-        Button registerButton = (Button) view.findViewById(R.id.button_loginfragment_register);
+        Button registerButton = view.findViewById(R.id.button_loginfragment_register);
         registerButton.setOnClickListener(v -> mListener.onRegisterClicked());
 
         return view;
     }
 
     private void onLoginAttempt() {
-        EditText emailEdit = getActivity().findViewById(R.id.edittext_loginfragment_email);
+        EditText emailEdit = Objects.requireNonNull(getActivity())
+                .findViewById(R.id.edittext_loginfragment_email);
         EditText passwordEdit = getActivity().findViewById(R.id.edittext_loginFragment_password);
         boolean areValidCredentials = true;
 
@@ -135,10 +141,10 @@ public class LoginFragment extends Fragment {
                     }
 
                     // Get new Instance ID token
-                    mFirebaseToken = task.getResult().getToken();
+                    mFirebaseToken = Objects.requireNonNull(task.getResult()).getToken();
                     Log.d("FCM: ", mFirebaseToken);
                     System.out.println("======= FB TOKEN ======");
-                    System.out.println(mFirebaseToken.toString());
+                    System.out.println(mFirebaseToken);
                     //the helper method that initiates login service
                     doLogin(email, password);
                 });
@@ -222,13 +228,12 @@ public class LoginFragment extends Fragment {
             if (success) {
 
                 //Create new credentials with information from database
-                Credentials cred = new Credentials.Builder(userdata.getString("email"), mCredentials.getPassword())
+                mCredentials = new Credentials.Builder(userdata.getString("email"), mCredentials.getPassword())
                         .addID(userdata.getInt("id"))
                         .addFirstName(userdata.getString("firstname"))
                         .addLastName(userdata.getString("lastname"))
                         .addUsername(userdata.getString("username"))
                         .build();
-                mCredentials = cred;
                 mCredentials.addToken(mFirebaseToken);
                 mListener.onLoginSuccess(mCredentials);
 
@@ -238,12 +243,14 @@ public class LoginFragment extends Fragment {
                 }
 
             } else {
-                ((TextView) getView().findViewById(R.id.edittext_loginfragment_email))
+                ((TextView) Objects.requireNonNull(getView())
+                        .findViewById(R.id.edittext_loginfragment_email))
                         .setError("Log In unsuccessful.");
             }
         } catch (JSONException e) {
             Log.e("JSON_PARSE_ERROR", result + System.lineSeparator() + e.getMessage());
-            ((TextView) getView().findViewById(R.id.edittext_loginfragment_email))
+            ((TextView) Objects.requireNonNull(getView())
+                    .findViewById(R.id.edittext_loginfragment_email))
                     .setError("Log In unsuccessful.");
         }
     }
@@ -294,7 +301,8 @@ public class LoginFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener
+            extends WaitFragment.OnFragmentInteractionListener {
         void onLoginSuccess(Credentials credentials);
         void onRegisterClicked();
     }
