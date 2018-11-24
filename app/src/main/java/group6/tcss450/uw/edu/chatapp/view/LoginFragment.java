@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -53,14 +52,13 @@ public class LoginFragment extends Fragment {
                 Objects.requireNonNull(getActivity()).getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
                         Context.MODE_PRIVATE);
-        //retrieve the stored credentials from SharedPrefs
+
+        // Retrieve the stored credentials from SharedPrefs
         if (prefs.contains(getString(R.string.keys_prefs_email)) &&
                 prefs.contains(getString(R.string.keys_prefs_password))) {
             final String email = prefs.getString(getString(R.string.keys_prefs_email), "");
             final String password = prefs.getString(getString(R.string.keys_prefs_password), "");
 
-            assert email != null;
-            assert password != null;
             if (email.compareTo("") != 0 && "".compareTo(password) != 0) {
                 getFirebaseToken(email, password);
             } else {
@@ -89,25 +87,23 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        Button loginButton = view.findViewById(R.id.button_loginfragment_login);
+        Button loginButton = (Button) view.findViewById(R.id.button_loginfragment_login);
         loginButton.setOnClickListener(v -> onLoginAttempt());
 
-        Button registerButton = view.findViewById(R.id.button_loginfragment_register);
+        Button registerButton = (Button) view.findViewById(R.id.button_loginfragment_register);
         registerButton.setOnClickListener(v -> mListener.onRegisterClicked());
 
         return view;
     }
 
     private void onLoginAttempt() {
-        EditText emailEdit = Objects.requireNonNull(getActivity())
-                .findViewById(R.id.edittext_loginfragment_email);
+        EditText emailEdit = getActivity().findViewById(R.id.edittext_loginfragment_email);
         EditText passwordEdit = getActivity().findViewById(R.id.edittext_loginFragment_password);
         boolean areValidCredentials = true;
 
         if (emailEdit.getText().length() == 0) {
             areValidCredentials = false;
-            emailEdit.setError("Please provide a valid email address.");
-
+            emailEdit.setError("Please provide an email address.");
         } else if (emailEdit.getText().toString().chars().filter(ch -> ch == '@').count() != 1) {
             areValidCredentials = false;
             emailEdit.setError("The email address you provided is invalid.");
@@ -117,13 +113,13 @@ public class LoginFragment extends Fragment {
             passwordEdit.setError("Please enter a password.");
         }
 
-        if(areValidCredentials)
+        if (areValidCredentials) {
             getFirebaseToken(emailEdit.getText().toString(), passwordEdit.getText().toString());
+        }
     }
 
     private void getFirebaseToken(final String email, final String password){
         Log.wtf(TAG, "STARTED getFirebaseToken");
-        //TODO: Enable this when wait fragment created
         mListener.onWaitFragmentInteractionShow();
 
         //add this app on this device to listen for the topic all
@@ -131,52 +127,47 @@ public class LoginFragment extends Fragment {
 
         //the call to getInstanceId happens asynchronously. task is an onCompleteListener
         //similar to a promise in JS.
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(task -> {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
-                        Log.w("FCM: ", "getInstanceId failed", task.getException());
+                        Log.w("FCM: ", "getInstanceId() failed.", task.getException());
                         mListener.onWaitFragmentInteractionHide();
                         return;
                     }
 
                     // Get new Instance ID token
-                    mFirebaseToken = Objects.requireNonNull(task.getResult()).getToken();
+                    mFirebaseToken = task.getResult().getToken();
                     Log.d("FCM: ", mFirebaseToken);
                     System.out.println("======= FB TOKEN ======");
                     System.out.println(mFirebaseToken);
                     //the helper method that initiates login service
-                    doLogin(email, password);
+                    loginInWithCredentials(email, password);
                 });
         //no code here. wait for the Task to complete.
         Log.wtf(TAG, "ENDED getFirebaseToken");
-
     }
 
-    private void doLogin(final String email, final String password){
-        Log.wtf(TAG, "STARTED doLogin");
-        //create credentials
+    private void loginInWithCredentials(final String email, final String password){
+        Log.wtf(TAG, "STARTED loginInWithCredentials");
+
         final Credentials cred = new Credentials.Builder(email, password)
                 .addFirebaseToken(mFirebaseToken)
                 .build();
 
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_login))
-                    .appendPath(getString(R.string.ep_withToken))
-                    .build();
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_login))
+                .appendPath(getString(R.string.ep_withToken))
+                .build();
 
-
-        //build JSON Object
         JSONObject msg = new JSONObject();
-        try{
+        try {
             msg.put(getString(R.string.JSON_TOKEN), mFirebaseToken);
             msg.put(getString(R.string.JSON_EMAIL), email);
             msg.put(getString(R.string.JSON_PASSWORD), password);
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.print(msg.toString());
 
         mCredentials = cred;
         System.out.print(uri.toString());
@@ -190,7 +181,8 @@ public class LoginFragment extends Fragment {
                 .onCancelled(this::handleErrorsInTask)
                 .build()
                 .execute();
-        Log.wtf(TAG, "ENDED doLogin");
+
+        Log.wtf(TAG, "ENDED loginInWithCredentials");
     }
 
     private void handleErrorsInTask(String result) {
@@ -201,31 +193,21 @@ public class LoginFragment extends Fragment {
      * Handle the setup of the UI before the HTTP call to the webservice.
      */
     private void handleLoginOnPre() {
-        //mListener.onWaitFragmentInteractionShow();
+//        mListener.onWaitFragmentInteractionShow();
     }
 
     private void handleLoginOnPost(String result) {
         mListener.onWaitFragmentInteractionHide();
+
         try {
             Log.d("JSON result", result);
             JSONObject resultsJSON = new JSONObject(result);
-            boolean success= resultsJSON.getBoolean("success");
-
+            boolean success = resultsJSON.getBoolean("success");
             JSONObject userdata = resultsJSON.getJSONObject("user");
-
-
-            //if (userdata.getInt("verified") == 0){ isVerified = false); //this was missed, will fix the node.js endpoint to return verified
-
-//            if(!isVerified){
-//                //TODO: Create a fragment or popup thing that prompts user to resend verification email.
-//                //endpoint: tcss450group6-backend.herokuapp.com/register/resend
-//                //body just needs email address passed in { "email": "user@gmail.com" }
-//            }
 
             System.out.print(userdata);
 
             if (success) {
-
                 //Create new credentials with information from database
                 mCredentials = new Credentials.Builder(userdata.getString("email"), mCredentials.getPassword())
                         .addID(userdata.getInt("id"))
@@ -234,6 +216,9 @@ public class LoginFragment extends Fragment {
                         .addUsername(userdata.getString("username"))
                         .build();
                 mCredentials.addToken(mFirebaseToken);
+                if (userdata.getInt("verified") == 0) {
+                    sendVerificationRequest(mCredentials.getEmail());
+                }
                 mListener.onLoginSuccess(mCredentials);
 
                 if (userdata.getInt("verification") == 0 ) {
@@ -242,19 +227,17 @@ public class LoginFragment extends Fragment {
                 }
 
             } else {
-                ((TextView) Objects.requireNonNull(getView())
-                        .findViewById(R.id.edittext_loginfragment_email))
+                ((EditText) getView().findViewById(R.id.edittext_loginfragment_email))
                         .setError("Log In unsuccessful.");
             }
         } catch (JSONException e) {
             Log.e("JSON_PARSE_ERROR", result + System.lineSeparator() + e.getMessage());
-            ((TextView) Objects.requireNonNull(getView())
-                    .findViewById(R.id.edittext_loginfragment_email))
+            ((EditText) getView().findViewById(R.id.edittext_loginfragment_email))
                     .setError("Log In unsuccessful.");
         }
     }
 
-    private void sendVerificationRequest(String email) {
+    private void sendVerificationRequest(final String email) {
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
@@ -262,11 +245,13 @@ public class LoginFragment extends Fragment {
                 .appendPath(getString(R.string.ep_resend))
                 .build();
         JSONObject msg = new JSONObject();
+
         try {
             msg.put(getString(R.string.JSON_EMAIL), email);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         new SendPostAsyncTask.Builder(uri.toString(), msg)
                 .onPostExecute(this::sendVerificationToEmailAddress)
                 .onCancelled(this::handleErrorsInTask)
@@ -280,7 +265,7 @@ public class LoginFragment extends Fragment {
             if (resultsJSON.getBoolean("success")) {
                 Toast.makeText(
                         getContext(),
-                        "Verification email sent. Please check your email and verify your account.",
+                        "Verification email sent. Please check your email.",
                         Toast.LENGTH_LONG
                 ).show();
             }
