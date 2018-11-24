@@ -118,7 +118,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void getFirebaseToken(final String email, final String password){
+    private void getFirebaseToken(final String email, final String password) {
         Log.wtf(TAG, "STARTED getFirebaseToken");
         mListener.onWaitFragmentInteractionShow();
 
@@ -146,7 +146,7 @@ public class LoginFragment extends Fragment {
         Log.wtf(TAG, "ENDED getFirebaseToken");
     }
 
-    private void loginInWithCredentials(final String email, final String password){
+    private void loginInWithCredentials(final String email, final String password) {
         Log.wtf(TAG, "STARTED loginInWithCredentials");
 
         final Credentials cred = new Credentials.Builder(email, password)
@@ -273,7 +273,6 @@ public class LoginFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
 
     /**
      * This interface must be implemented by activities that contain this
