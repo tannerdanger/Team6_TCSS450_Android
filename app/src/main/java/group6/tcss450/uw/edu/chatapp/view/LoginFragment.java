@@ -46,7 +46,7 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         SharedPreferences prefs =
                 Objects.requireNonNull(getActivity()).getSharedPreferences(
