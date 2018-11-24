@@ -30,7 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".NewChatFragment"
+        tools:context=".view.NewChatFragment"
         tools:listitem="@layout/fragment_newchat">
 
     </android.support.v7.widget.RecyclerView>

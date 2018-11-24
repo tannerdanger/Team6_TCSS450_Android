@@ -20,10 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import group6.tcss450.uw.edu.chatapp.MyConnectionsSearchRecyclerViewAdapter;
-import group6.tcss450.uw.edu.chatapp.R;
-import group6.tcss450.uw.edu.chatapp.utils.Credentials;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +29,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.utils.Credentials;
+import group6.tcss450.uw.edu.chatapp.view.MyConnectionsSearchRecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.

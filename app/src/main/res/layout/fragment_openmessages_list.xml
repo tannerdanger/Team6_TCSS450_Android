@@ -9,7 +9,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".OpenMessagesFragment"
+    tools:context=".view.OpenMessagesFragment"
     tools:listitem="@layout/fragment_openmessages" >
 
 </android.support.v7.widget.RecyclerView>

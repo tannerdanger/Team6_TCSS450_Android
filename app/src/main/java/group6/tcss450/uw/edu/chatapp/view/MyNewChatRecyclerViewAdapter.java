@@ -1,19 +1,18 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.view;
 
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import group6.tcss450.uw.edu.chatapp.NewChatFragment.OnListFragmentInteractionListener;
-import group6.tcss450.uw.edu.chatapp.contacts.Connection;
-import group6.tcss450.uw.edu.chatapp.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.contacts.Connection;
+import group6.tcss450.uw.edu.chatapp.view.NewChatFragment.OnListFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the

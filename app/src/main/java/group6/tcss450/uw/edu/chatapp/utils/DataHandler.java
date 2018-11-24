@@ -7,10 +7,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import group6.tcss450.uw.edu.chatapp.HomeActivity;
 import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
+import group6.tcss450.uw.edu.chatapp.view.HomeActivity;
 
 
 public class DataHandler {

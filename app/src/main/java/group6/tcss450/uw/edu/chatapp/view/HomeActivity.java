@@ -1,4 +1,4 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.view;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,21 +29,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionRequestsFragment;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
-import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.DataHandler;
+import group6.tcss450.uw.edu.chatapp.utils.MyFirebaseMessagingService;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.UriHelper;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
-import group6.tcss450.uw.edu.chatapp.utils.MyFirebaseMessagingService;
-
-import static android.util.Log.i;
 
 public class HomeActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,

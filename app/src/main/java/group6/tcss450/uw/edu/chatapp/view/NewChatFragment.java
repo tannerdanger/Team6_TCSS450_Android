@@ -1,8 +1,7 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,14 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import group6.tcss450.uw.edu.chatapp.contacts.Connection;
-import group6.tcss450.uw.edu.chatapp.dummy.DummyContent;
-import group6.tcss450.uw.edu.chatapp.dummy.DummyContent.DummyItem;
-import group6.tcss450.uw.edu.chatapp.utils.Credentials;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.contacts.Connection;
+import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 
 /**
  * A fragment representing a list of Items.

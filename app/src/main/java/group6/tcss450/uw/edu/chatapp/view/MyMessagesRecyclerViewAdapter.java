@@ -1,22 +1,18 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.view;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.MessagesFragment.OnMessageFragmentInteractionListener;
+import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
-
-import java.util.List;
+import group6.tcss450.uw.edu.chatapp.view.MessagesFragment.OnMessageFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Message} and makes a call to the

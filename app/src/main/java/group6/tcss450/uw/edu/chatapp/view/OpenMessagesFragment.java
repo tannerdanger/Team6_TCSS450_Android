@@ -1,4 +1,4 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,12 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
-import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
+import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
 
 /**
  * A fragment representing a list of Items.

@@ -1,4 +1,4 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,11 +7,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener;
-import group6.tcss450.uw.edu.chatapp.contacts.Connection;
-
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the

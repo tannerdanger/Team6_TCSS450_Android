@@ -3,7 +3,6 @@ package group6.tcss450.uw.edu.chatapp.contacts;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import group6.tcss450.uw.edu.chatapp.MyConnectionRequestsRecyclerViewAdapter;
 import group6.tcss450.uw.edu.chatapp.R;
-import group6.tcss450.uw.edu.chatapp.utils.DataGenerator;
+import group6.tcss450.uw.edu.chatapp.view.MyConnectionRequestsRecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.

@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".view.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +44,7 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".view.HomeActivity"
             android:label="@string/title_activity_home"></activity>
     </application>
 

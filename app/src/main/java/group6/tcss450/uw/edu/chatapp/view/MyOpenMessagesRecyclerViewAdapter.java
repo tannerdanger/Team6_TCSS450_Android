@@ -1,4 +1,4 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,10 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import group6.tcss450.uw.edu.chatapp.OpenMessagesFragment.OnOpenMessageFragmentInteractionListener;
-import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
-
 import java.util.List;
+
+import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
+import group6.tcss450.uw.edu.chatapp.view.OpenMessagesFragment.OnOpenMessageFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link OpenMessage} and makes a call to the
