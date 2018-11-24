@@ -21,6 +21,7 @@
     <string name="loginfragment_email">Email</string>
     <string name="loginfragment_password">Password</string>
 
+    <string name="registerfragment_instruction">Please enter your information</string>
     <string name="registerfragment_email">Email</string>
     <string name="registerfragment_username">Username</string>
     <string name="registerfragment_password">Password</string>

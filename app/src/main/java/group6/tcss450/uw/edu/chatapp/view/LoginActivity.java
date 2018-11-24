@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements
         RegisterFragment.OnFragmentInteractionListener {
 
     Credentials mCredentials;
+    public static final int MIN_PASSWORD_LENGTH = 1;
     private static final String TAG = "MyLoginActivity";
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements
                     mLocation = location;
                     Log.d("LOCATION UPDATE!", location.toString());
                 }
-            };
+            }
         };
 
         createLocationRequest();
