@@ -79,10 +79,10 @@ public class RegisterFragment extends Fragment {
             }
             if (emailEdit.getText().length() == 0) {
                 isValid = false;
-                usernameEdit.setError("Please provide an email address.");
+                emailEdit.setError("Please provide an email address.");
             } else if (!emailEdit.getText().toString().contains("@")) {
                 isValid = false;
-                usernameEdit.setError("The email address you provided is invalid.");
+                emailEdit.setError("The email address you provided is invalid.");
             }
             if (passwordEdit1.getText().length() < MIN_PASSWORD_LENGTH) {
                 isValid = false;
