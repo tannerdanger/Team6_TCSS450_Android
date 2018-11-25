@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements
         RegisterFragment.OnFragmentInteractionListener {
 
     Credentials mCredentials;
+    private static boolean mIsWaitFragActive;
     public static final int MIN_PASSWORD_LENGTH = 1;
     private static final String TAG = "MyLoginActivity";
     /**
@@ -50,6 +51,9 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mIsWaitFragActive = false;
+
         setContentView(R.layout.activity_login);
 
         if (savedInstanceState == null) {
@@ -191,21 +195,31 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     public void onWaitFragmentInteractionShow() {
         Log.wtf(TAG, "STARTED onWaitFragmentInteractionSHOW");
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.loginContainer, new WaitFragment(), "WAIT")
-                .addToBackStack(null)
-                .commit();
+        if(!mIsWaitFragActive) { //if wait fragment isn't active
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.loginContainer, new WaitFragment(), "WAIT")
+                    .addToBackStack(null)
+                    .commit();
+
+            Log.wtf(TAG, "wait frag shown");
+            mIsWaitFragActive = true; //wait fragment is now active
+        }
         Log.wtf(TAG, "ENDED onWaitFragmentInteractionSHOW");
     }
 
     @Override
     public void onWaitFragmentInteractionHide() {
         Log.wtf(TAG, "STARTED onWaitFragmentInteractionHide");
-        getSupportFragmentManager()
-                .beginTransaction()
-                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
-                .commit();
+        if(mIsWaitFragActive) {//if wait fragment is active
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                    .commit();
+            Log.wtf(TAG, "wait frag hidden");
+            mIsWaitFragActive = false; //wait fragment is now inactive
+        }
         Log.wtf(TAG, "ENDED onWaitFragmentInteractionHide");
+
     }
 }

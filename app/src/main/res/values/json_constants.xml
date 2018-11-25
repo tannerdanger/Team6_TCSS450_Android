@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="JSON_USERS_MEMBER_ID">memberid</string>
+    <string name="JSON_ID">id</string>
     <string name="JSON_OTHERS_MEMBER_ID">their_id</string>
     <string name="JSON_QUERY">query</string>
     <string name="JSON_EMAIL">email</string>

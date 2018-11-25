@@ -38,6 +38,7 @@ public class LoginFragment extends Fragment {
 
     private static final String TAG = LoginFragment.class.getSimpleName();
 
+    private static boolean mIsWaitFragActive;
     private OnFragmentInteractionListener mListener;
     private Credentials mCredentials;
     private String mFirebaseToken;
@@ -88,6 +89,8 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
+        mIsWaitFragActive = false;
+
         Button loginButton = (Button) view.findViewById(R.id.button_loginfragment_login);
         loginButton.setOnClickListener(v -> onLoginAttempt());
 
@@ -121,7 +124,8 @@ public class LoginFragment extends Fragment {
 
     private void getFirebaseToken(final String email, final String password) {
         Log.wtf(TAG, "STARTED getFirebaseToken");
-        mListener.onWaitFragmentInteractionShow();
+
+        endAsync();
 
         //add this app on this device to listen for the topic all
         FirebaseMessaging.getInstance().subscribeToTopic("all");
@@ -131,7 +135,7 @@ public class LoginFragment extends Fragment {
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Log.w("FCM: ", "getInstanceId() failed.", task.getException());
-                        mListener.onWaitFragmentInteractionHide();
+                        endAsync();
                         return;
                     }
 
@@ -177,7 +181,6 @@ public class LoginFragment extends Fragment {
         //Feel free to add a handler for onPreExecution so that a progress bar
         //is displayed or maybe disable buttons.
         new SendPostAsyncTask.Builder(uri.toString(), msg)
-                .onPreExecute(this::handleLoginOnPre)
                 .onPostExecute(this::handleLoginOnPost)
                 .onCancelled(this::handleErrorsInTask)
                 .build()
@@ -190,15 +193,9 @@ public class LoginFragment extends Fragment {
         Log.e("ASYNCT_TASK_ERROR", result);
     }
 
-    /**
-     * Handle the setup of the UI before the HTTP call to the webservice.
-     */
-    private void handleLoginOnPre() {
-//        mListener.onWaitFragmentInteractionShow();
-    }
 
     private void handleLoginOnPost(String result) {
-        mListener.onWaitFragmentInteractionHide();
+        startAsync();
 
         try {
             Log.d("JSON result", result);
@@ -206,24 +203,23 @@ public class LoginFragment extends Fragment {
             boolean success = resultsJSON.getBoolean("success");
             JSONObject userdata = resultsJSON.getJSONObject("user");
 
-            System.out.print(userdata);
+        //    System.out.print(userdata);
 
             if (success) {
                 //Create new credentials with information from database
-                mCredentials = new Credentials.Builder(userdata.getString("email"), mCredentials.getPassword())
-                        .addID(userdata.getInt("id"))
-                        .addFirstName(userdata.getString("firstname"))
-                        .addLastName(userdata.getString("lastname"))
-                        .addUsername(userdata.getString("username"))
+                mCredentials = new Credentials.Builder( mCredentials.getEmail() , mCredentials.getPassword())
+                        .addID(userdata.getInt(getString(R.string.JSON_ID)))
+                        .addFirstName(userdata.getString(getString(R.string.JSON_FNAME)))
+                        .addLastName(userdata.getString(getString(R.string.JSON_LNAME)))
+                        .addUsername(userdata.getString(getString(R.string.JSON_USERS_USERNAME)))
+                        .addFirebaseToken(mFirebaseToken)
                         .build();
-                mCredentials.addToken(mFirebaseToken);
-                if (userdata.getInt("verified") == 0) {
-                    sendVerificationRequest(mCredentials.getEmail());
-                }
+
+
                 mListener.onLoginSuccess(mCredentials);
 
                 if (userdata.getInt("verification") == 0 ) {
-                    
+
                     sendVerificationRequest(mCredentials.getEmail());
                 }
 
@@ -289,5 +285,25 @@ public class LoginFragment extends Fragment {
             extends WaitFragment.OnFragmentInteractionListener {
         void onLoginSuccess(Credentials credentials);
         void onRegisterClicked();
+    }
+
+    /**
+     * Display wait fragment if not already displayed
+     */
+    private void startAsync(){
+        if(!mIsWaitFragActive) { //start wait frag if Async is not already active
+            mListener.onWaitFragmentInteractionShow();
+            mIsWaitFragActive = true;
+        }
+    }
+
+    /**
+     * Hide wait fragment if not already hidden
+     */
+    private void endAsync(){
+        if(mIsWaitFragActive) { //hide if Async is active
+            mListener.onWaitFragmentInteractionHide();
+            mIsWaitFragActive = false;
+        }
     }
 }
