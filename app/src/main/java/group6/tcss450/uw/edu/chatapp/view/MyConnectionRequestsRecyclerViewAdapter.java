@@ -16,7 +16,7 @@ import group6.tcss450.uw.edu.chatapp.contacts.ConnectionRequestsFragment;
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link android.telecom.ConnectionRequest} and makes a call to the
  * specified {@link ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
