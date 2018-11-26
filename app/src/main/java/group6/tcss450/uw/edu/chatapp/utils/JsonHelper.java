@@ -110,10 +110,15 @@ public class JsonHelper extends AppCompatActivity {
         Forecast[] forecasts = new Forecast[10];
         try {
             JSONObject jObject = new JSONObject(s);
+
+            String city = jObject.getString("city_name");
+            String state = jObject.getString("state_code");
+
             JSONArray tendayforecast = jObject.getJSONArray("data");
 
             for ( int i = 0; i < forecasts.length; i++){
                 forecasts[i] = new Forecast((JSONObject)tendayforecast.get(i));
+                forecasts[i].setLocationName( city + ", "+ state.toUpperCase() );
             }
 
         } catch (JSONException e){

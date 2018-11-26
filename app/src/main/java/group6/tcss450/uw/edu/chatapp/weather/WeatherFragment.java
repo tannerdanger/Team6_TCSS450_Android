@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.Objects;
 
 import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 
 
 /**
@@ -31,9 +32,13 @@ public class WeatherFragment extends Fragment {
     final String DEGREE  = "\u00b0";
     private ImageView mIcon;
     private TextView mCurrentTemp;
-    private TextView mHiTemp;
-    private TextView mLowTemp;
+    private TextView mTemp;
+    private TextView mLocation;
+    private TextView mDate;
+    private TextView mLastUpdated;
+    private TextView mPercipChance;
     private TextView mWeatherDescription;
+    private static boolean mIsWaitFragActive;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -44,6 +49,8 @@ public class WeatherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        mIsWaitFragActive = false;
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
         if(null != getArguments()){
             mForecast = (Forecast) getArguments().getSerializable(getString(R.string.ARGS_FORECAST_DATA));
@@ -52,8 +59,12 @@ public class WeatherFragment extends Fragment {
         mIcon = (ImageView) view.findViewById(R.id.forecast_icon);
         mCurrentTemp = (TextView)view.findViewById(R.id.forecast_temp_current);
         mWeatherDescription = (TextView)view.findViewById(R.id.forecast_description);
-        mLowTemp = (TextView)view.findViewById(R.id.forecast_temp_lo);
-        mHiTemp = (TextView)view.findViewById(R.id.forecast_temp_hi);
+        mTemp = (TextView)view.findViewById(R.id.forecast_temp);
+
+        mDate = (TextView)view.findViewById(R.id.forecast_date);
+        mLocation = (TextView)view.findViewById(R.id.forecast_location);
+        mPercipChance = (TextView)view.findViewById(R.id.forecast_percipChance);
+
         updateForecast();
         return view;
     }
@@ -84,6 +95,11 @@ public class WeatherFragment extends Fragment {
 
     public void setmForecast(Forecast forecast){
         this.mForecast = forecast;
+        updateForecast();
+    }
+
+    public boolean hasForecast(){
+        return null != mForecast;
     }
 
     /**
@@ -91,16 +107,44 @@ public class WeatherFragment extends Fragment {
      */
     public void updateForecast(){
 
-        //mForecast = forecast;
-        int ID = Objects.requireNonNull(getContext()).getResources().getIdentifier(mForecast.iconCode.toString(), "drawable", getContext().getPackageName());
-        mHiTemp.setText("HI: " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMaxTemperature())) + DEGREE);
-        mLowTemp.setText("LO: " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMinTemperature())) + DEGREE);
-        mCurrentTemp.setText(String.valueOf(mForecast.convertToFahrenheit(mForecast.getCurrentTemp())) + DEGREE);
-        mWeatherDescription.setText(mForecast.getForecast());
-        mIcon.setImageResource(ID);
+        if(null != getContext()) {
 
 
 
+            // int ID = R.drawable.
+            //int ID = getContext().getResources().getIdentifier(mForecast.iconCode, "drawable", getContext().getPackageName());
+            String tempText = "HI " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMaxTemperature())) + DEGREE
+                    + "\nLO " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMinTemperature())) + DEGREE;
+            // mHiTemp.setText("HI: " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMaxTemperature())) + DEGREE);
+            // mLowTemp.setText("LO: " + String.valueOf(mForecast.convertToFahrenheit(mForecast.getMinTemperature())) + DEGREE);
+            mTemp.setText(tempText);
+            mCurrentTemp.setText(String.valueOf(mForecast.convertToFahrenheit(mForecast.getCurrentTemp())) + DEGREE);
+            mWeatherDescription.setText(mForecast.getForecast());
+            mIcon.setImageResource(mForecast.getIconResID());
+            mLocation.setText(mForecast.getLocationName());
+            mDate.setText(mForecast.getForecastDate());
+            String percip = "";
+            String chance = "Percip Chance ";
+            String amount = "\nPercip Amount ";
+
+            if(mForecast.getPercipChance() > 1) {
+
+                chance += mForecast.getPercipChance() + "%";
+
+                if(mForecast.getPercipAmount() > 1) {
+                    amount += mForecast.getPercipAmount() + "\"";
+                    percip = chance + amount;
+                }
+                else
+                    percip = "Trace Percipitation";
+
+
+
+            } else
+                percip = "No Percipitation";
+
+            mPercipChance.setText(percip);
+        }
     }
 
     /**
@@ -113,8 +157,29 @@ public class WeatherFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+
+    }
+
+    /**
+     * Display wait fragment if not already displayed
+     */
+    private void startAsync(){
+        if(!mIsWaitFragActive) { //start wait frag if Async is not already active
+            mListener.onWaitFragmentInteractionShow();
+            mIsWaitFragActive = true;
+        }
+    }
+
+    /**
+     * Hide wait fragment if not already hidden
+     */
+    private void endAsync(){
+        if(mIsWaitFragActive) { //hide if Async is active
+            mListener.onWaitFragmentInteractionHide();
+            mIsWaitFragActive = false;
+        }
     }
 }

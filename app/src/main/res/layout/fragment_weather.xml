@@ -11,68 +11,87 @@
         android:id="@+id/forecast_temp_current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:text="@string/ep_current"
+        android:layout_marginEnd="16dp"
+        android:text="75.25"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#800080"
+        android:textColor="@color/colorPrimary"
         android:textSize="42sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/forecast_icon"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/forecast_date" />
 
     <TextView
-        android:id="@+id/forecast_temp_lo"
+        android:id="@+id/forecast_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="Lo"
+        android:layout_marginTop="16dp"
+        android:text="Hi: 80.56"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#800080"
+        android:textColor="@color/colorPrimary"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/forecast_icon"
+        app:layout_constraintEnd_toEndOf="@+id/forecast_temp_current"
+        app:layout_constraintStart_toStartOf="@+id/forecast_temp_current"
         app:layout_constraintTop_toBottomOf="@+id/forecast_temp_current" />
 
     <TextView
         android:id="@+id/forecast_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
         android:text="Light Drizzle"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#800080"
+        android:textColor="@color/colorPrimary"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/forecast_icon"
-        app:layout_constraintTop_toBottomOf="@+id/forecast_temp_current" />
+        app:layout_constraintEnd_toEndOf="@+id/forecast_temp"
+        app:layout_constraintStart_toStartOf="@+id/forecast_temp"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_temp" />
 
     <ImageView
         android:id="@+id/forecast_icon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/a01d"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_date" />
+
+    <TextView
+        android:id="@+id/forecast_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="44dp"
-        android:src="@drawable/a01d"
+        android:layout_marginEnd="32dp"
+        android:text="2018 /01/ 25"
+        android:textColor="@color/colorPrimaryLight"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_location" />
+
+    <TextView
+        android:id="@+id/forecast_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="1dp"
+        android:text="TextView"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/forecast_temp_hi"
+        android:id="@+id/forecast_percipChance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="Hi"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#800080"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/forecast_temp_lo"
-        app:layout_constraintTop_toBottomOf="@+id/forecast_temp_current" />
+        android:textColor="@color/design_default_color_primary_dark"
+        app:layout_constraintEnd_toEndOf="@+id/forecast_description"
+        app:layout_constraintStart_toStartOf="@+id/forecast_description"
+        app:layout_constraintTop_toBottomOf="@+id/forecast_description" />
 
 </android.support.constraint.ConstraintLayout>
