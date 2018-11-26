@@ -70,10 +70,10 @@ public class MyChatRoomSelectionRecyclerViewAdapter extends RecyclerView.Adapter
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mOtherUser = (TextView) view.findViewById(R.id.tv_connectionsfragment_otheruser);
-            mDate = (TextView) view.findViewById(R.id.tv_connectionsfragment_date);
-            mTime = (TextView) view.findViewById(R.id.tv_connectionsfragment_time);
-            mMessage = (TextView) view.findViewById(R.id.tv_connectionsfragment_message);
+            mOtherUser = view.findViewById(R.id.tv_connectionsfragment_otheruser);
+            mDate = view.findViewById(R.id.tv_connectionsfragment_date);
+            mTime = view.findViewById(R.id.tv_connectionsfragment_time);
+            mMessage = view.findViewById(R.id.tv_connectionsfragment_message);
         }
 
         @Override

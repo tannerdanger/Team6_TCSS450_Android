@@ -16,11 +16,14 @@
     <string name="button_connectionsfragment_add">Search For User</string>
     <string name="button_connectionsfragment_requests">Connection Requests</string>
 
-    <string name="loginfragment_login" tools:ignore="ExtraTranslation">LogIn</string>
-    <string name="loginfragment_register">Register</string>
+    <!-- LogInFragment strings -->
+    <string name="loginfragment_login" tools:ignore="ExtraTranslation">LOG IN</string>
+    <string name="loginfragment_register">REGISTER</string>
     <string name="loginfragment_email">Email</string>
     <string name="loginfragment_password">Password</string>
+    <string name="loginfragment_trouble">Trouble logging in?</string>
 
+    <!-- RegisterFragment strings -->
     <string name="registerfragment_instruction">Please enter your information:</string>
     <string name="registerfragment_email">Email</string>
     <string name="registerfragment_username">Username</string>
@@ -29,16 +32,22 @@
     <string name="registerfragment_lastname">Last Name</string>
     <string name="registerfragment_register">Register</string>
 
-    <string name ="tab_home">Home</string>
-    <string name ="tab_chat">Chat</string>
-    <string name ="tab_contacts">Contacts</string>
-    <string name ="tab_notifications">Notifications</string>
-    <string name ="tab_settings">Settings</string>
+    <!-- LogInHelp strings -->
+    <string name="loginhelp_instruction">Please enter your username or email:</string>
+    <string name="loginhelp_username_or_email">Username or email</string>
+    <string name="loginhelp_submit">SUBMIT</string>
+    <string name="loginhelp_cancel">CANCEL</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_chat">Chat</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="tab_notifications">Notifications</string>
+    <string name="tab_settings">Settings</string>
 
     <string name="action_logout">Logout</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="connectionsearch_request">Add</string>
-    <string name="connectionsearch_searchprompt">Search by username or email</string>
+    <string name="connectionsearch_searchprompt">Search by email or username:</string>
     <string name="connectionrequest_accept">Accept</string>
     <string name="connectionrequest_reject">Reject</string>
     <string name="title_activity_home">HomeActivity</string>

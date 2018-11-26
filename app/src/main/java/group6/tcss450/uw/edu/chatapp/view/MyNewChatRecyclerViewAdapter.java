@@ -15,7 +15,7 @@ import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.view.NewChatFragment.OnListFragmentInteractionListener;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
@@ -110,9 +110,9 @@ public class MyNewChatRecyclerViewAdapter extends RecyclerView.Adapter<MyNewChat
             super(view);
             isSelected = false;
             mView = view;
-            mUsernameTv = (TextView) view.findViewById(R.id.tv_newchat_username);
-            row_linearlayout = (ConstraintLayout) itemView.findViewById(R.id.linearLayout_newchat_individual);
-            rv = (RecyclerView) itemView.findViewById(R.id.list_newchat);
+            mUsernameTv = view.findViewById(R.id.tv_newchat_username);
+            row_linearlayout = itemView.findViewById(R.id.linearLayout_newchat_individual);
+            rv = itemView.findViewById(R.id.list_newchat);
         }
 
         @Override

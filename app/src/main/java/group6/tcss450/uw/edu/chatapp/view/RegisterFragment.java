@@ -43,7 +43,7 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        Button registerButton = (Button) view.findViewById(R.id.button_registerfragment_register);
+        Button registerButton = view.findViewById(R.id.button_registerfragment_register);
         registerButton.setOnClickListener(v -> onRegisterClicked());
 
         return view;
@@ -52,17 +52,17 @@ public class RegisterFragment extends Fragment {
     public void onRegisterClicked() {
         if (mListener != null) {
             EditText firstNameEdit =
-                    (EditText) getActivity().findViewById(R.id.edittext_registerfragment_firstname);
+                    getActivity().findViewById(R.id.edittext_registerfragment_firstname);
             EditText lastNameEdit =
-                    (EditText) getActivity().findViewById(R.id.edittext_registerfragment_lastname);
+                    getActivity().findViewById(R.id.edittext_registerfragment_lastname);
             EditText usernameEdit =
-                    (EditText) getActivity().findViewById(R.id.edittext_registerfragment_username);
+                    getActivity().findViewById(R.id.edittext_registerfragment_username);
             EditText emailEdit =
-                    (EditText) getActivity().findViewById(R.id.edittext_registerfragment_email);
+                    getActivity().findViewById(R.id.edittext_registerfragment_email);
             EditText passwordEdit1 =
-                    (EditText) getActivity().findViewById(R.id.edittext_registerfragment_password1);
+                    getActivity().findViewById(R.id.edittext_registerfragment_password1);
             EditText passwordEdit2 =
-                    (EditText) getActivity().findViewById(R.id.edittext_registerfragment_password2);
+                    getActivity().findViewById(R.id.edittext_registerfragment_password2);
             boolean isValid = true;
 
             if (firstNameEdit.getText().length() == 0) {
@@ -144,7 +144,7 @@ public class RegisterFragment extends Fragment {
             mListener.onWaitFragmentInteractionHide();
 
             if (resultsJSON.getBoolean("success")) {
-                mListener.onRegistration(mCredentials);
+                mListener.onRegisterSuccess(mCredentials);
             } else {
                 ((EditText) getView().findViewById(R.id.edittext_registerfragment_email))
                         .setError("Register unsuccessful.");
@@ -185,6 +185,6 @@ public class RegisterFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener
             extends WaitFragment.OnFragmentInteractionListener {
-        void onRegistration(Credentials credentials);
+        void onRegisterSuccess(Credentials credentials);
     }
 }

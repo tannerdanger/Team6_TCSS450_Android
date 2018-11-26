@@ -209,8 +209,8 @@ public class HomeActivity extends AppCompatActivity
 
 
         mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
-        mLat = (Double) getIntent().getDoubleExtra("lat", -1 );
-        mLon = (Double) getIntent().getDoubleExtra("lon", -1 );
+        mLat = getIntent().getDoubleExtra("lat", -1 );
+        mLon = getIntent().getDoubleExtra("lon", -1 );
 
         mJsonData = new HashMap<>();
         mMessageListMap = new HashMap<>();
@@ -224,7 +224,7 @@ public class HomeActivity extends AppCompatActivity
         mToolbar = getSupportActionBar();
         mToolbar.setTitle("Home");
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mChatId = -1;

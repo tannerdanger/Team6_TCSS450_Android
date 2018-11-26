@@ -94,10 +94,10 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mUsername = (TextView) view.findViewById(R.id.tv_connectionrequest_username);
-            mEmail = (TextView) view.findViewById(R.id.tv_connectionrequest_email);
-            mAccept = (Button) view.findViewById(R.id.button_connectionrequest_accept);
-            mReject = (Button) view.findViewById(R.id.button_connectionrequest_reject);
+            mUsername = view.findViewById(R.id.tv_connectionrequest_username);
+            mEmail = view.findViewById(R.id.tv_connectionrequest_email);
+            mAccept = view.findViewById(R.id.button_connectionrequest_accept);
+            mReject = view.findViewById(R.id.button_connectionrequest_reject);
         }
 
         @Override

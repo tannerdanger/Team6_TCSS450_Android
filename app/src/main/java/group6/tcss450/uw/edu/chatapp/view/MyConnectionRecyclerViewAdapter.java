@@ -78,10 +78,10 @@ public class MyConnectionRecyclerViewAdapter extends RecyclerView.Adapter<MyConn
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mEmail = (TextView) view.findViewById(R.id.tv_connectionsfragment_email);
-            mUsername = (TextView) view.findViewById(R.id.tv_connectionsfragment_username);
-            mRemoveUser = (Button) view.findViewById(R.id.button_connectionsfragment_remove);
-            mStartChat = (Button) view.findViewById(R.id.button_connectionfragment_startchat);
+            mEmail = view.findViewById(R.id.tv_connectionsfragment_email);
+            mUsername = view.findViewById(R.id.tv_connectionsfragment_username);
+            mRemoveUser = view.findViewById(R.id.button_connectionsfragment_remove);
+            mStartChat = view.findViewById(R.id.button_connectionfragment_startchat);
         }
 
         @Override

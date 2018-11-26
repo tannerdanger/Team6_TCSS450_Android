@@ -73,9 +73,9 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mUsername = (TextView) view.findViewById(R.id.tv_connectionsearch_user);
-            mEmail = (TextView) view.findViewById(R.id.tv_connectionsearch_email);
-            mAdd = (Button) view.findViewById(R.id.button_connectionsearch_add);
+            mUsername = view.findViewById(R.id.tv_connectionsearch_user);
+            mEmail = view.findViewById(R.id.tv_connectionsearch_email);
+            mAdd = view.findViewById(R.id.button_connectionsearch_add);
         }
 
         @Override

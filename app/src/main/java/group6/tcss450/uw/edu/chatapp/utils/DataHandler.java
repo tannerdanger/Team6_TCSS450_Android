@@ -84,7 +84,7 @@ public class DataHandler {
 
             String uri = UriHelper.WEATHER_BY_LAT_LONG();
 
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
+            new SendPostAsyncTask.Builder(uri, msg)
                     //.onPreExecute() //todo: wait fragment
                     .onPostExecute(this::updateForecastJsonData)
                     .build()

@@ -91,11 +91,14 @@ public class LoginFragment extends Fragment {
 
         mIsWaitFragActive = false;
 
-        Button loginButton = (Button) view.findViewById(R.id.button_loginfragment_login);
-        loginButton.setOnClickListener(v -> onLoginAttempt());
+        Button button = view.findViewById(R.id.button_loginfragment_login);
+        button.setOnClickListener(v -> onLoginAttempt());
 
-        Button registerButton = (Button) view.findViewById(R.id.button_loginfragment_register);
-        registerButton.setOnClickListener(v -> mListener.onRegisterClicked());
+        button = view.findViewById(R.id.button_loginfragment_register);
+        button.setOnClickListener(v -> mListener.onRegisterClicked());
+
+        button = view.findViewById(R.id.button_loginfragment_helpbutton);
+        button.setOnClickListener(v -> mListener.onHelpClicked());
 
         return view;
     }
@@ -285,6 +288,7 @@ public class LoginFragment extends Fragment {
             extends WaitFragment.OnFragmentInteractionListener {
         void onLoginSuccess(Credentials credentials);
         void onRegisterClicked();
+        void onHelpClicked();
     }
 
     /**

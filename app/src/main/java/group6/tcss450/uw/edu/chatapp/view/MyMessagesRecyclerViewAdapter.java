@@ -105,10 +105,10 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mUsername = (TextView) view.findViewById(R.id.tv_messages_user);
-            mDate = (TextView) view.findViewById(R.id.tv_messages_date);
-            mTime = (TextView) view.findViewById(R.id.tv_messages_time);
-            mMessageView = (TextView) view.findViewById(R.id.tv_messages_message);
+            mUsername = view.findViewById(R.id.tv_messages_user);
+            mDate = view.findViewById(R.id.tv_messages_date);
+            mTime = view.findViewById(R.id.tv_messages_time);
+            mMessageView = view.findViewById(R.id.tv_messages_message);
             row_constraintlayout = itemView.findViewById(R.id.constraintlayout_messages);
         }
 
