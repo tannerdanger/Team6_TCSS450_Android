@@ -1,9 +1,12 @@
 package group6.tcss450.uw.edu.chatapp.view;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +29,7 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
     private final List<Message> mValues;
     private Credentials mCredentials;
     private final OnMessageFragmentInteractionListener mListener;
-
+    private Context mContext;
 
     public MyMessagesRecyclerViewAdapter(List<Message> items, OnMessageFragmentInteractionListener listener) {
         mValues = items;
@@ -37,6 +40,7 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_messages, parent, false);
+        mContext = parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -44,10 +48,6 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
         mValues.add(theMessage);
         notifyItemInserted(0);
         notifyDataSetChanged();
-        if(theMessage.getUser().compareTo(mCredentials.getEmail()) == 0 ){
-
-        }
-
 
 
     }
@@ -59,23 +59,6 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
         holder.mDate.setText(mValues.get(position).getDate());
         holder.mTime.setText(mValues.get(position).getTime());
         holder.mUsername.setText(mValues.get(position).getUser());
-
-
-//
-//        int fourDP = (int) (4 / Resources.getSystem().getDisplayMetrics().density);
-//        int sixtyfourDP = (int) (64 / Resources.getSystem().getDisplayMetrics().density);
-//        int eightDP = (int) (8 / Resources.getSystem().getDisplayMetrics().density);
-
-//        FrameLayout.LayoutParams otherUserSends = (FrameLayout.LayoutParams) holder
-//                .row_constraintlayout.getLayoutParams();
-//        FrameLayout.LayoutParams thisUserSends = (FrameLayout.LayoutParams) holder
-//                .row_constraintlayout.getLayoutParams();
-//        otherUserSends.setMargins(4, 0, 64, 8);
-//        thisUserSends.setMargins(64, 0, 4, 8);
-        //l, t, r, b
-        //default margins = 4, 0, 4, 8
-        //they send = 4, 0, 64, 8
-        //user send = 64, 0, 4, 8
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,17 +69,20 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
                 }
             }
         });
-//        //Log.e("Messages", "mItem user = " + holder.mItem.getUser() + ", Credentials user = " + mCredentials.getEmail());
-//        if(holder.mItem.getUser().equals(mCredentials.getEmail()))   {
-//            holder.row_constraintlayout.setLayoutParams(thisUserSends);
-//            Log.e("MESSAGES", "RIGHT");
-//        } else {
-//            holder.row_constraintlayout.setLayoutParams(otherUserSends);
-//            Log.e("MESSAGES", "LEFT");
-//        }
+        if (!holder.mItem.getUser().equals(mCredentials.getEmail())) {
+            ConstraintLayout.LayoutParams otherUserSends = (ConstraintLayout.LayoutParams) holder
+                    .row_constraintlayout.getLayoutParams();
+            otherUserSends.startToEnd = ConstraintLayout.LayoutParams.UNSET;
+            otherUserSends.endToEnd = ConstraintLayout.LayoutParams.UNSET;
+            otherUserSends.startToStart = holder.mView.findViewById(R.id.constraintlayout_messages_holder).getId();
+            otherUserSends.endToStart = holder.mView.findViewById(R.id.space_messages_them).getId();
+            otherUserSends.horizontalBias = 0;
+            //otherUserSends.constrainedWidth = true;
+            holder.row_constraintlayout.setLayoutParams(otherUserSends);
+        }
     }
 
-    public void setCredentials(Credentials theCredentials)  {
+    public void setCredentials(Credentials theCredentials) {
         mCredentials = theCredentials;
     }
 
@@ -122,8 +108,6 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
             mTime = view.findViewById(R.id.tv_messages_time);
             mMessageView = view.findViewById(R.id.tv_messages_message);
             row_constraintlayout = itemView.findViewById(R.id.constraintlayout_messages);
-
-
         }
 
         @Override
