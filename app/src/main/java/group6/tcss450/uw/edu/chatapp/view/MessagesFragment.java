@@ -35,6 +35,7 @@ public class MessagesFragment extends Fragment {
     private int mChatId;
     public static final String ARG_CHAT_ID = "chat id";
     public static final String ARG_MESSAGE_LIST = "message list";
+    MyMessagesRecyclerViewAdapter mAdapter;
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -88,8 +89,11 @@ public class MessagesFragment extends Fragment {
         } else {
             rv.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        MyMessagesRecyclerViewAdapter adapter = new MyMessagesRecyclerViewAdapter(mMessages, mListener);
-        rv.setAdapter(adapter);
+        //MyMessagesRecyclerViewAdapter adapter = new MyMessagesRecyclerViewAdapter(mMessages, mListener);
+        //rv.setAdapter(adapter);
+        mAdapter = new MyMessagesRecyclerViewAdapter(mMessages, mListener);
+
+        rv.setAdapter(mAdapter);
         rv.scrollToPosition(mMessages.size() - 1);
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         Button sendButton = view.findViewById(R.id.button_messsages_send);
@@ -120,8 +124,23 @@ public class MessagesFragment extends Fragment {
             rv.scrollToPosition(mMessages.size() - 1);
             mListener.onMessageSendInteraction(m);
         });
-        adapter.setCredentials(mCredentials);
+        mAdapter.setCredentials(mCredentials);
         return view;
+    }
+
+    /**
+     * Recieves a message from HomeActivity
+     * @param theMessage a new message to be added.
+     */
+    public void recieveMessage(Message theMessage){
+        RecyclerView rv = getView().findViewById(R.id.list_messages_messageslist);
+
+        mAdapter.addItem(theMessage);
+        mAdapter.notifyItemInserted(mAdapter.getItemCount());
+        rv.smoothScrollToPosition(mAdapter.getItemCount());
+        //mAdapter.notifyItemInserted(0);
+
+
     }
 
 

@@ -119,7 +119,7 @@ public class DataHandler {
      * @param chatid the id of the chat that the messages belong to
      * @param isFragTransition is a new fragment loading after this?
      */
-    public void getMessages(int chatid, boolean isFragTransition){
+    public void getMessages(int chatid, boolean isFragTransition, boolean isRefresh){
         JSONObject msg = JsonHelper.messages_JsonObject(chatid);
 
         String uri = UriHelper.MESSAGING_GETALL();
@@ -128,6 +128,14 @@ public class DataHandler {
 
             new SendPostAsyncTask.Builder(uri, msg)
                     .onPostExecute(this::updateMessagesTransition)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+
+        } else if (isRefresh){
+
+            new SendPostAsyncTask.Builder(uri, msg)
+                    .onPostExecute(this::updateMessagesRefresh)
                     .onCancelled(this::handleErrorsInTask)
                     .build()
                     .execute();
@@ -142,6 +150,7 @@ public class DataHandler {
 
         }
     }
+
 
     public void proposeConnection(int memberid, String senderUsername, int recieverID){
         String uri = UriHelper.CONNECTION_PROPOSE();
@@ -213,7 +222,7 @@ public class DataHandler {
             JSONObject result = new JSONObject(s);
             int chatid = result.getInt("chatid");
             getChats(false); //reload chats behind the scenes
-            getMessages(chatid, false);
+            getMessages(chatid, false, false);
             return chatid;
 
         }catch (JSONException e){
@@ -225,7 +234,7 @@ public class DataHandler {
     private void createChatTransition(String s){
         int chatid = createChat(s);
         if(chatid != -1){
-            getMessages(chatid, true); //update messages and navigate
+            getMessages(chatid, true, false); //update messages and navigate
         }
     }
 
@@ -235,11 +244,18 @@ public class DataHandler {
         endAsync();
     }
 
+    private void updateMessagesRefresh(String s) {
+        int chatid = updateMessages(s);
+        mHomeActivity.recieveMessage(chatid);
+    }
+
     private void updateChatsTransition(String s){
         updateChatsJsonData(s);
         mHomeActivity.navigateChat();
         endAsync();
     }
+
+
 
 
 

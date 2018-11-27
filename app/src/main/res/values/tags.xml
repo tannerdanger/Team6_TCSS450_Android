@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="TAG_HomeActivity">home</string>
+    <string name="TAG_MessageActivity">message</string>
+    <string name="TAG_ConnectionActivity">message</string>
+
+</resources>

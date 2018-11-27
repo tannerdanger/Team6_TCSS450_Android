@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -189,7 +190,10 @@ public class HomeActivity extends AppCompatActivity
         b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, messages);
         b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
         b.putInt(MessagesFragment.ARG_CHAT_ID, chatid);
+
         Fragment frag = new MessagesFragment();
+
+
         frag.setArguments(b);
         mFab.hide();
         loadFragment(frag);
@@ -275,6 +279,9 @@ public class HomeActivity extends AppCompatActivity
             // If map doesn't contain messages for this chat id, create empty LL
             mMessageListMap.get(chatid).add(message);
         }
+
+
+
     }
 
     /**
@@ -296,12 +303,30 @@ public class HomeActivity extends AppCompatActivity
      */
     private void loadFragment(Fragment theFragment) {
 
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, theFragment)
-                .addToBackStack(null);
+        String fragtag = getTag(theFragment);
+        FragmentTransaction transaction;
+
+        if(null == fragtag) {
+
+            transaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, theFragment)
+                    .addToBackStack(null);
+        } else {
+            transaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, theFragment, fragtag)
+                    .addToBackStack(null);
+        }
 
         transaction.commit();
+    }
+
+    private String getTag(Fragment theFragment) {
+        if(theFragment instanceof HomeFragment) return getString(R.string.TAG_HomeActivity);
+        if(theFragment instanceof ConnectionFragment) return getString(R.string.TAG_ConnectionActivity);
+        if(theFragment instanceof MessagesFragment) return getString(R.string.TAG_MessageActivity);
+        return null;
     }
 
 
@@ -319,6 +344,15 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    public void recieveMessage(int chatID){
+
+        Message m = mMessageListMap.get(chatID).get(mMessageListMap.get(chatID).size() - 1);
+        if(null != m){
+            MessagesFragment frag = (MessagesFragment)getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_MessageActivity));
+            if(null != frag){frag.recieveMessage(m);}
+        }
+    }
+
 
 
 
@@ -333,7 +367,7 @@ public class HomeActivity extends AppCompatActivity
     //OpenMessage Fragment
     @Override
     public void onOpenMessageFragmentInteraction(OpenMessage item) {
-        mDataHandler.getMessages(item.getChatId(), true); //gets messages then navigates to it.
+        mDataHandler.getMessages(item.getChatId(), true, false); //gets messages then navigates to it.
     }
 
     //Messages Fragment
@@ -506,7 +540,7 @@ public class HomeActivity extends AppCompatActivity
 
 
                                 //mDataHandler.
-                                mDataHandler.getMessages(chatid, false); //does not transition after loading message
+                                mDataHandler.getMessages(chatid, false, true); //does not transition after loading message
 
 
                                 Log.i("New Message", sender + " " + msg);
@@ -522,6 +556,10 @@ public class HomeActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    public interface OnNotificationListener {
+        void OnNewMessage(Message theMessage);
     }
 
 
