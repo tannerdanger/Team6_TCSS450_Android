@@ -13,8 +13,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.R;
@@ -115,9 +119,13 @@ public class MessagesFragment extends Fragment {
         });
 
         sendButton.setOnClickListener((View v) -> {
+
             String text = messageEntry.getText().toString();
             String user = mCredentials.getEmail();
-            Message m = new Message.Builder(user).addMessage(text).addChatId(mChatId).build();
+            Date d = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+            String dateStr = sdf.format(d);
+            Message m = new Message.Builder(user).addMessage(text).addChatId(mChatId).addTime(dateStr).build();
             mMessages.add(m);
             rv.getAdapter().notifyItemInserted(mMessages.size() - 1);
             messageEntry.setText("");
@@ -128,17 +136,23 @@ public class MessagesFragment extends Fragment {
         return view;
     }
 
+
     /**
      * Recieves a message from HomeActivity
      * @param theMessage a new message to be added.
      */
     public void recieveMessage(Message theMessage){
-        RecyclerView rv = getView().findViewById(R.id.list_messages_messageslist);
 
-        mAdapter.addItem(theMessage);
-        mAdapter.notifyItemInserted(mAdapter.getItemCount());
-        rv.smoothScrollToPosition(mAdapter.getItemCount());
-        //mAdapter.notifyItemInserted(0);
+
+        if(theMessage.getUser().compareTo(mCredentials.getEmail()) != 0 ) {
+            RecyclerView rv = getView().findViewById(R.id.list_messages_messageslist);
+            mAdapter.addItem(theMessage);
+            mAdapter.notifyItemInserted(mAdapter.getItemCount());
+            rv.smoothScrollToPosition(mAdapter.getItemCount());
+        }
+
+
+
 
 
     }
