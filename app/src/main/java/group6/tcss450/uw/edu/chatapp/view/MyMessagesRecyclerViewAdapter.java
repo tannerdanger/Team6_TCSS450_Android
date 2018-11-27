@@ -2,6 +2,7 @@ package group6.tcss450.uw.edu.chatapp.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
@@ -70,6 +71,7 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
             }
         });
         if (!holder.mItem.getUser().equals(mCredentials.getEmail())) {
+            //SOMEONE THAT IS NOT THE USER SENDS A MESSAGE
             ConstraintLayout.LayoutParams otherUserSends = (ConstraintLayout.LayoutParams) holder
                     .row_constraintlayout.getLayoutParams();
             otherUserSends.startToEnd = ConstraintLayout.LayoutParams.UNSET;
@@ -78,7 +80,29 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
             otherUserSends.endToStart = holder.mView.findViewById(R.id.space_messages_them).getId();
             otherUserSends.horizontalBias = 0;
             //otherUserSends.constrainedWidth = true;
+            holder.mUsername.setTextColor(Color.BLACK);
+            holder.mDate.setTextColor(Color.BLACK);
+            holder.mTime.setTextColor(Color.BLACK);
+            holder.mMessageView.setTextColor(Color.BLACK);
+            holder.row_constraintlayout.setBackgroundResource(R.drawable.incoming_chat);
             holder.row_constraintlayout.setLayoutParams(otherUserSends);
+            //Log.e("Message", "Email: " + holder.mItem.getUser() + ", going on left side. Should be NOT user." + holder.mItem.getMessage());
+        } else {
+            //THIS USER SENDS A MESSAGE
+            //Log.e("Message", "Email: " + holder.mItem.getUser() + ", going on right side. Should be user." + holder.mItem.getMessage());
+            ConstraintLayout.LayoutParams thisUserSends = (ConstraintLayout.LayoutParams) holder
+                    .row_constraintlayout.getLayoutParams();
+            thisUserSends.startToStart = ConstraintLayout.LayoutParams.UNSET;
+            thisUserSends.endToStart = ConstraintLayout.LayoutParams.UNSET;
+            thisUserSends.startToEnd = holder.mView.findViewById(R.id.space_messages_you).getId();
+            thisUserSends.endToEnd = holder.mView.findViewById(R.id.constraintlayout_messages_holder).getId();
+            thisUserSends.horizontalBias = 1.0f;
+            holder.mUsername.setTextColor(Color.WHITE);
+            holder.mDate.setTextColor(Color.WHITE);
+            holder.mTime.setTextColor(Color.WHITE);
+            holder.mMessageView.setTextColor(Color.WHITE);
+            holder.row_constraintlayout.setBackgroundResource(R.drawable.outgoing_chat);
+            holder.row_constraintlayout.setLayoutParams(thisUserSends);
         }
     }
 

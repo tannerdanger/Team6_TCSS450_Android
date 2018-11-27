@@ -40,6 +40,7 @@ public class MessagesFragment extends Fragment {
     public static final String ARG_CHAT_ID = "chat id";
     public static final String ARG_MESSAGE_LIST = "message list";
     MyMessagesRecyclerViewAdapter mAdapter;
+    RecyclerView mRv;
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -87,30 +88,30 @@ public class MessagesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages_list, container, false);
         Context context = view.getContext();
-        RecyclerView rv = view.findViewById(R.id.list_messages_messageslist);
+        mRv = view.findViewById(R.id.list_messages_messageslist);
         if (mColumnCount <= 1) {
-            rv.setLayoutManager(new LinearLayoutManager(context));
+            mRv.setLayoutManager(new LinearLayoutManager(context));
         } else {
-            rv.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            mRv.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
         //MyMessagesRecyclerViewAdapter adapter = new MyMessagesRecyclerViewAdapter(mMessages, mListener);
         //rv.setAdapter(adapter);
         mAdapter = new MyMessagesRecyclerViewAdapter(mMessages, mListener);
 
-        rv.setAdapter(mAdapter);
-        rv.scrollToPosition(mMessages.size() - 1);
+        mRv.setAdapter(mAdapter);
+        mRv.scrollToPosition(mMessages.size() - 1);
         FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         Button sendButton = view.findViewById(R.id.button_messsages_send);
         EditText messageEntry = view.findViewById(R.id.et_messages_messageinput);
-        rv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        mRv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if (bottom < oldBottom) {
-                    rv.post(new Runnable() {
+                    mRv.post(new Runnable() {
                         @Override
                         public void run() {
                             if(mMessages.size() > 0) {
-                                rv.smoothScrollToPosition(mMessages.size() - 1);
+                                mRv.smoothScrollToPosition(mMessages.size() - 1);
                             }
                         }
                     });
@@ -127,9 +128,9 @@ public class MessagesFragment extends Fragment {
             String dateStr = sdf.format(d);
             Message m = new Message.Builder(user).addMessage(text).addChatId(mChatId).addTime(dateStr).build();
             mMessages.add(m);
-            rv.getAdapter().notifyItemInserted(mMessages.size() - 1);
+            mRv.getAdapter().notifyItemInserted(mMessages.size() - 1);
             messageEntry.setText("");
-            rv.scrollToPosition(mMessages.size() - 1);
+            mRv.scrollToPosition(mMessages.size() - 1);
             mListener.onMessageSendInteraction(m);
         });
         mAdapter.setCredentials(mCredentials);
@@ -145,10 +146,10 @@ public class MessagesFragment extends Fragment {
 
 
         if(theMessage.getUser().compareTo(mCredentials.getEmail()) != 0 ) {
-            RecyclerView rv = getView().findViewById(R.id.list_messages_messageslist);
+            //RecyclerView rv = getView().findViewById(R.id.list_messages_messageslist);
             mAdapter.addItem(theMessage);
             mAdapter.notifyItemInserted(mAdapter.getItemCount());
-            rv.smoothScrollToPosition(mAdapter.getItemCount());
+            mRv.smoothScrollToPosition(mAdapter.getItemCount());
         }
 
 
