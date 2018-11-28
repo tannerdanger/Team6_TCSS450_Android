@@ -191,8 +191,8 @@ public class Credentials extends AppCompatActivity implements Serializable {
         try {
             msg.put("username", getUsername());
             msg.put("password", getPassword());
-            msg.put("firstname", getFirstName());
-            msg.put("lastname", getLastName());
+            msg.put("first", getFirstName());
+            msg.put("last", getLastName());
             msg.put("email", getEmail());
             msg.put("memberid", getID());
             msg.put("token", getToken());

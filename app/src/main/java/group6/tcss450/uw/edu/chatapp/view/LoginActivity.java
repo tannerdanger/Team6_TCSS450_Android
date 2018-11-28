@@ -174,6 +174,7 @@ public class LoginActivity extends AppCompatActivity
     }
 
     public void onLoginSuccess(Credentials credentials) {
+        onWaitFragmentInteractionHide();
         saveCredentials(credentials);
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class); //TODO: If you want to change back to drawer layout, change HomeActivity.class => MainActivity.Class
         intent.putExtra("lat", mLocation.getLatitude());
@@ -191,7 +192,8 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     public void onRegisterSuccess(Credentials credentials) {
-        onLoginSuccess(credentials);
+        saveCredentials(credentials);
+        loadFragment(new LoginFragment());
     }
 
     @Override
