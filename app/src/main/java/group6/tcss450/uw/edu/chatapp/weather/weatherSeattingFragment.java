@@ -1,4 +1,4 @@
-package group6.tcss450.uw.edu.chatapp;
+package group6.tcss450.uw.edu.chatapp.weather;
 
 
 import android.os.Bundle;
@@ -6,25 +6,33 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import group6.tcss450.uw.edu.chatapp.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ThemeFragment#newInstance} factory method to
+ * Use the {@link weatherSeattingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ThemeFragment extends Fragment {
+public class weatherSeattingFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String lat;
+    private String log;
+    private EditText city;
+    private EditText zipcode;
+    private Button Map;
+    private Button Search;
 
 
-    public ThemeFragment() {
+    public weatherSeattingFragment() {
         // Required empty public constructor
     }
 
@@ -34,11 +42,11 @@ public class ThemeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ThemeFragment.
+     * @return A new instance of fragment weatherSeattingFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ThemeFragment newInstance(String param1, String param2) {
-        ThemeFragment fragment = new ThemeFragment();
+    public static weatherSeattingFragment newInstance(String param1, String param2) {
+        weatherSeattingFragment fragment = new weatherSeattingFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -50,8 +58,8 @@ public class ThemeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            lat = getArguments().getString(ARG_PARAM1);
+            log = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -59,7 +67,11 @@ public class ThemeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_theme, container, false);
+        View view = inflater.inflate(R.layout.fragment_weather_seatting, container, false);
+        city = (EditText) view.findViewById(R.id.city_editText);
+        zipcode = (EditText) view.findViewById(R.id.zipcode_editText2);
+        Map = (Button) view.findViewById(R.id.Map_button);
+        Search = (Button) view.findViewById(R.id.search_button);
+        return view;
     }
-
 }
