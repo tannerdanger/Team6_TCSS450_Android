@@ -1,8 +1,11 @@
 package group6.tcss450.uw.edu.chatapp.weather;
 
 
+<<<<<<< HEAD
+=======
 import android.annotation.SuppressLint;
 import android.content.Context;
+>>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import group6.tcss450.uw.edu.chatapp.R;
+<<<<<<< HEAD
+=======
 import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
+>>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
 
 
 /**
@@ -26,11 +32,17 @@ public class weatherSeattingFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+<<<<<<< HEAD
+    // TODO: Rename and change types of parameters
+    private String lat;
+    private String log;
+=======
     private weatherSeattingFragment.OnSettingsFragmentInteractionListener mListener;
 
     // TODO: Rename and change types of parameters
     private double mLat;
     private double mLong;
+>>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
     private EditText city;
     private EditText zipcode;
     private Button Map;
@@ -63,8 +75,13 @@ public class weatherSeattingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+<<<<<<< HEAD
+            lat = getArguments().getString(ARG_PARAM1);
+            log = getArguments().getString(ARG_PARAM2);
+=======
             mLat = getArguments().getDouble("lat");
             mLong = getArguments().getDouble("lon");
+>>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
         }
     }
 
@@ -77,6 +94,10 @@ public class weatherSeattingFragment extends Fragment {
         zipcode = (EditText) view.findViewById(R.id.zipcode_editText2);
         Map = (Button) view.findViewById(R.id.Map_button);
         Search = (Button) view.findViewById(R.id.search_button);
+<<<<<<< HEAD
+        return view;
+    }
+=======
 
         Search.setOnClickListener(l -> {
 
@@ -145,4 +166,5 @@ public class weatherSeattingFragment extends Fragment {
     }
 
 
+>>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
 }
