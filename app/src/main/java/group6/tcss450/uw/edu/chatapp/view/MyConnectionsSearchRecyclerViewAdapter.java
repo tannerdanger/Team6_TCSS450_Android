@@ -1,11 +1,13 @@
 package group6.tcss450.uw.edu.chatapp.view;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
 
     private final List<Connection> mValues;
     private final OnConnectionSearchFragmentInteractionListener mListener;
+    private Context mContext;
 
     public MyConnectionsSearchRecyclerViewAdapter(List<Connection> items, ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener listener) {
         mValues = items;
@@ -33,6 +36,7 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_connectionssearch, parent, false);
+        mContext = parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -54,6 +58,8 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
         Connection thisConnection = mValues.get(position);
         holder.mAdd.setOnClickListener((View v) ->  {
             mListener.onConnectionSearchFragmentInteraction(thisConnection);
+            Toast toast = Toast.makeText(mContext, "Friend request sent.", Toast.LENGTH_SHORT);
+            toast.show();
         });
 
     }

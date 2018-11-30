@@ -38,9 +38,9 @@ public class MyChatRoomSelectionRecyclerViewAdapter extends RecyclerView.Adapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mOtherUser.setText(mValues.get(position).getOtherUser());
-        holder.mMessage.setText(mValues.get(position).getLastMessage());
-        holder.mDate.setText(mValues.get(position).getDate());
-        holder.mTime.setText(mValues.get(position).getTime());
+//        holder.mMessage.setText(mValues.get(position).getLastMessage());
+//        holder.mDate.setText(mValues.get(position).getDate());
+//        holder.mTime.setText(mValues.get(position).getTime());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,23 +62,23 @@ public class MyChatRoomSelectionRecyclerViewAdapter extends RecyclerView.Adapter
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mOtherUser;
-        public final TextView mDate;
-        public final TextView mTime;
-        public final TextView mMessage;
+//        public final TextView mDate;
+//        public final TextView mTime;
+//        public final TextView mMessage;
         public OpenMessage mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mOtherUser = view.findViewById(R.id.tv_connectionsfragment_otheruser);
-            mDate = view.findViewById(R.id.tv_connectionsfragment_date);
-            mTime = view.findViewById(R.id.tv_connectionsfragment_time);
-            mMessage = view.findViewById(R.id.tv_connectionsfragment_message);
+//            mDate = view.findViewById(R.id.tv_connectionsfragment_date);
+//            mTime = view.findViewById(R.id.tv_connectionsfragment_time);
+//            mMessage = view.findViewById(R.id.tv_connectionsfragment_message);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mDate.getText() + "'";
+            return super.toString();
         }
     }
 }
