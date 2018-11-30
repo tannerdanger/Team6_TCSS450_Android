@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
@@ -44,6 +45,8 @@ import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.UriHelper;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
+import group6.tcss450.uw.edu.chatapp.weather.WeatherSeattingMapsActivity;
+import group6.tcss450.uw.edu.chatapp.weather.weatherSeattingFragment;
 
 public class HomeActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
@@ -54,7 +57,9 @@ public class HomeActivity extends AppCompatActivity
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener,
-        DataHandler.OnDataLoadedListener, NewChatFragment.OnListFragmentInteractionListener {
+        DataHandler.OnDataLoadedListener, NewChatFragment.OnListFragmentInteractionListener,
+        weatherSeattingFragment.OnSettingsFragmentInteractionListener
+{
 
     private TextView mTextMessage;
     private FirebaseMessageReciever mFirebaseMessageReciever;
@@ -100,9 +105,12 @@ public class HomeActivity extends AppCompatActivity
 //                    navigateChat(); //called by async task
                     mFab.show();
                     return true;
+                case R.id.nav_settings:
+                    mToolbar.setTitle("SETTINGS");
+                    navigateSettings();
 
-                case R.id.navigation_logout:
-                    logout();
+//                case R.id.navigation_logout:
+//                    logout();
             }
 
             return false;
@@ -111,8 +119,18 @@ public class HomeActivity extends AppCompatActivity
     };
 
 
+    protected void navigateSettings(){
+        Bundle args = new Bundle();
+        args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+        weatherSeattingFragment frag = new weatherSeattingFragment();
+        frag.setArguments(args);
+        loadFragment(frag);
+
+    }
+
+
     /** For navigating to the home fragment */
-    protected void navigateHome()   {
+    public void navigateHome()   {
 
 
         Bundle args = new Bundle();
@@ -255,11 +273,9 @@ public class HomeActivity extends AppCompatActivity
      * @param obj the JSONObject beting added to the map.
      */
     public void updateJsonData(String key, JSONObject obj){
-
         if(null != obj){
             mJsonData.put(key, obj);
         }
-
     }
 
     /**
@@ -326,6 +342,7 @@ public class HomeActivity extends AppCompatActivity
         if(theFragment instanceof HomeFragment) return getString(R.string.TAG_HomeActivity);
         if(theFragment instanceof ConnectionFragment) return getString(R.string.TAG_ConnectionActivity);
         if(theFragment instanceof MessagesFragment) return getString(R.string.TAG_MessageActivity);
+        if(theFragment instanceof weatherSeattingFragment)return getString(R.string.TAG_SETTINGS);
         return null;
     }
 
@@ -357,7 +374,6 @@ public class HomeActivity extends AppCompatActivity
 
 
 //*************** FRAGMENT INTERACTION LISTENERS ***************//
-
 
     //Home Fragment
     @Override
@@ -493,7 +509,57 @@ public class HomeActivity extends AppCompatActivity
 // finish();
     }
 
+    @Override
+    public void onNewZipcode(int zip) {
 
+    }
+
+    @Override
+    public void onNewCity(String city) {
+
+    }
+
+    @Override
+    public void onNewLatLon(double lat, double lon) {
+        mDataHandler.updateWeatherByLatLon(lat, lon, true);
+    }
+
+    @Override
+    public void loadMap() {
+        Intent intent = new Intent(getApplicationContext(), WeatherSeattingMapsActivity.class); //TODO: If you want to change back to drawer layout, change HomeActivity.class => MainActivity.Class
+        intent.putExtra("lat", mLat);
+        intent.putExtra("lon", mLon);
+        intent.putExtra(getString(R.string.ARGS_CREDENTIALS), mCredentials);
+        startActivityForResult(intent, 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.print("BREAKPOINT");
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+
+                double lat = data.getDoubleExtra("lat", -1);
+                double lon = data.getDoubleExtra("lon", -1);
+
+                if( -1 != lat && -1 != lon){
+
+                    Fragment frag = (weatherSeattingFragment)getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_SETTINGS));
+                    ((weatherSeattingFragment) frag).getCoordsFromMap(lat, lon);
+                }
+
+            }
+        }
+    }
+
+    public void weatherLoaded() {
+        mHomeFrag.updateContent(mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)));
+        navigateHome();
+    }
+
+//    public void updateWeatherFrags() {
+//        mHomeFrag.updateContent(m);
+//    }
 
     /**
      * A BroadcastReceiver setup to listen for messages sent from MyFirebaseMessagingService
