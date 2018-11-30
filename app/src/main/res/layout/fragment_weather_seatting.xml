@@ -9,6 +9,7 @@
 
     <EditText
         android:id="@+id/city_editText"
+<<<<<<< HEAD
         android:layout_width="170dp"
         android:layout_height="43dp"
         android:layout_marginStart="8dp"
@@ -41,6 +42,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+=======
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Enter City"
+        android:inputType="textPersonName"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/zipcode_editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="Enter Zip Code"
+        android:inputType="textPersonName"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/city_editText" />
+>>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
 
     <Button
         android:id="@+id/Map_button"
@@ -48,6 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+<<<<<<< HEAD
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="396dp"
         android:text="Look by Map"
@@ -88,5 +115,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.363" />
+=======
+        android:text="Look by Map"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zipcode_editText2" />
+
+    <TextView
+        android:id="@+id/Or_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="OR"
+        app:layout_constraintBottom_toTopOf="@+id/zipcode_editText2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/city_editText"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:text="Search"
+        app:layout_constraintBottom_toBottomOf="@+id/zipcode_editText2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+>>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
 
 </android.support.constraint.ConstraintLayout>

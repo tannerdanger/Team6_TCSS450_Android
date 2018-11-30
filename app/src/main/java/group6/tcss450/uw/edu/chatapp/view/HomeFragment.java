@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import group6.tcss450.uw.edu.chatapp.R;
@@ -196,8 +198,11 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void updateContent(){
+    public void updateContent(JSONObject jsonObject){
 
+        mForecast = JsonHelper.parse_Forecast(jsonObject.toString());
+        System.out.print("BREAKPOINT");
+        updatecontent(null);
 //        mForecast = new Forecast[10];
 //        JSONObject forcastJson;
 //        if (getArguments() != null){
@@ -211,8 +216,13 @@ public class HomeFragment extends Fragment {
 
 
 
-    private void updateWeather(){
+    private void updateWeather(Forecast[] forecast){
+
+        if(null != forecast && forecast.length > 9){
+            mForecast = forecast;
+        }
         int i = 0;
+
         for(WeatherFragment frag : mWeatherFrags){
             //frag.setArguments();
             frag.setmForecast(mForecast[i]);

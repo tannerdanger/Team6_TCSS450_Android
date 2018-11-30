@@ -89,6 +89,7 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
         public final TextView mEmail;
         public final Button mAccept;
         public final Button mReject;
+        public final TextView mPending;
         public Connection mConnection;
 
         public ViewHolder(View view) {
@@ -98,6 +99,7 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
             mEmail = view.findViewById(R.id.tv_connectionrequest_email);
             mAccept = view.findViewById(R.id.button_connectionrequest_accept);
             mReject = view.findViewById(R.id.button_connectionrequest_reject);
+            mPending = view.findViewById(R.id.tv_connectionrequest_pending);
         }
 
         @Override

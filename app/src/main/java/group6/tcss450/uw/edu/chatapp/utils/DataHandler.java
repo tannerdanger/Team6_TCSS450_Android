@@ -76,7 +76,7 @@ public class DataHandler {
     }
 
 
-    public void updateWeatherByLatLon(double lat, double lon){
+    public void updateWeatherByLatLon(double lat, double lon, boolean updateFrags){
 
         JSONObject msg = JsonHelper.weather_JsonObject(lat, lon);
 
@@ -84,12 +84,26 @@ public class DataHandler {
 
             String uri = UriHelper.WEATHER_BY_LAT_LONG();
 
-            new SendPostAsyncTask.Builder(uri, msg)
-                    //.onPreExecute() //todo: wait fragment
-                    .onPostExecute(this::updateForecastJsonData)
-                    .build()
-                    .execute();
+            if(updateFrags){
+                new SendPostAsyncTask.Builder(uri, msg)
+                        //.onPreExecute() //todo: wait fragment
+                        .onPostExecute(this::updateForecastAndFrags)
+                        .build()
+                        .execute();
+            } else {
+
+                new SendPostAsyncTask.Builder(uri, msg)
+                        //.onPreExecute() //todo: wait fragment
+                        .onPostExecute(this::updateForecastJsonData)
+                        .build()
+                        .execute();
+            }
         }
+    }
+
+    private void updateForecastAndFrags(String s) {
+        updateForecastJsonData(s);
+        mHomeActivity.weatherLoaded();
     }
 
     public void getChats(boolean isFragTransition){

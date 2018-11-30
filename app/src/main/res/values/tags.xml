@@ -3,5 +3,6 @@
     <string name="TAG_HomeActivity">home</string>
     <string name="TAG_MessageActivity">message</string>
     <string name="TAG_ConnectionActivity">message</string>
+    <string name="TAG_SETTINGS">settings</string>
 
 </resources>
