@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,6 +128,7 @@ public class MessagesFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm");
             String dateStr = sdf.format(d);
             Message m = new Message.Builder(user).addMessage(text).addChatId(mChatId).addTime(dateStr).build();
+            Log.e("Messages", "Putting new message on the list!");
             mMessages.add(m);
             mRv.getAdapter().notifyItemInserted(mMessages.size() - 1);
             messageEntry.setText("");

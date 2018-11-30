@@ -293,7 +293,10 @@ public class HomeActivity extends AppCompatActivity
 
         if(null != message){
             // If map doesn't contain messages for this chat id, create empty LL
-            mMessageListMap.get(chatid).add(message);
+            if(!mMessageListMap.get(chatid).contains(message))   {
+                mMessageListMap.get(chatid).add(message);
+            }
+            //mMessageListMap.get(chatid).add(message);
         }
 
 

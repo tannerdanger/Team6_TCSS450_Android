@@ -47,6 +47,7 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
 
     public void addItem(Message theMessage) {
         mValues.add(theMessage);
+        Log.e("Messages", "adding a message in1");
         notifyItemInserted(0);
         notifyDataSetChanged();
 
