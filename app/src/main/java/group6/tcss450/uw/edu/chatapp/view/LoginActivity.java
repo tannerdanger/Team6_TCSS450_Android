@@ -26,7 +26,8 @@ import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 public class LoginActivity extends AppCompatActivity
         implements LoginFragment.OnFragmentInteractionListener,
         RegisterFragment.OnFragmentInteractionListener,
-        LoginHelpFragment.OnFragmentInteractionListener {
+        LoginHelpFragment.OnFragmentInteractionListener,
+        PasswordResetFragment.OnFragmentInteractionListener {
 
     Credentials mCredentials;
     private static boolean mIsWaitFragActive;
@@ -177,8 +178,8 @@ public class LoginActivity extends AppCompatActivity
         onWaitFragmentInteractionHide();
         saveCredentials(credentials);
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class); //TODO: If you want to change back to drawer layout, change HomeActivity.class => MainActivity.Class
-        intent.putExtra("lat", mLocation.getLatitude());
-        intent.putExtra("lon", mLocation.getLongitude());
+//        intent.putExtra("lat", mLocation.getLatitude());
+//        intent.putExtra("lon", mLocation.getLongitude());
         intent.putExtra(getString(R.string.ARGS_CREDENTIALS), credentials);
         startActivity(intent);
         //End this Activity and remove it from the Activity back stack.
@@ -234,11 +235,21 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     public void onCancelClicked() {
-        onBackPressed();
+        loadFragment(new LoginFragment());
     }
 
     @Override
     public void onSubmitClicked() {
-        // todo create and load password verification code page
+        loadFragment(new PasswordResetFragment());
+    }
+
+    @Override
+    public void onSubmitButtonClicked() {
+        loadFragment(new LoginFragment());
+    }
+
+    @Override
+    public void onCancelButtonClicked() {
+        loadFragment(new LoginFragment());
     }
 }

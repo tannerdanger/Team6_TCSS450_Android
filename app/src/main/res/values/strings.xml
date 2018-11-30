@@ -32,11 +32,19 @@
     <string name="registerfragment_lastname">Last Name</string>
     <string name="registerfragment_register">Register</string>
 
-    <!-- LogInHelp strings -->
-    <string name="loginhelp_instruction">Please enter your username or email:</string>
-    <string name="loginhelp_username_or_email">Username or email</string>
+    <!-- LogInHelpFragment strings -->
+    <string name="loginhelp_instruction">Please enter your email address:</string>
+    <string name="loginhelp_username_or_email">Email</string>
     <string name="loginhelp_submit">SUBMIT</string>
     <string name="loginhelp_cancel">CANCEL</string>
+
+    <!-- PasswordResetFragment strings -->
+    <string name="passwordresetfragment_email">Email</string>
+    <string name="passwordresetfragment_code">Code</string>
+    <string name="passwordresetfragment_password">New Password</string>
+    <string name="passwordresetfragment_password_verify">Verify New Password</string>
+    <string name="passwordresetfragment_cancel">CANCEL</string>
+    <string name="passwordresetfragment_submit">SUBMIT</string>
 
     <string name="tab_home">Home</string>
     <string name="tab_chat">Chat</string>

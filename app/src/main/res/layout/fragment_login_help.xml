@@ -22,15 +22,16 @@
         android:id="@+id/textView_logintrouble_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="12dp"
         android:layout_marginBottom="8dp"
         android:text="@string/loginhelp_instruction"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/editText_loginhelp_email_or_username"
+        android:textAlignment="viewStart"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/editText_loginhelp_email"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editText_loginhelp_email_or_username"
+        android:id="@+id/editText_loginhelp_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

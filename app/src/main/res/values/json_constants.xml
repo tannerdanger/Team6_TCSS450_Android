@@ -16,4 +16,6 @@
     <string name="JSON_KEY">key</string>
     <string name="JSON_FNAME">firstname</string>
     <string name="JSON_LNAME">lastname</string>
+    <string name="JSON_CODE">code</string>
+    <string name="JSON_MEMBER_ID">memberid</string>
 </resources>

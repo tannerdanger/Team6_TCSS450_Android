@@ -39,7 +39,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-places:16.0.0'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
-
-
 }
 apply plugin: 'com.google.gms.google-services'

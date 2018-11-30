@@ -1,6 +1,7 @@
 package group6.tcss450.uw.edu.chatapp.view;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -10,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Objects;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,8 +35,7 @@ public class LoginHelpFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater
-                .inflate(R.layout.fragment_login_help, container, false);
+        View view = inflater.inflate(R.layout.fragment_login_help, container, false);
 
         Button button = view.findViewById(R.id.button_loginhelp_submit);
         button.setOnClickListener(v -> submitUserRequest());
@@ -57,41 +59,32 @@ public class LoginHelpFragment extends Fragment {
     }
 
 
-    // TODO: Get user email based on either email or username. Send email to user with verification code. ActivityLogin loads verification page.
+    /* TODO: Send email to user with verification code. ActivityLogin loads verification page. */
     private void submitUserRequest() {
         if (mListener != null) {
-            EditText editText = (EditText) Objects.requireNonNull(getActivity())
-                    .findViewById(R.id.editText_loginhelp_email_or_username);
+            EditText emailEdit = (EditText) getActivity().findViewById(R.id.editText_loginhelp_email);
 
-            if (editText.getText().length() != 0) {
-                if (editText.getText().toString().contains("@")) {
-                    String email = editText.getText().toString();
-//                    Uri uri = new Uri.Builder()
-//                            .scheme("https")
-//                            .appendPath(getString(R.string.ep_base_url))
-//                            .appendPath(getString(R.string.ep_register))
-//                            .appendPath(getString(R.string.ep_resend))
-//                            .build();
-//                    JSONObject msg = new JSONObject();
-//
-//                    try {
-//                        msg.put(getString(R.string.JSON_EMAIL), email);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    new SendPostAsyncTask.Builder(uri.toString(), msg)
-////                            .onPostExecute(this::sendVerificationToEmailAddress)
-////                            .onCancelled(this::handleErrorsInTask)
-//                            .build()
-//                            .execute();
-                } else {
-                    String username = editText.getText().toString();
-
-                }
-                mListener.onSubmitClicked();
+            if (emailEdit.getText().length() == 0) {
+                emailEdit.setError("Please enter your email address.");
+            } else if (!emailEdit.getText().toString().contains("@")) {
+                emailEdit.setError("Please enter a valid email address.");
             } else {
-                editText.setError("Please enter your email or username.");
+                Uri uri = new Uri.Builder().scheme("https")
+                        .appendPath(getString(R.string.ep_base_url))
+                        .appendPath(getString(R.string.ep_register))
+                        .appendPath(getString(R.string.ep_recover))
+                        .build();
+
+                JSONObject msg = new JSONObject();
+
+                try {
+                    msg.put(getString(R.string.JSON_EMAIL), emailEdit.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                new SendPostAsyncTask.Builder(uri.toString(), msg).build().execute();
+                mListener.onSubmitClicked();
             }
         }
     }
