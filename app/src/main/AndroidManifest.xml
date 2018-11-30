@@ -60,11 +60,13 @@
 
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
-
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyA7HWhgBXn0YAP51Iia0k293U9Az_DIUkI" />
 
         <activity
             android:name=".weather.WeatherSeattingMapsActivity"

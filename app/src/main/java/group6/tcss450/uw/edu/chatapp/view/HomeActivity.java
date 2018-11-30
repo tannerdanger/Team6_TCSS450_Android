@@ -22,6 +22,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -83,6 +86,8 @@ public class HomeActivity extends AppCompatActivity
     public FloatingActionButton mFab;
     private GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
+    private GeoDataClient mGeoDataClient;
+    private PlaceDetectionClient mPlaceDetectionClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
 
@@ -238,6 +243,7 @@ public class HomeActivity extends AppCompatActivity
 
 
 
+
         mCredentials = (Credentials) getIntent().getSerializableExtra("credentials");
         mLat = getIntent().getDoubleExtra("lat", -1 );
         mLon = getIntent().getDoubleExtra("lon", -1 );
@@ -272,15 +278,12 @@ public class HomeActivity extends AppCompatActivity
             mFab.hide();
         });
 
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, this)
+        AutocompleteFilter filter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
                 .build();
-
-        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
-                LAT_LNG_BOUNDS, null);
+        mGeoDataClient = Places.getGeoDataClient(this);
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
+        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGeoDataClient, LAT_LNG_BOUNDS, filter);
     }
 
 
@@ -397,6 +400,9 @@ public class HomeActivity extends AppCompatActivity
 
 
 //*************** FRAGMENT INTERACTION LISTENERS ***************//
+    @Override
+    public GeoDataClient getClient(){return this.mGeoDataClient; }
+
     @Override
     public PlaceAutocompleteAdapter getAdapter(){return this.mPlaceAutocompleteAdapter; }
 
