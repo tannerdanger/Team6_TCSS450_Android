@@ -17,6 +17,8 @@ public class Connection extends AppCompatActivity implements Serializable {
     public final String mLastName;
     public final int mId;
     public final int mVerified;
+    /** This user sent the friend request. */
+    public final boolean mThisUserSent;
 
     public static class Builder {
         private final String mUsername;
@@ -25,6 +27,7 @@ public class Connection extends AppCompatActivity implements Serializable {
         private String mLastName;
         private int mId;
         private int mVerified;
+        private boolean mThisUserSent;
 
         public Builder(String username, String email) {
             this.mUsername = username;
@@ -51,6 +54,11 @@ public class Connection extends AppCompatActivity implements Serializable {
             return this;
         }
 
+        public Builder addUserSent(final boolean b) {
+            this.mThisUserSent = b;
+            return this;
+        }
+
         public Connection build()  {
             return new Connection(this);
         }
@@ -63,6 +71,7 @@ public class Connection extends AppCompatActivity implements Serializable {
         this.mLastName = builder.mLastName;
         this.mId = builder.mId;
         this.mVerified = builder.mVerified;
+        this.mThisUserSent = builder.mThisUserSent;
     }
 
     public String getUsername() {
@@ -87,6 +96,10 @@ public class Connection extends AppCompatActivity implements Serializable {
 
     public int getVerified()    {
         return mVerified;
+    }
+
+    public boolean getThisUserSent()    {
+        return mThisUserSent;
     }
 
     @Override

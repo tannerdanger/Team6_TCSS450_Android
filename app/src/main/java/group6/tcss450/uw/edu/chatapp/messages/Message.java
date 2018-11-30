@@ -121,15 +121,15 @@ public class Message extends AppCompatActivity implements Serializable {
 
     @Override
     public boolean equals(Object theOther) {
-        if (theOther instanceof Message) {
-            Message other = (Message) theOther;
-            if (other.getUser().equals(this.getUser()) && other.getMessage().equals(this.getMessage())
-                    && other.getDate().equals(this.getDate()) && other.getTime().equals(this.getTime())) {
-                return true;
-            }
-        }
-        return false;
-
+//        if (theOther instanceof Message) {
+//            Message other = (Message) theOther;
+//            if (other.getUser().equals(this.getUser()) && other.getMessage().equals(this.getMessage())
+//                    && other.getDate().equals(this.getDate()) && other.getTime().equals(this.getTime())) {
+//                return true;
+//            }
+//        }
+//        return false;
+        return (theOther instanceof Message) && (this.hashCode() == theOther.hashCode());
     }
 
     @Override

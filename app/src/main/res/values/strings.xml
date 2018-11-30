@@ -60,4 +60,5 @@
     <string name="blank" />
     <string name="newchat_tv_createchat">Create Chat</string>
     <string name="title_activity_weather_seatting_maps">Map</string>
+    <string name="pendingconnection_pending">Request Pending...</string>
 </resources>
