@@ -9,7 +9,6 @@
 
     <EditText
         android:id="@+id/city_editText"
-<<<<<<< HEAD
         android:layout_width="170dp"
         android:layout_height="43dp"
         android:layout_marginStart="8dp"
@@ -42,7 +41,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-=======
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -66,7 +64,7 @@
         android:textAlignment="viewStart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/city_editText" />
->>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
+
 
     <Button
         android:id="@+id/Map_button"
@@ -74,7 +72,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-<<<<<<< HEAD
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="396dp"
         android:text="Look by Map"
@@ -115,7 +112,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.363" />
-=======
         android:text="Look by Map"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/zipcode_editText2" />
@@ -144,7 +140,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/zipcode_editText2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
->>>>>>> 30fd5e3a4146fc36f518853d534d3fb37bef1b5a
 
     <AutoCompleteTextView
         android:id="@+id/settings_autoCompleteTextView"
