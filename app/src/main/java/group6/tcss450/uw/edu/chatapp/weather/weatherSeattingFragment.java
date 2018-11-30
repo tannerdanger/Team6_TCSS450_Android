@@ -8,11 +8,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import group6.tcss450.uw.edu.chatapp.R;
-import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
+import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 
 
 /**
@@ -20,7 +23,7 @@ import group6.tcss450.uw.edu.chatapp.contacts.ConnectionFragment;
  * Use the {@link weatherSeattingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class weatherSeattingFragment extends Fragment {
+public class weatherSeattingFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,6 +38,7 @@ public class weatherSeattingFragment extends Fragment {
     private EditText zipcode;
     private Button Map;
     private Button Search;
+    private GoogleApiClient mGoogleApiClient;
 
 
     public weatherSeattingFragment() {
@@ -77,7 +81,7 @@ public class weatherSeattingFragment extends Fragment {
         zipcode = (EditText) view.findViewById(R.id.zipcode_editText2);
         Map = (Button) view.findViewById(R.id.Map_button);
         Search = (Button) view.findViewById(R.id.search_button);
-
+        AutoCompleteTextView acTV = view.findViewById(R.id.settings_autoCompleteTextView);
         Search.setOnClickListener(l -> {
 
             if("".compareTo(city.getText().toString()) == 0 ) {
@@ -98,6 +102,18 @@ public class weatherSeattingFragment extends Fragment {
             }
 
         });
+
+
+        PlaceAutocompleteAdapter adapter = mListener.getAdapter();
+        if( null != adapter) {
+            acTV.setAdapter(adapter);
+            acTV.setThreshold(3);
+        }
+
+
+
+
+//        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.fragment_a)
 
         Map.setOnClickListener(l ->{
             mListener.loadMap();
@@ -133,6 +149,7 @@ public class weatherSeattingFragment extends Fragment {
         mListener = null;
     }
 
+
     /**
      * @author Tanner Brown
      */
@@ -141,7 +158,7 @@ public class weatherSeattingFragment extends Fragment {
         void onNewCity(String city);
         void onNewLatLon(double lat, double lon);
         void loadMap();
-
+        PlaceAutocompleteAdapter getAdapter();
     }
 
 

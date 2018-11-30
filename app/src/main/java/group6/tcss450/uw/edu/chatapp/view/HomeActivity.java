@@ -18,10 +18,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
@@ -41,6 +44,7 @@ import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.DataHandler;
 import group6.tcss450.uw.edu.chatapp.utils.MyFirebaseMessagingService;
+import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.UriHelper;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
@@ -58,7 +62,8 @@ public class HomeActivity extends AppCompatActivity
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener,
         DataHandler.OnDataLoadedListener, NewChatFragment.OnListFragmentInteractionListener,
-        weatherSeattingFragment.OnSettingsFragmentInteractionListener
+        weatherSeattingFragment.OnSettingsFragmentInteractionListener,
+        GoogleApiClient.OnConnectionFailedListener
 {
 
     private TextView mTextMessage;
@@ -76,7 +81,10 @@ public class HomeActivity extends AppCompatActivity
     private HashMap<Integer, ArrayList<Message>> mMessageListMap;
     public static final int MIN_PASSWORD_LENGTH = 3;
     public FloatingActionButton mFab;
-
+    private GoogleApiClient mGoogleApiClient;
+    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
+            new LatLng(-40, -168), new LatLng(71, 136));
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -263,7 +271,19 @@ public class HomeActivity extends AppCompatActivity
             loadFragment(frag);
             mFab.hide();
         });
+
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+
+        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
+                LAT_LNG_BOUNDS, null);
     }
+
+
 
 
     /**
@@ -377,6 +397,9 @@ public class HomeActivity extends AppCompatActivity
 
 
 //*************** FRAGMENT INTERACTION LISTENERS ***************//
+    @Override
+    public PlaceAutocompleteAdapter getAdapter(){return this.mPlaceAutocompleteAdapter; }
+
 
     //Home Fragment
     @Override
@@ -560,9 +583,17 @@ public class HomeActivity extends AppCompatActivity
         navigateHome();
     }
 
-//    public void updateWeatherFrags() {
-//        mHomeFrag.updateContent(m);
-//    }
+    /**
+     * @Author Tanner Brown
+     * @param connectionResult
+     */
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.wtf("SETTINGS", "connection failed");
+    }
+
+
+
 
     /**
      * A BroadcastReceiver setup to listen for messages sent from MyFirebaseMessagingService
@@ -611,14 +642,9 @@ public class HomeActivity extends AppCompatActivity
                                 //mDataHandler.
                                 mDataHandler.getMessages(chatid, false, true); //does not transition after loading message
 
-
                                 Log.i("New Message", sender + " " + msg);
                             }
-
                         }//TODO: delete connection? Delete chat?
-
-
-
                     }
                 } catch (JSONException e) {
                     Log.e("JSON PARSE", e.toString());
@@ -627,13 +653,8 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    public interface OnNotificationListener {
-        void OnNewMessage(Message theMessage);
-    }
-
-
     // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing
-// we have something that allows us to do that.
+    // we have something that allows us to do that.
     class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -671,6 +692,7 @@ public class HomeActivity extends AppCompatActivity
             // finish();
         }
     }
+
 }
 
 

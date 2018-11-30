@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.JsonHelper;
+
 import group6.tcss450.uw.edu.chatapp.utils.WeatherPagerAdapter;
 import group6.tcss450.uw.edu.chatapp.weather.Forecast;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
@@ -38,6 +39,7 @@ public class HomeFragment extends Fragment {
     private WeatherPagerAdapter mAdapter;
     private ArrayList<WeatherFragment> mWeatherFrags;
     private Forecast[] mForecast;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -104,6 +106,7 @@ public class HomeFragment extends Fragment {
 
         WeatherPagerAdapter adapter = setupViewPager(viewPager, getChildFragmentManager());
         viewPager.setAdapter(adapter);
+
 
 
         tabLayout.setupWithViewPager(viewPager, true);
