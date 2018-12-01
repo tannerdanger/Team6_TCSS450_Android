@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import group6.tcss450.uw.edu.chatapp.contacts.Connection;
 import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
@@ -228,6 +230,33 @@ public class DataHandler {
         }
 
 
+    }
+
+    public void createMultiChat(List<Connection> members, Credentials user)   {
+        JSONObject jResult = new JSONObject();
+        JSONArray jArr = new JSONArray();
+        try {
+            for(Connection c : members) {
+                JSONObject temp = new JSONObject();
+                temp.put("memberid", c.getId());
+                temp.put("username",c.getUsername());
+                jArr.put(temp);
+            }
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("memberid", user.getID());
+            userInfo.put("username",user.getUsername());
+            jArr.put(userInfo);
+            jResult.put("users", jArr);
+            String uri = UriHelper.MESSAGING_MULTI();
+            new SendPostAsyncTask.Builder(uri, jResult)
+                    .onPostExecute(this::createChat)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+        } catch (JSONException e)   {
+            e.printStackTrace();
+        }
+        getChats(true);
     }
 
     private int createChat(String s){

@@ -81,10 +81,8 @@ public class NewChatFragment extends Fragment {
         mRecyclerView.setAdapter(adapter);
         Button b = view.findViewById(R.id.button_newchat_startchat);
         b.setOnClickListener((View v) ->    {
-            List<Connection> temp = adapter.getSelectedConnections();
-            for (Connection c : temp)   {
-                Log.e("SELECTED", c.getUsername());
-            }
+            List<Connection> chosen = adapter.getSelectedConnections();
+            mListener.onNewChatFragmentInteraction(chosen);
         });
         return view;
     }
@@ -119,6 +117,6 @@ public class NewChatFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onNewChatFragmentInteraction(Connection item);
+        void onNewChatFragmentInteraction(List<Connection> connections);
     }
 }

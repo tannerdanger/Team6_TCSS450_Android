@@ -20,6 +20,7 @@ public class UriHelper {
     private static final String PROPOSE = "propose";
     private static final String APPROVE = "approve";
     private static final String REMOVE = "remove";
+    private static final String MULTI = "newmulti";
 
     public static String CONNECTIONS_GETALL(){
 
@@ -46,6 +47,15 @@ public class UriHelper {
                 .appendPath(BASE)
                 .appendPath(MESSAGING)
                 .appendPath(GETALL)
+                .build().toString();
+    }
+
+    public static String MESSAGING_MULTI()  {
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(MESSAGING)
+                .appendPath(MULTI)
                 .build().toString();
     }
 

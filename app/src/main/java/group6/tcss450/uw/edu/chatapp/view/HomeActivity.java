@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.contacts.Connection;
@@ -501,8 +502,9 @@ public class HomeActivity extends AppCompatActivity
 
 
     @Override
-    public void onNewChatFragmentInteraction(Connection item) {
-
+    public void onNewChatFragmentInteraction(List<Connection> chosen) {
+        mDataHandler.createMultiChat(chosen, mCredentials);
+        navigateChat();
     }
 
     //WAIT SCREEN

@@ -71,7 +71,7 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
                 }
             }
         });
-        if (!holder.mItem.getUser().equals(mCredentials.getEmail())) {
+        if (!holder.mItem.getUser().equals(mCredentials.getUsername())) {
             //SOMEONE THAT IS NOT THE USER SENDS A MESSAGE
             ConstraintLayout.LayoutParams otherUserSends = (ConstraintLayout.LayoutParams) holder
                     .row_constraintlayout.getLayoutParams();
