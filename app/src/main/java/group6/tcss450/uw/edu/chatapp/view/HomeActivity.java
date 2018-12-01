@@ -263,7 +263,7 @@ public class HomeActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mChatId = -1;
+      //  mChatId = -1;
 
         mFab = findViewById(R.id.fab);
 
@@ -387,19 +387,28 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    public void recieveMessage(int chatID){
+    public void recieveMessage(int chatID) {
+        Message m = null;
+        ArrayList l = mMessageListMap.getOrDefault(chatID, null);
+        if (l != null) {
 
-        Message m = mMessageListMap.get(chatID).get(mMessageListMap.get(chatID).size() - 1);
-        if(null != m){
-            MessagesFragment frag = (MessagesFragment)getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_MessageActivity));
-            if(null != frag){frag.recieveMessage(m);}
+            if(l.size() > 0) {
+                m = (Message) l.get(l.size() - 1);//l.get(mMessageListMap.get(chatID).size());
+            }
+
+            if (null != m) {
+                MessagesFragment frag = (MessagesFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_MessageActivity));
+                if (null != frag) {
+                    frag.recieveMessage(m);
+                }
+            }
         }
     }
 
 
 
 
-//*************** FRAGMENT INTERACTION LISTENERS ***************//
+    //*************** FRAGMENT INTERACTION LISTENERS ***************//
     @Override
     public GeoDataClient getClient(){return this.mGeoDataClient; }
 
@@ -427,7 +436,8 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onMessageSendInteraction(Message theMessage)   {
         String uri = UriHelper.MESSAGES_SEND();
-        //mChatId = theMessage.getChatId();
+        mChatId = theMessage.getChatId();
+        JSONObject obj = theMessage.asJSONObject();
 
         new SendPostAsyncTask.Builder(uri, theMessage.asJSONObject())
                 .onPostExecute(this::handleMessageSendPost)

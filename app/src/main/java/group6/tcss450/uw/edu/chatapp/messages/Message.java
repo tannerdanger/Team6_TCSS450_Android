@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-import group6.tcss450.uw.edu.chatapp.R;
-
 public class Message extends AppCompatActivity implements Serializable {
 
     /**
@@ -44,10 +42,10 @@ public class Message extends AppCompatActivity implements Serializable {
         /**
          * Constructor for message.
          *
-         * @param theUser The user that sent the message.
+         * @param theUserName The user that sent the message.
          */
-        public Builder(String theUser) {
-            this.mUser = theUser;
+        public Builder(String theUserName) {
+            this.mUser = theUserName;
         }
 
         public Builder addMessage(final String theMessage) {
@@ -113,6 +111,7 @@ public class Message extends AppCompatActivity implements Serializable {
             msg.put("chatid", getChatId());
             msg.put("message", getMessage());
             msg.put("email", getUser());
+            msg.put("username", getUser());
         } catch (JSONException e) {
             Log.wtf("MESSAGE", "Error creating Message JSON");
         }

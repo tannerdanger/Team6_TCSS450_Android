@@ -382,7 +382,7 @@ public class DataHandler {
                         String[] timedate = jsonSet.getString("timestamp").split(" ", 2);
                         timedate[1] = timedate[1].substring(0, timedate[1].lastIndexOf(":"));
 
-                        message = new Message.Builder(jsonSet.getString("email"))
+                        message = new Message.Builder(jsonSet.getString("username"))
                                 .addDate(timedate[0])
                                 .addTime(timedate[1])
                                 .addChatId(chatid)

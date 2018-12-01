@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-import group6.tcss450.uw.edu.chatapp.R;
-
 /**
  * Class to encapsulate credentials fields. Building an Object requires a email and password.
  *

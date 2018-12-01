@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -123,7 +121,9 @@ public class MessagesFragment extends Fragment {
         sendButton.setOnClickListener((View v) -> {
 
             String text = messageEntry.getText().toString();
-            String user = mCredentials.getEmail();
+            //String user = mCredentials.getEmail();
+            String user = mCredentials.getUsername();
+
             Date d = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm");
             String dateStr = sdf.format(d);
@@ -145,7 +145,7 @@ public class MessagesFragment extends Fragment {
      * @param theMessage a new message to be added.
      */
     public void recieveMessage(Message theMessage){
-        if(theMessage.getUser().compareTo(mCredentials.getEmail()) != 0 ) {
+        if(theMessage.getUser().compareTo(mCredentials.getUsername()) != 0 ) {
             //RecyclerView rv = getView().findViewById(R.id.list_messages_messageslist);
             mAdapter.addItem(theMessage);
             mAdapter.notifyItemInserted(mAdapter.getItemCount());
