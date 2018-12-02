@@ -119,7 +119,7 @@ public class PasswordResetFragment extends Fragment {
                         json.put(getString(R.string.JSON_EMAIL), email);
                         json.put(getString(R.string.JSON_CODE), code);
                         json.put(getString(R.string.JSON_PASSWORD), newPassword);
-                        json.put(getString(R.string.JSON_MEMBER_ID), 28);
+                        json.put(getString(R.string.JSON_MEMBER_ID), -1);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
