@@ -25,12 +25,10 @@ public class MyNewChatRecyclerViewAdapter extends RecyclerView.Adapter<MyNewChat
     private List<Connection> mSelected;
     private final OnListFragmentInteractionListener mListener;
 
-    private int mRowIndex;
 
     public MyNewChatRecyclerViewAdapter(List<Connection> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
-        mRowIndex = -1;
         mSelected = new ArrayList<Connection>();
     }
 
@@ -47,7 +45,7 @@ public class MyNewChatRecyclerViewAdapter extends RecyclerView.Adapter<MyNewChat
         // https://stackoverflow.com/questions/40692214/changing-background-color-of-selected-item-in-recyclerview
         holder.mConnection = mValues.get(position);
         holder.mUsernameTv.setText(mValues.get(position).getUsername());
-
+        holder.mHolderRow = position;
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -62,25 +60,26 @@ public class MyNewChatRecyclerViewAdapter extends RecyclerView.Adapter<MyNewChat
         holder.row_linearlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mRowIndex = position;
-                notifyDataSetChanged();
+                holder.isSelected = !holder.isSelected;
+                if (holder.isSelected) {
+                    //holder.row_linearlayout.setBackgroundColor(Color.parseColor("#567845"));
+                    //holder.mUsernameTv.setTextColor(Color.parseColor("#ffffff"));
+                    holder.row_linearlayout.setBackgroundResource(R.drawable.rectangleborder_filled);
+                    mSelected.add(holder.mConnection);
+
+                } else {
+                    //holder.row_linearlayout.setBackgroundColor(Color.parseColor("#ffffff"));
+                    holder.row_linearlayout.setBackgroundResource(R.drawable.rectangleborder_nofill);
+                    mSelected.remove(holder.mConnection);
+                    //holder.mUsernameTv.setTextColor(Color.parseColor("#000000"));
+                }
+                //notifyDataSetChanged();
             }
         });
-        if (mRowIndex == position) {
-            holder.isSelected = !holder.isSelected;
-            if (holder.isSelected) {
-                //holder.row_linearlayout.setBackgroundColor(Color.parseColor("#567845"));
-                //holder.mUsernameTv.setTextColor(Color.parseColor("#ffffff"));
-                holder.row_linearlayout.setBackgroundResource(R.drawable.rectangleborder_filled);
-                mSelected.add(holder.mConnection);
-
-            } else {
-                //holder.row_linearlayout.setBackgroundColor(Color.parseColor("#ffffff"));
-                holder.row_linearlayout.setBackgroundResource(R.drawable.rectangleborder_nofill);
-                mSelected.remove(holder.mConnection);
-                //holder.mUsernameTv.setTextColor(Color.parseColor("#000000"));
-            }
-        }
+//        if (mRowIndex == position) {
+//
+//
+//        }
 //        else
 //        {
 //            holder.row_linearlayout.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -103,6 +102,7 @@ public class MyNewChatRecyclerViewAdapter extends RecyclerView.Adapter<MyNewChat
         public final TextView mUsernameTv;
         public Connection mConnection;
         public boolean isSelected;
+        public int mHolderRow;
         ConstraintLayout row_linearlayout;
         RecyclerView rv;
 
@@ -113,6 +113,7 @@ public class MyNewChatRecyclerViewAdapter extends RecyclerView.Adapter<MyNewChat
             mUsernameTv = view.findViewById(R.id.tv_newchat_username);
             row_linearlayout = itemView.findViewById(R.id.linearLayout_newchat_individual);
             rv = itemView.findViewById(R.id.list_newchat);
+            mHolderRow = -1;
         }
 
         @Override

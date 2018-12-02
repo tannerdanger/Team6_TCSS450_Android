@@ -97,7 +97,7 @@ public class JsonHelper extends AppCompatActivity {
             msg.put(MYID,memberid);
             msg.put(MYUN, username);
             msg.put(THERID, their_id);
-
+            msg.put(CHAT, -1);
         }catch (JSONException e){
             e.printStackTrace();
         }
