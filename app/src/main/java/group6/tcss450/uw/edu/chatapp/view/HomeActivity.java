@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,6 +49,7 @@ import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.DataHandler;
 import group6.tcss450.uw.edu.chatapp.utils.MyFirebaseMessagingService;
+import group6.tcss450.uw.edu.chatapp.utils.Notification;
 import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.UriHelper;
@@ -64,6 +66,7 @@ public class HomeActivity extends AppCompatActivity
         WeatherFragment.OnFragmentInteractionListener,
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
+        NotificationFragment.OnListFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener,
         DataHandler.OnDataLoadedListener, NewChatFragment.OnListFragmentInteractionListener,
         weatherSeattingFragment.OnSettingsFragmentInteractionListener,
@@ -71,7 +74,7 @@ public class HomeActivity extends AppCompatActivity
 {
 
     private TextView mTextMessage;
-    private FirebaseMessageReciever mFirebaseMessageReciever;
+    private FirebaseMessageReceiver mFirebaseMessageReceiver;
     private Credentials mCredentials;
     private DataHandler mDataHandler;
     private ActionBar mToolbar;
@@ -109,6 +112,7 @@ public class HomeActivity extends AppCompatActivity
                     mFab.show();
                     return true;
                 case R.id.navigation_notifications:
+                    // TODO ELI
                     mToolbar.setTitle("NOTIFICATIONS");
                     navigateNotifications();
                     mFab.show();
@@ -116,7 +120,7 @@ public class HomeActivity extends AppCompatActivity
                 case R.id.nav_solo_chat:
                     mToolbar.setTitle("CHAT");
                     mDataHandler.getChats(true);
-//                    navigateChat(); //called by async task
+                    navigateChat(); //called by async task
                     mFab.show();
                     return true;
                 case R.id.nav_settings:
@@ -177,7 +181,53 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /** For navigating to the notifications fragment */
-    protected void navigateNotifications(){}
+    protected void navigateNotifications() {
+        //TODO
+        Fragment fragment = new NotificationFragment();
+
+//        OpenMessage[] chats = mDataHandler // All chat rooms for user
+//                .getChatArray(mJsonData.get(getString(R.string.ARGS_CHATROOMS)));
+
+
+//        Connection[] connections = new ArrayList<Connection>(Arrays.asList((Connection[])
+//                getArguments().getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)));
+
+
+        // NOT SURE ABOUT NEXT STATEMENT
+//        mDataHandler.updateContacts(); //THIS REPLACED EVERYTHING
+//        Connection[] connections = mDataHandler
+//                .getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS)));
+        List<Connection> l = new ArrayList<>(Arrays.asList(mDataHandler
+                .getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS)))));
+        l.removeIf(c ->(c.getVerified() == 1));
+
+        Notification[] n = new Notification[l.size()];
+        for (int i = 0; i < n.length; i++) {
+            n[i] = new Notification.Builder(l.get(i).mUsername,
+                    Notification.NotificationType.FRIEND_REQUEST)
+                    .build();
+        }
+
+
+
+
+        Bundle args = new Bundle();
+
+        args.putSerializable(NotificationFragment.ARG_FRIEND_REQUEST_NOTIFICATION_LIST, n);
+
+//        if (chats != null) {
+//            args.putSerializable(ChatRoomSelectionFragment.ARG_CONNECTION_LIST, chats);
+//        }
+//
+//        if (connections != null) {
+//            args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, connections);
+//        }
+
+//        args.putSerializable(NotificationFragment.ARG_NOTIFICATION_LIST, getNotifications());
+
+        fragment.setArguments(args);
+        loadFragment(fragment);
+    }
 
     /** For navigating to the chat fragment */
     public void navigateChat()   {
@@ -196,32 +246,32 @@ public class HomeActivity extends AppCompatActivity
 
     /**
      * For navigating to a chatid
-     * @param chatid the id of the chat to open
+     * @param chatID the id of the chat to open
      */
-    public void navigateMessages(int chatid){
+    public void navigateMessages(int chatID) {
 
 
         System.out.print("Breakpoint");
 
         Message[] messages = new Message[0];
 
-        if(mMessageListMap.containsKey(chatid)) {
+        if(mMessageListMap.containsKey(chatID)) {
 
-            int msgCount = mMessageListMap.get(chatid).size();
+            int msgCount = mMessageListMap.get(chatID).size();
             if (msgCount > 0) {
                 messages = new Message[msgCount];
-                mMessageListMap.get(chatid).toArray(messages);
+                mMessageListMap.get(chatID).toArray(messages);
             }
         }else{
 
-            mMessageListMap.put(chatid, new ArrayList<>());
+            mMessageListMap.put(chatID, new ArrayList<>());
 
         }
 
         Bundle b = new Bundle();
         b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, messages);
         b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-        b.putInt(MessagesFragment.ARG_CHAT_ID, chatid);
+        b.putInt(MessagesFragment.ARG_CHAT_ID, chatID);
 
         Fragment frag = new MessagesFragment();
 
@@ -232,15 +282,13 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mFirebaseMessageReciever = new FirebaseMessageReciever();
+        mFirebaseMessageReceiver = new FirebaseMessageReceiver();
         IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
-        registerReceiver(mFirebaseMessageReciever, iFilter);
+        registerReceiver(mFirebaseMessageReceiver, iFilter);
 
 
 
@@ -288,8 +336,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
-
     /**
      * This method is called from the DataHandler class to update data in the mJsonData map.
      *
@@ -304,21 +350,21 @@ public class HomeActivity extends AppCompatActivity
 
     /**
      * Adds a message to the proper message list
-     * @param chatid the id the message belongs to
+     * @param chatID the id the message belongs to
      * @param message the message to be added.
      */
-    public void addMessage(Integer chatid, Message message){
+    public void addMessage(Integer chatID, Message message){
 
         //if ArrayList of messages for chatid doesn't yet exist, create it.
-        if (!mMessageListMap.containsKey(chatid)) {
+        if (!mMessageListMap.containsKey(chatID)) {
             ArrayList<Message> tmp = new ArrayList<>();
-            mMessageListMap.put(chatid, tmp);
+            mMessageListMap.put(chatID, tmp);
         }
 
         if(null != message){
             // If map doesn't contain messages for this chat id, create empty LL
-            if(!mMessageListMap.get(chatid).contains(message))   {
-                mMessageListMap.get(chatid).add(message);
+            if(!mMessageListMap.get(chatID).contains(message))   {
+                mMessageListMap.get(chatID).add(message);
             }
             //mMessageListMap.get(chatid).add(message);
         }
@@ -388,7 +434,7 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    public void recieveMessage(int chatID) {
+    public void receiveMessage(int chatID) {
         Message m = null;
         ArrayList l = mMessageListMap.getOrDefault(chatID, null);
         if (l != null) {
@@ -617,7 +663,7 @@ public class HomeActivity extends AppCompatActivity
      * A BroadcastReceiver setup to listen for messages sent from MyFirebaseMessagingService
      * that Android allows to run all the time.
      */
-    private class FirebaseMessageReciever extends BroadcastReceiver {
+    private class FirebaseMessageReceiver extends BroadcastReceiver {
         private static final String CONNECTION_REQ_TYPE = "connection_req";
         private static final String MESSAGE_TYPE = "msg";
         @Override

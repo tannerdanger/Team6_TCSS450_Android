@@ -48,7 +48,8 @@ public class MyMessagesRecyclerViewAdapter extends RecyclerView.Adapter<MyMessag
         notifyItemInserted(0);
         notifyDataSetChanged();
 
-
+        // For notifications
+        theMessage.setRead();
     }
 
     @Override

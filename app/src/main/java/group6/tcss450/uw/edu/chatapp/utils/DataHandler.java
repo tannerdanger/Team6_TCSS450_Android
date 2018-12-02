@@ -289,7 +289,7 @@ public class DataHandler {
 
     private void updateMessagesRefresh(String s) {
         int chatid = updateMessages(s);
-        mHomeActivity.recieveMessage(chatid);
+        mHomeActivity.receiveMessage(chatid);
     }
 
     private void updateChatsTransition(String s){

@@ -32,6 +32,8 @@ public class Message extends AppCompatActivity implements Serializable {
 
     private int mChatId;
 
+    private boolean isUnread;
+
     public static class Builder {
         private final String mUser;
         private String mDate;
@@ -79,6 +81,15 @@ public class Message extends AppCompatActivity implements Serializable {
         this.mTime = builder.mTime;
         this.mMessage = builder.mMessage;
         this.mChatId = builder.mChatId;
+        this.isUnread = true;
+    }
+
+    public void setRead() {
+        isUnread = false;
+    }
+
+    public boolean isUnread() {
+        return isUnread;
     }
 
     public String getUser() {

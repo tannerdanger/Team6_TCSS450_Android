@@ -179,8 +179,8 @@ public class LoginActivity extends AppCompatActivity
         saveCredentials(credentials);
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class); //TODO: If you want to change back to drawer layout, change HomeActivity.class => MainActivity.Class
 
-        intent.putExtra("lat", mLocation.getLatitude());
-        intent.putExtra("lon", mLocation.getLongitude());
+//        intent.putExtra("lat", mLocation.getLatitude());
+//        intent.putExtra("lon", mLocation.getLongitude());
         intent.putExtra(getString(R.string.ARGS_CREDENTIALS), credentials);
         startActivity(intent);
         //End this Activity and remove it from the Activity back stack.
