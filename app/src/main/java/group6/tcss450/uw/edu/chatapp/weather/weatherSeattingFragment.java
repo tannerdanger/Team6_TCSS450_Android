@@ -3,7 +3,9 @@ package group6.tcss450.uw.edu.chatapp.weather;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
@@ -50,6 +56,9 @@ public class weatherSeattingFragment extends Fragment {
     private weatherSeattingFragment.OnSettingsFragmentInteractionListener mListener;
 
     // TODO: Rename and change types of parameters
+    int mycolor = Color.WHITE;
+    private TextView txtColor;
+    Button myButton;
     private double mLat;
     private double mLong;
     private AutoCompleteTextView mCityTextView;
@@ -58,6 +67,7 @@ public class weatherSeattingFragment extends Fragment {
     private Button Search;
     private GeoDataClient mGeoDataClient;
     PlaceAutocompleteAdapter mAdapter;
+
 
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
@@ -103,6 +113,12 @@ public class weatherSeattingFragment extends Fragment {
         zipcode = (EditText) view.findViewById(R.id.zipcode_editText);
         Map = (Button) view.findViewById(R.id.Map_button);
         Search = (Button) view.findViewById(R.id.search_button);
+        txtColor = (TextView) view.findViewById(R.id.txtColor);
+        myButton = (Button) view.findViewById(R.id.myButton);
+
+        myButton.setOnClickListener(l -> {
+            pickColor(l);
+        });
 
         Search.setOnClickListener(l -> {
 
@@ -272,6 +288,36 @@ public class weatherSeattingFragment extends Fragment {
         return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
                 websiteUri));
 
+    }
+
+    public void pickColor(View v){
+        ColorPickerDialogBuilder
+                .with(getContext())
+                .setTitle("Choose color")
+                .initialColor(mycolor)
+                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                .density(12)
+                .setOnColorSelectedListener(new OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int selectedColor) {
+//                        (onColorSelected: 0x" + Integer.toHexString(selectedColor));
+                    }
+                })
+                .setPositiveButton("ok", new ColorPickerClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                        Log.d("Debug", String.valueOf(selectedColor));
+                        Toast.makeText(getActivity().getApplicationContext(),"onColorSelected: 0x" + Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
+                        txtColor.setBackgroundColor(selectedColor);
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .build()
+                .show();
     }
 
 }

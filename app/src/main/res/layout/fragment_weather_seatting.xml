@@ -95,5 +95,23 @@
         app:layout_constraintTop_toBottomOf="@+id/label_tv" />
 
 
+    <Button
+        android:id="@+id/myButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="pickColor"
+        android:text="pick color"
+        tools:ignore="OnClick" />
+
+    <TextView
+        android:id="@+id/txtColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="48dp"
+        tools:ignore="MissingConstraints" />
+
+
+
 
 </android.support.constraint.ConstraintLayout>
