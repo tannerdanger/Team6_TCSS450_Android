@@ -82,9 +82,6 @@ public class WeatherSeattingMapsActivity extends FragmentActivity implements OnM
         mMap.clear(); //remove old marker
 
 
-
-
-
         Log.d("LAT/LONG", latLng.toString());
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
