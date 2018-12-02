@@ -116,6 +116,6 @@ public class NotificationFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-//        void onListFragmentInteraction(Notification item);
+        void onListNotificationFragmentInteraction(Notification item);
     }
 }

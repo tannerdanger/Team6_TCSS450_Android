@@ -58,6 +58,9 @@ import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherSeattingMapsActivity;
 import group6.tcss450.uw.edu.chatapp.weather.weatherSeattingFragment;
 
+import static group6.tcss450.uw.edu.chatapp.view.NotificationFragment.ARG_FRIEND_REQUEST_NOTIFICATION_LIST;
+import static group6.tcss450.uw.edu.chatapp.view.NotificationFragment.OnListFragmentInteractionListener;
+
 public class HomeActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
         ChatRoomSelectionFragment.OnOpenMessageFragmentInteractionListener,
@@ -66,7 +69,7 @@ public class HomeActivity extends AppCompatActivity
         WeatherFragment.OnFragmentInteractionListener,
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
-        NotificationFragment.OnListFragmentInteractionListener,
+        OnListFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener,
         DataHandler.OnDataLoadedListener, NewChatFragment.OnListFragmentInteractionListener,
         weatherSeattingFragment.OnSettingsFragmentInteractionListener,
@@ -185,19 +188,6 @@ public class HomeActivity extends AppCompatActivity
     protected void navigateNotifications() {
         //TODO
         Fragment fragment = new NotificationFragment();
-
-//        OpenMessage[] chats = mDataHandler // All chat rooms for user
-//                .getChatArray(mJsonData.get(getString(R.string.ARGS_CHATROOMS)));
-
-
-//        Connection[] connections = new ArrayList<Connection>(Arrays.asList((Connection[])
-//                getArguments().getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)));
-
-
-        // NOT SURE ABOUT NEXT STATEMENT
-//        mDataHandler.updateContacts(); //THIS REPLACED EVERYTHING
-//        Connection[] connections = mDataHandler
-//                .getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS)));
         List<Connection> l = new ArrayList<>(Arrays.asList(mDataHandler
                 .getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS)))));
         l.removeIf(c ->(c.getVerified() == 1));
@@ -209,23 +199,14 @@ public class HomeActivity extends AppCompatActivity
                     .build();
         }
 
-
+        mDataHandler.updateContacts(); //THIS REPLACED EVERYTHING
+        Connection[] connections = mDataHandler
+                .getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS)));
 
 
         Bundle args = new Bundle();
 
-        args.putSerializable(NotificationFragment.ARG_FRIEND_REQUEST_NOTIFICATION_LIST, n);
-
-//        if (chats != null) {
-//            args.putSerializable(ChatRoomSelectionFragment.ARG_CONNECTION_LIST, chats);
-//        }
-//
-//        if (connections != null) {
-//            args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, connections);
-//        }
-
-//        args.putSerializable(NotificationFragment.ARG_NOTIFICATION_LIST, getNotifications());
-
+        args.putSerializable(ARG_FRIEND_REQUEST_NOTIFICATION_LIST, n);
         fragment.setArguments(args);
         loadFragment(fragment);
     }
@@ -677,7 +658,11 @@ public class HomeActivity extends AppCompatActivity
         Log.wtf("SETTINGS", "connection failed");
     }
 
-
+    @Override
+    public void onListNotificationFragmentInteraction(Notification item) {
+        // todo
+        onConnectionRequestInteraction(new Bundle());
+    }
 
 
     /**
