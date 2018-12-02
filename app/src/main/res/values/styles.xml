@@ -6,7 +6,23 @@
         <item name="colorPrimary">@color/TEST_COLOR2</item>
         <item name="colorPrimaryDark">@color/TEST_COLOR1</item>
         <item name="colorAccent">@color/TEST_COLOR3</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
+
+    <style name="AppThemeDarkActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#000</item>
+        <item name="colorPrimaryDark">#000</item>
+        <item name="colorAccent">#000</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+    <!--This is many different Themes colors-->
+
+    <!--This is the end of the themes -->
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

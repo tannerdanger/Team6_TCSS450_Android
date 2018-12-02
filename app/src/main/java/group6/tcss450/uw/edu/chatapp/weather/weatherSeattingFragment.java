@@ -2,11 +2,15 @@ package group6.tcss450.uw.edu.chatapp.weather;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -36,6 +40,8 @@ import com.google.android.gms.maps.model.RuntimeRemoteException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Random;
+
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 
@@ -56,6 +62,7 @@ public class weatherSeattingFragment extends Fragment {
     private weatherSeattingFragment.OnSettingsFragmentInteractionListener mListener;
 
     // TODO: Rename and change types of parameters
+
     int mycolor = Color.WHITE;
     private TextView txtColor;
     Button myButton;
@@ -65,8 +72,14 @@ public class weatherSeattingFragment extends Fragment {
     private EditText zipcode;
     private Button Map;
     private Button Search;
+    private Button myThemeButton;
     private GeoDataClient mGeoDataClient;
     PlaceAutocompleteAdapter mAdapter;
+    private String myPrmaryColor;
+    private String SecondaryColor;
+    private String ThirdColor;
+    private String BackGroundColor;
+
 
 
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
@@ -108,6 +121,7 @@ public class weatherSeattingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_weather_seatting, container, false);
         mCityTextView = (AutoCompleteTextView) view.findViewById(R.id.settings_autoCompleteTextView);
         zipcode = (EditText) view.findViewById(R.id.zipcode_editText);
@@ -115,9 +129,21 @@ public class weatherSeattingFragment extends Fragment {
         Search = (Button) view.findViewById(R.id.search_button);
         txtColor = (TextView) view.findViewById(R.id.txtColor);
         myButton = (Button) view.findViewById(R.id.myButton);
+        myThemeButton = (Button) view.findViewById(R.id.button_settings_commit);
 
         myButton.setOnClickListener(l -> {
             pickColor(l);
+        });
+
+        //this is for the button setting commit
+        new ThemeColors(this.getContext());
+        myThemeButton.setOnClickListener(l2 -> {
+            
+            int red= new Random().nextInt(255);
+            int green= new Random().nextInt(255);
+            int blue= new Random().nextInt(255);
+            ThemeColors.setNewThemeColor(this.getActivity(), red, green, blue);
+            
         });
 
         Search.setOnClickListener(l -> {
@@ -307,8 +333,22 @@ public class weatherSeattingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
                         Log.d("Debug", String.valueOf(selectedColor));
-                        Toast.makeText(getActivity().getApplicationContext(),"onColorSelected: 0x" + Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
-                        txtColor.setBackgroundColor(selectedColor);
+                        Toast.makeText(getActivity().getApplicationContext(),"onColorSelected: 0x" + Integer.toHexString(selectedColor).toUpperCase(), Toast.LENGTH_SHORT).show();
+
+                        //this set the color of the background
+                       txtColor.setBackgroundColor(selectedColor);
+
+                        // we can add if statement and check if the drop down list matches and store color hex # on those variables
+                        // to be passed each value to
+                        myPrmaryColor = Integer.toHexString(selectedColor);
+                        Log.d("PrimaryColor", String.valueOf(myPrmaryColor));
+                        SecondaryColor =  Integer.toHexString(selectedColor);
+                        Log.d("SecondaryColor", String.valueOf(SecondaryColor));
+                        ThirdColor  =  Integer.toHexString(selectedColor);
+                        Log.d("ThridColor", String.valueOf(ThirdColor));
+                        BackGroundColor =  Integer.toHexString(selectedColor);
+                        Log.d("BackGroundColor", String.valueOf(BackGroundColor));
+
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -320,4 +360,45 @@ public class weatherSeattingFragment extends Fragment {
                 .show();
     }
 
+
+    // this is an inter class
+    public static class ThemeColors {
+        private static final String NAME = "ThemeColors", KEY = "color";
+        public int color;
+        //this create the multiple  themes colors
+        private ThemeColors(Context context) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+            String stringColor = sharedPreferences.getString(KEY, "004bff");
+            color = Color.parseColor("#" + stringColor);
+
+            if (isLightActionBar()) context.setTheme(R.style.AppTheme);
+            context.setTheme(context.getResources().getIdentifier("T_" + stringColor, "style", context.getPackageName()));
+        }
+
+        public static void setNewThemeColor(Activity activity, int red, int green, int blue) {
+            int colorStep = 15;
+            red = Math.round(red / colorStep) * colorStep;
+            green = Math.round(green / colorStep) * colorStep;
+            blue = Math.round(blue / colorStep) * colorStep;
+
+            String stringColor = Integer.toHexString(Color.rgb(red, green, blue)).substring(2);
+            SharedPreferences.Editor editor = activity.getSharedPreferences(NAME, Context.MODE_PRIVATE).edit();
+            editor.putString(KEY, stringColor);
+            editor.apply();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) activity.recreate();
+            else {
+                Intent i = activity.getPackageManager().getLaunchIntentForPackage(activity.getPackageName());
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activity.startActivity(i);
+            }
+        }
+
+        private boolean isLightActionBar() {// Checking if title text color will be black
+            int rgb = (Color.red(color) + Color.green(color) + Color.blue(color)) / 3;
+            return rgb > 210;
+        }
+
+
+    }
 }
