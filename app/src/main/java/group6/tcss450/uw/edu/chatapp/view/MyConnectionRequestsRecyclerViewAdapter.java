@@ -71,7 +71,6 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
         holder.mReject.setOnClickListener((View v) ->   {
             this.notifyItemRemoved(mValues.indexOf(thisConnection));
             mValues.remove(thisConnection);
-            //TODO backend
             mListener.onConnectionRequestReject(thisConnection);
             Log.d("CONNECTION REQUEST", "REJECT REQUEST");
             if(noRequests.getVisibility() == TextView.INVISIBLE && mValues.isEmpty()) {

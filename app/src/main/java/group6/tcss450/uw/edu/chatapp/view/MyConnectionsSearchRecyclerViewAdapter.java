@@ -60,6 +60,8 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
             mListener.onConnectionSearchFragmentInteraction(thisConnection);
             Toast toast = Toast.makeText(mContext, "Friend request sent.", Toast.LENGTH_SHORT);
             toast.show();
+            mValues.remove(position);
+            notifyDataSetChanged();
         });
 
     }

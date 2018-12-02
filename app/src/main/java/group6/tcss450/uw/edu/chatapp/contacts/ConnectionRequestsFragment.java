@@ -54,7 +54,7 @@ public class ConnectionRequestsFragment extends Fragment {
             //List<Connection> removeMe = new ArrayList<Connection>();
 
 
-            mConnections.removeIf(c ->(c.getVerified() == 0));
+            mConnections.removeIf(c ->(c.getVerified() == 1));
 //            for (Connection c : mConnections) {
 //                if (c.getVerified() == 1) {
 //                    //Remove all connections that are already verified.

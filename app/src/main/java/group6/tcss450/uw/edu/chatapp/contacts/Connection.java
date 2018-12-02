@@ -109,8 +109,7 @@ public class Connection extends AppCompatActivity implements Serializable {
 
     @Override
     public int hashCode()   {
-        int hash = this.mId;
-        return hash * 31;
+        return mEmail.hashCode();
     }
 
     public JSONObject asJSONObject()    {
