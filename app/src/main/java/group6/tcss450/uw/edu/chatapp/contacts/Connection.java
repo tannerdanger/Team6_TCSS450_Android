@@ -121,6 +121,7 @@ public class Connection extends AppCompatActivity implements Serializable {
             msg.put(getString(R.string.JSON_FNAME), getFirstName());
             msg.put(getString(R.string.JSON_LNAME), getLastName());
             msg.put(getString(R.string.JSON_USERS_MEMBER_ID), getId());
+
         } catch (JSONException e)   {
             Log.wtf("MESSAGE", "Error creating Message JSON");
         }

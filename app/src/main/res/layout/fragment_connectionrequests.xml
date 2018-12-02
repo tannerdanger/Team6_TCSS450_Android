@@ -16,7 +16,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/loginfragment_email"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="10sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_connectionrequest_username" />
 
@@ -28,6 +28,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/registerfragment_username"
         android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

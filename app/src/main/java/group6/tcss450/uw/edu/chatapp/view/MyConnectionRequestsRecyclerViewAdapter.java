@@ -46,6 +46,8 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
         holder.mUsername.setText(mValues.get(position).getUsername());
         holder.mEmail.setText(mValues.get(position).getEmail());
         Connection thisConnection = mValues.get(position);
+
+
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -76,6 +78,12 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
                 noRequests.setVisibility(TextView.VISIBLE);
             }
         });
+
+        if (thisConnection.getThisUserSent()) {
+            holder.mAccept.setVisibility(TextView.INVISIBLE); //hide accept button
+            holder.mReject.setText("CANCEL REQUEST");
+        }
+
     }
 
     @Override

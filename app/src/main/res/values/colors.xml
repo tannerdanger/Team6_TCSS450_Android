@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4b2e83</color>
-    <color name="colorPrimaryLight">#7b59b3</color>
-    <color name="colorPrimaryDark">#1a0555</color>
+    <!--default colors-->
+    <color name="colorPrimary">#868686</color>
+    <color name="colorPrimaryLight">#FFFFFF</color>
+    <color name="colorPrimaryDark">#030303</color>
     <color name="colorAccent">#b7a57a</color>
     <color name="colorAccentDark">#86764e</color>
     <color name="colorAccentLight">#ead6a9</color>
+
+    <!--UW Colors-->
+    <color name="UW_primaryColor">#4b2e83</color>
+    <color name="UW_primaryLightColor">#7b59b3</color>
+    <color name="UW_primaryDarkColor">#1a0555</color>
+    <color name="UW_secondaryColor">#b7a57a</color>
+    <color name="UW_secondaryLightColor">#ead6a9</color>
+    <color name="UW_secondaryDarkColor">#86764e</color>
+    <color name="UW_primaryTextColor">#ffffff</color>
+    <color name="UW_secondaryTextColor">#000000</color>
+
+    <color name="TEST_COLOR1">#e9135c</color>
+    <color name="TEST_COLOR2">#13c9e9</color>
+    <color name="TEST_COLOR3">#17e913</color>
+    <color name="TEST_COLOR4">#ffec60</color>
+    <color name="misc_hooli_blue">#3889FF</color>
+
+
 </resources>

@@ -50,15 +50,19 @@ public class ConnectionRequestsFragment extends Fragment {
         if (getArguments() != null) {
             mConnections = new ArrayList<Connection>(Arrays.asList((Connection[])
                     getArguments().getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)));
-            List<Connection> removeMe = new ArrayList<Connection>();
-            for (Connection c : mConnections) {
-                if (c.getVerified() == 1) {
-                    //Remove all connections that are already verified.
-                    removeMe.add(c);
-                }
-            }
-            //This is to avoid a ConcurrentModificationException.
-            mConnections.removeAll(removeMe);
+
+            //List<Connection> removeMe = new ArrayList<Connection>();
+
+
+            mConnections.removeIf(c ->(c.getVerified() == 0));
+//            for (Connection c : mConnections) {
+//                if (c.getVerified() == 1) {
+//                    //Remove all connections that are already verified.
+//                    removeMe.add(c);
+//                }
+//            }
+//            //This is to avoid a ConcurrentModificationException.
+//            mConnections.removeAll(removeMe);
         } else {
             Log.e("BROKEN POST", "UNABLE TO FETCH CONNECTIONS.");
         }

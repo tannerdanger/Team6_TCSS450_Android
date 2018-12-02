@@ -318,12 +318,14 @@ public class DataHandler {
 
                 for(int i = 0; i < response.length(); i++) {
                     JSONObject jsonSet = response.getJSONObject(i);
+                    boolean requestedByMe = (jsonSet.getInt("requester_id") == mCredentials.getID());
                     conns[i] = new Connection.Builder(jsonSet.getString("username"),
                             jsonSet.getString("email"))
                             .addFirstName(jsonSet.getString("firstname"))
                             .addLastName(jsonSet.getString("lastname"))
                             .addId(jsonSet.getInt("memberid"))
                             .addVerified(jsonSet.getInt("verified"))
+                            .addUserSent(requestedByMe)
                             .build();
                 }
                 return conns;

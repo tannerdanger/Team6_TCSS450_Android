@@ -2,16 +2,37 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Customize your theme here. @color/design_default_color_primary_dark -->
+        <item name="colorPrimary">@color/TEST_COLOR2</item>
+        <item name="colorPrimaryDark">@color/TEST_COLOR1</item>
+        <item name="colorAccent">@color/TEST_COLOR3</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+
+    <style name="AppTheme.UW" parent="AppTheme">
+        <item name="android:windowBackground">@color/colorPrimaryLight</item>
+        <!--<item name="android:colorForeground">@color/TEST_COLOR2</item>-->
+        <!--<item name="android:colorBackground">?android:attr/colorForeground</item>-->
+        <item name="android:textColorPrimary">@color/UW_primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/UW_secondaryTextColor</item>
+        <item name="colorPrimary">@color/UW_primaryColor</item>
+        <item name="colorPrimaryDark">@color/UW_primaryDarkColor</item>
+        <item name="colorAccent">@color/UW_secondaryColor</item>
+        <item name="colorControlActivated">@color/TEST_COLOR1</item>
+        <item name="colorControlHighlight">@color/UW_primaryColor</item>
+        <item name="colorButtonNormal">@color/UW_primaryColor</item>
+        <item name="android:button">@color/UW_primaryDarkColor</item>
+        <item name="android:textColorHint">@color/misc_hooli_blue</item>
+        <item name="android:listDivider">@color/UW_primaryDarkColor</item>
+        <item name="textAppearanceListItem">@color/UW_secondaryTextColor</item>
+    </style>
+
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
