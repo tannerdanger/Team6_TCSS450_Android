@@ -21,6 +21,9 @@ public class UriHelper {
     private static final String APPROVE = "approve";
     private static final String REMOVE = "remove";
     private static final String MULTI = "newmulti";
+    private static final String COORDS = "coords";
+    private static final String CITY = "city";
+    private static final String ZIP = "zip";
 
     public static String CONNECTIONS_GETALL(){
 
@@ -64,7 +67,7 @@ public class UriHelper {
                 .scheme(SCHEME)
                 .appendPath(BASE)
                 .appendPath(WEATHER)
-                .appendPath("tenday") //todo: adjust this to latlon
+                .appendPath(COORDS)
                 .build().toString();
     }
 
@@ -114,4 +117,21 @@ public class UriHelper {
     }
 
 
+    public static String WEATHER_BY_CITY() {
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(WEATHER)
+                .appendPath(CITY)
+                .build().toString();
+    }
+
+    public static String WEATHER_BY_ZIP() {
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(WEATHER)
+                .appendPath(ZIP)
+                .build().toString();
+    }
 }

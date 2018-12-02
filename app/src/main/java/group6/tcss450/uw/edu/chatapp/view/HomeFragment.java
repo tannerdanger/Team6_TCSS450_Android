@@ -57,13 +57,13 @@ public class HomeFragment extends Fragment {
             mCredentials = (Credentials)getArguments().getSerializable(getString(R.string.ARGS_CREDENTIALS));
             mForecast = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
         }
+        if (null != mForecast) {
+            int i = 0;
+            for(WeatherFragment f: mWeatherFrags){
+                f.setmForecast(mForecast[i]);
+            }
+        }
 
-    }
-
-    private void updatecontent(Credentials theCredentials){
-//        TextView tv = getActivity().findViewById(R.id.homefrag_tv_username);
-//        tv.setText(theCredentials.getUsername());
-        System.out.print("BREAKPOINT");
     }
 
     @Override
@@ -115,9 +115,6 @@ public class HomeFragment extends Fragment {
             tabLayout.getTabAt(i).setIcon(mForecast[i].getIconResID());
             mWeatherFrags.get(i).setmForecast(mForecast[i]);
         }
-
-
-
 
         return view;
     }
@@ -205,7 +202,11 @@ public class HomeFragment extends Fragment {
 
         mForecast = JsonHelper.parse_Forecast(jsonObject.toString());
         System.out.print("BREAKPOINT");
-        updatecontent(null);
+        updateWeather(mForecast);
+       // buildWeatherFrags();
+
+
+
 //        mForecast = new Forecast[10];
 //        JSONObject forcastJson;
 //        if (getArguments() != null){
@@ -225,7 +226,14 @@ public class HomeFragment extends Fragment {
             mForecast = forecast;
         }
         int i = 0;
+        if(0 == mForecast[0].getIconResID()){
+            String pkg =  getContext().getPackageName();
+            for (Forecast f : mForecast) {
+                int icon = getResources().getIdentifier(f.getIconCode(), "drawable", pkg);
 
+                f.setIcon( icon );
+            }
+        }
         for(WeatherFragment frag : mWeatherFrags){
             //frag.setArguments();
             frag.setmForecast(mForecast[i]);

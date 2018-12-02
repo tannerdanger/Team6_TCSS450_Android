@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.weather.Forecast;
 
 public class JsonHelper extends AppCompatActivity {
@@ -26,6 +25,8 @@ public class JsonHelper extends AppCompatActivity {
     private static final String LAT = "lat";
     private static final String LON = "lon";
     private static final String KEY = "key";
+    private static final String CITY = "city";
+    private static final String ZIP = "zip";
 
     public static JSONObject messages_JsonObject(int chatid){
         JSONObject msg = new JSONObject();
@@ -53,6 +54,25 @@ public class JsonHelper extends AppCompatActivity {
 
         return msg;
 
+    }
+    public static JSONObject weather_JsonObject(String city) {
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put(CITY, city);
+        } catch (JSONException e) {
+            Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
+        }
+        return msg;
+    }
+
+    public static JSONObject weather_JsonObject(int zip) {
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put(ZIP, zip);
+        } catch (JSONException e) {
+            Log.wtf("CREDENTIALS", "Error creating JSON: " + e.getMessage());
+        }
+        return msg;
     }
 
     public static JSONObject weather_JsonObject(double lat, double lon){

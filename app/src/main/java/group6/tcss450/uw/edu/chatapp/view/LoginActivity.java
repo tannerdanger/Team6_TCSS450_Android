@@ -175,12 +175,21 @@ public class LoginActivity extends AppCompatActivity
     }
 
     public void onLoginSuccess(Credentials credentials) {
+
         onWaitFragmentInteractionHide();
         saveCredentials(credentials);
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class); //TODO: If you want to change back to drawer layout, change HomeActivity.class => MainActivity.Class
 
-//        intent.putExtra("lat", mLocation.getLatitude());
-//        intent.putExtra("lon", mLocation.getLongitude());
+        if(null == mLocation){
+            requestLocation();
+        }
+
+        //TODO: Don't comment these out. They are supposed to be working. If they are throwing erros it might be a problem on your machine...
+        //Todo: ...try reinstalling the app and making sure you enable location settings
+        if(null != mLocation && 0 != mLocation.getLatitude()) {
+            intent.putExtra("lat", mLocation.getLatitude());
+            intent.putExtra("lon", mLocation.getLongitude());
+        }
         intent.putExtra(getString(R.string.ARGS_CREDENTIALS), credentials);
         startActivity(intent);
         //End this Activity and remove it from the Activity back stack.

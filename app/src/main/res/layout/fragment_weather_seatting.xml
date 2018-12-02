@@ -83,16 +83,13 @@
 
     <AutoCompleteTextView
         android:id="@+id/settings_autoCompleteTextView"
-        style="@android:style/Widget.AutoCompleteTextView"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:hint="City"
-        android:popupBackground="@color/common_google_signin_btn_text_light_pressed"
-        android:textAppearance="@style/TextAppearance.AppCompat"
-        android:textColor="?android:textColorSecondary"
+        android:theme="@style/Autocomplete"
         app:layout_constraintEnd_toStartOf="@+id/zipcode_editText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_tv" />
@@ -114,7 +111,8 @@
         android:id="@+id/txtColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="?android:textColorSecondary"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="@color/UW_secondaryTextColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

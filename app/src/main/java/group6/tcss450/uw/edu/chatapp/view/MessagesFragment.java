@@ -145,6 +145,7 @@ public class MessagesFragment extends Fragment {
      * @param theMessage a new message to be added.
      */
     public void recieveMessage(Message theMessage){
+
         if(theMessage.getUser().compareTo(mCredentials.getUsername()) != 0 ) {
             //RecyclerView rv = getView().findViewById(R.id.list_messages_messageslist);
             mAdapter.addItem(theMessage);

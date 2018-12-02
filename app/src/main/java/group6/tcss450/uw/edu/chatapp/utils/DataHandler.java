@@ -78,14 +78,28 @@ public class DataHandler {
     }
 
     public void updateWeatherByCity(String city) {
-        startAsync();
+
         JSONObject msg = JsonHelper.weather_JsonObject(city);
         if(null != msg){
             String uri = UriHelper.WEATHER_BY_CITY();
 
             new SendPostAsyncTask.Builder(uri, msg)
-                    //.onPreExecute() //todo: wait fragment
-                    .onPostExecute(this::updateForecastJsonData)
+                    .onPreExecute(this::startAsync) //todo: wait fragment
+                    .onPostExecute(this::updateForecastAndFrags)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+        }
+    }
+
+    public void updateWeatherByZip(int zip) {
+        JSONObject msg = JsonHelper.weather_JsonObject(zip);
+        if(null != msg){
+            String uri = UriHelper.WEATHER_BY_ZIP();
+
+            new SendPostAsyncTask.Builder(uri, msg)
+                    .onPreExecute(this::startAsync) //todo: wait fragment
+                    .onPostExecute(this::updateForecastAndFrags)
                     .onCancelled(this::handleErrorsInTask)
                     .build()
                     .execute();
@@ -508,6 +522,7 @@ public class DataHandler {
             Log.e("Error!", e.getMessage());
         }
     }
+
 
 
 

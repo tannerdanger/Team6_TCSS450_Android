@@ -79,6 +79,9 @@ public class weatherSeattingFragment extends Fragment {
     private String SecondaryColor;
     private String ThirdColor;
     private String BackGroundColor;
+    private TextView mLatView;
+    private TextView mLonView;
+    private String mCityName;
 
 
 
@@ -130,6 +133,8 @@ public class weatherSeattingFragment extends Fragment {
         txtColor = (TextView) view.findViewById(R.id.txtColor);
         myButton = (Button) view.findViewById(R.id.myButton);
         myThemeButton = (Button) view.findViewById(R.id.button_settings_commit);
+        mLatView = (TextView) view.findViewById(R.id.lat_textview);
+        mLonView = (TextView) view.findViewById(R.id.lon_textview);
 
         myButton.setOnClickListener(l -> {
             pickColor(l);
@@ -138,35 +143,42 @@ public class weatherSeattingFragment extends Fragment {
         //this is for the button setting commit
         new ThemeColors(this.getContext());
         myThemeButton.setOnClickListener(l2 -> {
-            
+
             int red= new Random().nextInt(255);
             int green= new Random().nextInt(255);
             int blue= new Random().nextInt(255);
             ThemeColors.setNewThemeColor(this.getActivity(), red, green, blue);
-            
+
         });
 
         Search.setOnClickListener(l -> {
 
-            if("".compareTo(mCityTextView.getText().toString()) == 0 ) {
+            //if map has selected coords, update coords
+            if(mLatView.getText().toString().compareTo("") != 0){
+                mListener.onNewLatLon(mLat, mLong);
+
+            } else {
+
+                //if city has been selected, update city
+                if (null != mCityName) {
 
 
-
-                mListener.onNewCity(mCityTextView.getText().toString());
-
-            } else if("".compareTo(zipcode.getText().toString())  == 0
-                    && zipcode.getText().toString().length() > 4){
-
-
-                int zip = Integer.parseInt(zipcode.getText().toString());
+                    mListener.onNewCity(mCityName);
+                    mCityName = null; //return city name to null for next search
+                    //else update zip code
+                } else if ("".compareTo(zipcode.getText().toString()) != 0
+                        && zipcode.getText().toString().length() > 4) {
 
 
-                mListener.onNewZipcode(zip);
+                    int zip = Integer.parseInt(zipcode.getText().toString());
 
+
+                    mListener.onNewZipcode(zip);
+
+                }
             }
 
         });
-
 
         mGeoDataClient = mListener.getClient();
         if( null != mGeoDataClient) {
@@ -283,9 +295,12 @@ public class weatherSeattingFragment extends Fragment {
                 final Place place = places.get(0);
 
                 // Format details of the place for display and show it in a TextView.
-                mCityTextView.setText(formatPlaceDetails(getResources(), place.getName(),
-                        place.getId(), place.getAddress(), place.getPhoneNumber(),
-                        place.getWebsiteUri()));
+//                mCityTextView.setText(formatPlaceDetails(getResources(), place.getName(),
+//                        place.getId(), place.getAddress(), place.getPhoneNumber(),
+//                        place.getWebsiteUri()));
+                mCityTextView.setText(place.getName().toString());
+                mCityName = place.getName().toString();
+
 
 //                // Display the third party attributions if set.
 //                final CharSequence thirdPartyAttribution = places.getAttributions();

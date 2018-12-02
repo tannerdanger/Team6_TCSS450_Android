@@ -300,7 +300,7 @@ public class LoginFragment extends Fragment {
      */
     private void startAsync(){
         if(!mIsWaitFragActive) { //start wait frag if Async is not already active
-         //   mListener.onWaitFragmentInteractionShow();
+            mListener.onWaitFragmentInteractionShow();
             mIsWaitFragActive = true;
         }
     }
@@ -310,7 +310,7 @@ public class LoginFragment extends Fragment {
      */
     private void endAsync(){
         if(mIsWaitFragActive) { //hide if Async is active
-          //  mListener.onWaitFragmentInteractionHide();
+            mListener.onWaitFragmentInteractionHide();
             mIsWaitFragActive = false;
         }
     }

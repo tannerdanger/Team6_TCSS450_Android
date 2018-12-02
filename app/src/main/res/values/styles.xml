@@ -32,8 +32,8 @@
 
     <style name="AppTheme.UW" parent="AppTheme">
         <item name="android:windowBackground">@color/colorPrimaryLight</item>
-        <!--<item name="android:colorForeground">@color/TEST_COLOR2</item>-->
-        <!--<item name="android:colorBackground">?android:attr/colorForeground</item>-->
+        <item name="android:colorForeground">@color/TEST_COLOR2</item>
+        <item name="android:colorBackground">?android:attr/colorForeground</item>
         <item name="android:textColorPrimary">@color/UW_primaryTextColor</item>
         <item name="android:textColorSecondary">@color/UW_secondaryTextColor</item>
         <item name="colorPrimary">@color/UW_primaryColor</item>
@@ -48,7 +48,14 @@
         <item name="textAppearanceListItem">@color/UW_secondaryTextColor</item>
     </style>
 
-
+    <style name="Autocomplete" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:textColor">@color/UW_secondaryTextColor</item>
+        <item name="android:textColorPrimary">@color/UW_secondaryTextColor</item>
+        <item name="android:textColorLink">@color/TEST_COLOR1</item>
+        <item name="colorControlNormal">?colorAccent</item>
+        <item name="colorControlActivated">@color/UW_secondaryTextColor</item>
+        <item name="android:hint">@string/search_by_city</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

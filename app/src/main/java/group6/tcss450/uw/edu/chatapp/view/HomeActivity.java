@@ -294,7 +294,7 @@ public class HomeActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-      //  mChatId = -1;
+        //  mChatId = -1;
 
         mFab = findViewById(R.id.fab);
 
@@ -513,7 +513,6 @@ public class HomeActivity extends AppCompatActivity
         loadFragment(csf);
     }
 
-
     //Connection screen -> Request button
     @Override
     public void onConnectionRequestInteraction(Bundle b) {
@@ -603,17 +602,26 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onNewZipcode(int zip) {
-
+        mDataHandler.updateWeatherByZip(zip);
     }
 
     @Override
     public void onNewCity(String city) {
+        Log.wtf("HOME ACTIVITY", "ON NEW CITY STARTED");
 
+
+        mDataHandler.updateWeatherByCity(city);
+
+        Log.wtf("HOME ACTIVITY", "ON NEW CITY ENDED");
     }
 
     @Override
     public void onNewLatLon(double lat, double lon) {
-        mDataHandler.updateWeatherByLatLon(lat, lon, true);
+        Log.wtf("HOME ACTIVITY", "ON NEW LAT LONG STARTED");
+        mLat = lat; mLon = lon;
+        mDataHandler.updateWeatherByLatLon(lat, lon, true, false
+        );
+        Log.wtf("HOME ACTIVITY", "ON NEW LAT LONG STARTED");
     }
 
     @Override
@@ -644,9 +652,10 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    public void weatherLoaded() {
+    public void weatherLoaded(Boolean transition) {
         mHomeFrag.updateContent(mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)));
-        navigateHome();
+        if(transition)
+            navigateHome();
     }
 
     /**
