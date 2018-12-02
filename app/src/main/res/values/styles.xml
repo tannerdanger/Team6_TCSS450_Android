@@ -23,11 +23,11 @@
         <item name="colorPrimary">@color/UW_primaryColor</item>
         <item name="colorPrimaryDark">@color/UW_primaryDarkColor</item>
         <item name="colorAccent">@color/UW_secondaryColor</item>
-        <item name="colorControlActivated">@color/TEST_COLOR1</item>
+        <item name="colorControlActivated">@color/UW_primaryColor</item>
         <item name="colorControlHighlight">@color/UW_primaryColor</item>
         <item name="colorButtonNormal">@color/UW_primaryColor</item>
         <item name="android:button">@color/UW_primaryDarkColor</item>
-        <item name="android:textColorHint">@color/misc_hooli_blue</item>
+        <item name="android:textColorHint">@color/colorPrimary</item>
         <item name="android:listDivider">@color/UW_primaryDarkColor</item>
         <item name="textAppearanceListItem">@color/UW_secondaryTextColor</item>
     </style>
