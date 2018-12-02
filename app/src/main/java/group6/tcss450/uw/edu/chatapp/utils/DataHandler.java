@@ -195,6 +195,7 @@ public class DataHandler {
                     .build()
                     .execute();
         }
+        updateContacts();
     }
 
     public void createOrOpenChatRoom(int therid, String theirUsername, boolean isTransition){

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.R;
@@ -42,6 +43,7 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
         holder.mConnection = mValues.get(position);
         holder.mUsername.setText(mValues.get(position).getUsername());
         holder.mEmail.setText(mValues.get(position).getEmail());
@@ -56,13 +58,16 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
             }
         });
         Connection thisConnection = mValues.get(position);
-        holder.mAdd.setOnClickListener((View v) ->  {
+        holder.mAdd.setOnClickListener((View v) -> {
             mListener.onConnectionSearchFragmentInteraction(thisConnection);
             Toast toast = Toast.makeText(mContext, "Friend request sent.", Toast.LENGTH_SHORT);
             toast.show();
             mValues.remove(position);
+//                notifyItemRemoved(position);
+//                notifyItemRangeChanged(position, mValues.size());
             notifyDataSetChanged();
         });
+        
 
     }
 

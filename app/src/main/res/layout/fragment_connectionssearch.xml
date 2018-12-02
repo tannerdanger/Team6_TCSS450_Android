@@ -16,6 +16,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/registerfragment_username"
         android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="14sp"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +30,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/loginfragment_email"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="10sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_connectionsearch_user"

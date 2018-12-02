@@ -165,13 +165,14 @@ public class HomeActivity extends AppCompatActivity
 
 
         mDataHandler.updateContacts(); //THIS REPLACED EVERYTHING
+        Fragment frag = new ConnectionFragment();
         Connection[] conns = mDataHandler.getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS))); //TODO: MAY RETURN NULL IF CONNECTIONS
         if(null == conns){
             conns = new Connection[0];
         }
         Bundle args = new Bundle();
         args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, conns);
-        Fragment frag = new ConnectionFragment();
+
         frag.setArguments(args);
 
 
@@ -438,11 +439,9 @@ public class HomeActivity extends AppCompatActivity
         Message m = null;
         ArrayList l = mMessageListMap.getOrDefault(chatID, null);
         if (l != null) {
-
             if(l.size() > 0) {
                 m = (Message) l.get(l.size() - 1);//l.get(mMessageListMap.get(chatID).size());
             }
-
             if (null != m) {
                 MessagesFragment frag = (MessagesFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_MessageActivity));
                 if (null != frag) {
@@ -500,6 +499,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFragmentRemove(Connection item) {
+        mDataHandler.updateContacts();
         onConnectionRequestReject(item);
     }
 
@@ -514,23 +514,42 @@ public class HomeActivity extends AppCompatActivity
     //Connections Screen -> Search Button
     @Override
     public void onConnectionSearchInteraction(Bundle b) {
+        mDataHandler.updateContacts();
+
         ConnectionsSearchFragment csf = new ConnectionsSearchFragment();
         Bundle args = new Bundle();
         args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
-                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
+
+        Connection[] conns = mDataHandler.getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS))); //TODO: MAY RETURN NULL IF CONNECTIONS
+        if(null == conns){
+            conns = new Connection[0];
+        }
+
+      /*  args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
+                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)); */
+        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, conns);
         csf.setArguments(args);
         loadFragment(csf);
     }
 
+
     //Connection screen -> Request button
     @Override
     public void onConnectionRequestInteraction(Bundle b) {
+        mDataHandler.updateContacts();
+
         ConnectionRequestsFragment crf = new ConnectionRequestsFragment();
         Bundle args = new Bundle();
         args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
-                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST));
+
+        Connection[] conns = mDataHandler.getContactList(mJsonData.get(getString(R.string.ARGS_CONNECTIONS))); //TODO: MAY RETURN NULL IF CONNECTIONS
+        if(null == conns){
+            conns = new Connection[0];
+        }
+
+        args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, conns);
+      /*  args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
+                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)); */
         crf.setArguments(args);
         loadFragment(crf);
     }
@@ -538,11 +557,13 @@ public class HomeActivity extends AppCompatActivity
     //Connection Request Screen (Will be unused?)
     @Override
     public void onConnectionRequestAccept(Connection receiver) {
+        //mDataHandler.updateContacts();
         mDataHandler.acceptOrDenyConnectionRequest(mCredentials.getID(), receiver.getId(), true);
     }
 
     @Override
     public void onConnectionRequestReject(Connection receiver)  {
+        //mDataHandler.updateContacts();
         mDataHandler.acceptOrDenyConnectionRequest(mCredentials.getID(), receiver.getId(), false);
     }
 

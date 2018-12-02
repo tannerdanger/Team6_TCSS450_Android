@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.R;
+import group6.tcss450.uw.edu.chatapp.view.HomeActivity;
 import group6.tcss450.uw.edu.chatapp.view.MyConnectionRecyclerViewAdapter;
 
 /**
@@ -30,8 +31,6 @@ public class ConnectionFragment extends Fragment {
 
     public List<Connection> mConnections;
     public static final String ARG_CONNECTION_LIST = "connections list";
-
-
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
@@ -58,7 +57,6 @@ public class ConnectionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
            // mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 //            mSets = new ArrayList<Setlist>(Arrays.asList((Setlist[])

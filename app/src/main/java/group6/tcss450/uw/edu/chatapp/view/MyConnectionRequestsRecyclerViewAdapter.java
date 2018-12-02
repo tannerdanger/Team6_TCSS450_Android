@@ -79,7 +79,7 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
         });
 
         if (thisConnection.getThisUserSent()) {
-            holder.mAccept.setVisibility(TextView.INVISIBLE); //hide accept button
+            //holder.mAccept.setVisibility(TextView.INVISIBLE); //hide accept button
             holder.mReject.setText("CANCEL REQUEST");
         }
 
