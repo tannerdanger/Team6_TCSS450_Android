@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import group6.tcss450.uw.edu.chatapp.R;
@@ -20,7 +19,7 @@ import group6.tcss450.uw.edu.chatapp.contacts.ConnectionsSearchFragment.OnConnec
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Connection} and makes a call to the
  * specified {@link OnConnectionSearchFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * TODO: Replace the implementation with code for your data type.ds
  */
 public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionsSearchRecyclerViewAdapter.ViewHolder> {
 
