@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -43,6 +42,8 @@ import com.google.android.gms.tasks.Task;
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 
+import static android.os.Build.VERSION;
+import static android.os.Build.VERSION_CODES;
 import static android.support.constraint.Constraints.TAG;
 
 
@@ -74,8 +75,6 @@ public class weatherSeattingFragment extends Fragment {
     private GeoDataClient mGeoDataClient;
     PlaceAutocompleteAdapter mAdapter;
     private String myPrmaryColor;
-    private String SecondaryColor;
-    private String ThirdColor;
     private String BackGroundColor;
     private TextView mLatView;
     private TextView mLonView;
@@ -126,7 +125,8 @@ public class weatherSeattingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        //this is for the button setting commit
+        new ThemeColors(this.getContext());
         View view = inflater.inflate(R.layout.fragment_weather_seatting, container, false);
         mCityTextView = (AutoCompleteTextView) view.findViewById(R.id.settings_autoCompleteTextView);
         zipcode = (EditText) view.findViewById(R.id.zipcode_editText);
@@ -142,8 +142,7 @@ public class weatherSeattingFragment extends Fragment {
             pickColor(l);
         });
 
-        //this is for the button setting commit
-        new ThemeColors(this.getContext());
+
         myThemeButton.setOnClickListener(this::onClick);
 
         Search.setOnClickListener(l -> {
@@ -356,14 +355,14 @@ public class weatherSeattingFragment extends Fragment {
                         Toast.makeText(getActivity().getApplicationContext(),"onColorSelected: 0x" + Integer.toHexString(selectedColor).toUpperCase(), Toast.LENGTH_SHORT).show();
 
                         //this set the color of the background
-//                       txtColor.setBackgroundColor(selectedColor);
+                       txtColor.setBackgroundColor(selectedColor);
 
                        // this get the RGB color for the color picked on the Color Picker button
                         myPrmaryColor = Integer.toHexString(selectedColor);
                         Allcolor = (int)Long.parseLong(myPrmaryColor, 16);
                         myRed = (Allcolor >> 16) & 0xFF;
                         mygree = (Allcolor >> 8) & 0xFF;
-                        myBlue = (Allcolor >> 0) & 0xFF;
+                        myBlue = (Allcolor) & 0xFF;
 
                     }
                 })
@@ -378,7 +377,7 @@ public class weatherSeattingFragment extends Fragment {
 
 
     /**
-     * This is an inner class that gets primary colors from styles.xml and based what user selected 
+     * This is an inner class that gets primary colors from styles.xml and based what user selected
      */
     public static class ThemeColors {
         private static final String NAME = "ThemeColors", KEY = "color";
@@ -411,7 +410,7 @@ public class weatherSeattingFragment extends Fragment {
             editor.putString(KEY, stringColor);
             editor.apply();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) activity.recreate();
+            if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) activity.recreate();
             else {
                 Intent i = activity.getPackageManager().getLaunchIntentForPackage(activity.getPackageName());
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
