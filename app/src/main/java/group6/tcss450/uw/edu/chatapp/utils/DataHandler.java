@@ -77,35 +77,67 @@ public class DataHandler {
         }
     }
 
+    public void updateWeatherByCity(String city) {
+        startAsync();
+        JSONObject msg = JsonHelper.weather_JsonObject(city);
+        if(null != msg){
+            String uri = UriHelper.WEATHER_BY_CITY();
 
-    public void updateWeatherByLatLon(double lat, double lon, boolean updateFrags){
+            new SendPostAsyncTask.Builder(uri, msg)
+                    //.onPreExecute() //todo: wait fragment
+                    .onPostExecute(this::updateForecastJsonData)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build()
+                    .execute();
+        }
+    }
 
+
+
+    public void updateWeatherByLatLon(double lat, double lon, boolean updateFrags, boolean transition){
+
+        startAsync();
         JSONObject msg = JsonHelper.weather_JsonObject(lat, lon);
 
         if(null != msg){
 
             String uri = UriHelper.WEATHER_BY_LAT_LONG();
 
-            if(updateFrags){
+            if(updateFrags && transition){
+                new SendPostAsyncTask.Builder(uri, msg)
+                        //.onPreExecute() //todo: wait fragment
+                        .onPostExecute(this::updateForecastAndFragsTransition)
+                        .onCancelled(this::handleErrorsInTask)
+                        .build()
+                        .execute();
+            } else if (updateFrags && !transition){
                 new SendPostAsyncTask.Builder(uri, msg)
                         //.onPreExecute() //todo: wait fragment
                         .onPostExecute(this::updateForecastAndFrags)
+                        .onCancelled(this::handleErrorsInTask)
                         .build()
                         .execute();
-            } else {
 
                 new SendPostAsyncTask.Builder(uri, msg)
                         //.onPreExecute() //todo: wait fragment
                         .onPostExecute(this::updateForecastJsonData)
+                        .onCancelled(this::handleErrorsInTask)
                         .build()
                         .execute();
             }
         }
     }
 
+    private void updateForecastAndFragsTransition(String s) {
+        updateForecastJsonData(s);
+        mHomeActivity.weatherLoaded(true);
+        endAsync();
+    }
+
     private void updateForecastAndFrags(String s) {
         updateForecastJsonData(s);
-        mHomeActivity.weatherLoaded();
+        mHomeActivity.weatherLoaded(false);
+        endAsync();
     }
 
     public void getChats(boolean isFragTransition){
@@ -477,6 +509,8 @@ public class DataHandler {
         }
     }
 
+
+
     public interface OnDataLoadedListener {
         void onWeatherUpdated(JSONObject result);
 
@@ -485,6 +519,7 @@ public class DataHandler {
 
     private void handleErrorsInTask(String result) {
         Log.e("ASYNCT_TASK_ERROR", result);
+        endAsync();
     }
 
 
