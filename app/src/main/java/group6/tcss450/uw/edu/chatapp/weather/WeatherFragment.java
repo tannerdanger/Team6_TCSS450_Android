@@ -1,8 +1,6 @@
 package group6.tcss450.uw.edu.chatapp.weather;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.Objects;
 
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
@@ -54,6 +50,7 @@ public class WeatherFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
         if(null != getArguments()){
             mForecast = (Forecast) getArguments().getSerializable(getString(R.string.ARGS_FORECAST_DATA));
+            this.setArguments(null);
         }
 
         mIcon = (ImageView) view.findViewById(R.id.forecast_icon);

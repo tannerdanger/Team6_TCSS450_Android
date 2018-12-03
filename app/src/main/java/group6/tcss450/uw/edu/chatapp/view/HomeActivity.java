@@ -593,11 +593,6 @@ public class HomeActivity extends AppCompatActivity
         prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
         //close the app
         finishAndRemoveTask();
-        //or close this activity and bring back the Login
-// Intent i = new Intent(this, MainActivity.class);
-// startActivity(i);
-// //Ends this Activity and removes it from the Activity back stack.
-// finish();
     }
 
     @Override
@@ -653,9 +648,15 @@ public class HomeActivity extends AppCompatActivity
     }
 
     public void weatherLoaded(Boolean transition) {
+
         mHomeFrag.updateContent(mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)));
         if(transition)
             navigateHome();
+    }
+
+    @Override
+    public void onLogout(){
+        new DeleteTokenAsyncTask().execute();
     }
 
     /**
@@ -672,6 +673,13 @@ public class HomeActivity extends AppCompatActivity
         // todo
         onConnectionRequestInteraction(new Bundle());
     }
+
+
+    // ============= GETTERS AND SETTERS ============= //
+    public double getLat(){return this.mLat; }
+    public double getLom(){return this.mLon; }
+    public void setLat(double lat){mLat = lat;}
+    public void setLon(double lon){mLon = lon;}
 
 
     /**
@@ -765,112 +773,12 @@ public class HomeActivity extends AppCompatActivity
             //close the app
             finishAndRemoveTask();
             //or close this activity and bring back the Login
-            // Intent i = new Intent(this, MainActivity.class);
-            // startActivity(i);
+             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+             startActivity(i);
             // //Ends this Activity and removes it from the Activity back stack.
-            // finish();
+            onWaitFragmentInteractionShow();
+             finish();
         }
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-        SAVED OLD CODE
-
-
-            //OPEN MESSAGE SCREEN (displaying all message groups)
-    protected void handleOpenMessageGetOnPostExecute(final String result)   {
-        try {
-            JSONObject root = new JSONObject(result);
-            if(root.has("chats"))   {
-                JSONArray response = root.getJSONArray("chats");
-                List<OpenMessage> open = new ArrayList<>();
-                for(int i = 0; i < response.length(); i++)  {
-                    JSONObject jsonSet = response.getJSONObject(i);
-                    OpenMessage om = new OpenMessage.Builder(
-                            jsonSet.getString("name"))
-                            .addDate("XX/XX/XXXX")
-                            .addTime("XX:XX PM")
-                            .addChatId(jsonSet.getInt("chatid"))
-                            .build();
-                    open.add(om);
-                }
-                OpenMessage[] openMessagesAsArray = new OpenMessage[open.size()];
-                openMessagesAsArray = open.toArray(openMessagesAsArray);
-                Bundle b = new Bundle();
-                b.putSerializable(ChatRoomSelectionFragment.ARG_CONNECTION_LIST, openMessagesAsArray);
-                Fragment frag = new ChatRoomSelectionFragment();
-                frag.setArguments(b);
-                //      onWaitFragmentInteractionHide();
-                loadFragment(frag);
-            } else {
-                Log.e("ERROR!", "No data array");
-                //      onWaitFragmentInteractionHide();
-            }
-        } catch (JSONException e)   {
-            e.printStackTrace();
-            Log.e("ERROR!", e.getMessage());
-            //   onWaitFragmentInteractionHide();
-        }
-    }
-
-    //MESSAGE SCREEN (displaying all messages in a chat)
-    protected void handleMessageGetOnPostExecute(final String result) {
-        try {
-            JSONObject root = new JSONObject(result);
-            if(root.has("messages"))    {
-                JSONArray response = root.getJSONArray("messages");
-                List<Message> msgs = new ArrayList<>();
-                for(int i = 0; i < response.length(); i++)  {
-                    JSONObject jsonSet = response.getJSONObject(i);
-                    String date = jsonSet.getString("timestamp").substring(0,
-                            jsonSet.getString("timestamp").indexOf(" "));
-                    String time = jsonSet.getString("timestamp").substring(jsonSet.getString(
-                            "timestamp").indexOf(" "),
-                            jsonSet.getString("timestamp").indexOf("."));
-                    msgs.add(new Message.Builder(
-                            jsonSet.getString("email"))
-                            .addDate(date)
-                            .addTime(time)
-                            .addMessage(jsonSet.getString("message"))
-                            .addChatId(mChatId)
-                            .build());
-                }
-                Message[] msgsAsArray = new Message[msgs.size()];
-                msgsAsArray = msgs.toArray(msgsAsArray);
-                Bundle b = new Bundle();
-                b.putSerializable(MessagesFragment.ARG_MESSAGE_LIST, msgsAsArray);
-                b.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
-                b.putInt(MessagesFragment.ARG_CHAT_ID, mChatId);
-                Fragment frag = new MessagesFragment();
-                frag.setArguments(b);
-                //          onWaitFragmentInteractionHide();
-                loadFragment(frag);
-            } else {
-                Log.e("ERROR!", "No data array");
-                //         onWaitFragmentInteractionHide();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("Error!", e.getMessage());
-            //     onWaitFragmentInteractionHide();
-        }
-    }
- */

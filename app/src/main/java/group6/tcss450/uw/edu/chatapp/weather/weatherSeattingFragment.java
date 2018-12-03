@@ -138,9 +138,17 @@ public class weatherSeattingFragment extends Fragment {
         mLatView = (TextView) view.findViewById(R.id.lat_textview);
         mLonView = (TextView) view.findViewById(R.id.lon_textview);
 
+        Button logoutButton = (Button) view.findViewById(R.id.settings_button_logout);
+
+        logoutButton.setOnClickListener(l ->{
+            mListener.onLogout();
+        });
+
         myButton.setOnClickListener(l -> {
             pickColor(l);
         });
+
+
 
         //this is for the button setting commit
         new ThemeColors(this.getContext());
@@ -247,6 +255,7 @@ public class weatherSeattingFragment extends Fragment {
         void loadMap();
         GeoDataClient getClient();
         PlaceAutocompleteAdapter getAdapter();
+        void onLogout();
     }
 
     /**

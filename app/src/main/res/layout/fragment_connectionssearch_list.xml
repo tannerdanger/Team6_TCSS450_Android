@@ -36,6 +36,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="106dp"
+        android:textColor="?android:textColorSecondary"
         android:ems="10"
         android:hint="@string/connectionsearch_search"
         android:inputType="textPersonName" />

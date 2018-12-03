@@ -426,7 +426,10 @@ public class DataHandler {
     private void updateForecastJsonData(String s){
         try {
             JSONObject result = new JSONObject(s);
+            mHomeActivity.setLat(result.getDouble("lat"));
+            mHomeActivity.setLon(result.getDouble("lon"));
             mHomeActivity.updateJsonData(ARGS_FORECASTDATA, result);
+
         }catch (JSONException e){
             e.printStackTrace();
         }
