@@ -127,7 +127,7 @@ public class weatherSeattingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view = inflater.inflate(R.layout.fragment_weather_seatting, container, false);
+        View view = inflater.inflate(R.layout.fragment_weather_settings, container, false);
         mCityTextView = (AutoCompleteTextView) view.findViewById(R.id.settings_autoCompleteTextView);
         zipcode = (EditText) view.findViewById(R.id.zipcode_editText);
         Map = (Button) view.findViewById(R.id.Map_button);

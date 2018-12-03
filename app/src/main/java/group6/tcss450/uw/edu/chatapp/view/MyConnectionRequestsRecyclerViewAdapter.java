@@ -58,6 +58,7 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
 //                }
 //            }
 //        });
+
         holder.mAccept.setOnClickListener((View v) ->   {
            this.notifyItemRemoved(mValues.indexOf(thisConnection));
            mValues.remove(thisConnection);
@@ -68,6 +69,7 @@ public class MyConnectionRequestsRecyclerViewAdapter extends RecyclerView.Adapte
                noRequests.setVisibility(TextView.VISIBLE);
            }
         });
+
         holder.mReject.setOnClickListener((View v) ->   {
             this.notifyItemRemoved(mValues.indexOf(thisConnection));
             mValues.remove(thisConnection);
