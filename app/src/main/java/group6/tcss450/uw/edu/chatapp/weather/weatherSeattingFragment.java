@@ -40,8 +40,6 @@ import com.google.android.gms.maps.model.RuntimeRemoteException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.Random;
-
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 
@@ -82,6 +80,10 @@ public class weatherSeattingFragment extends Fragment {
     private TextView mLatView;
     private TextView mLonView;
     private String mCityName;
+    private int myRed;
+    private int mygree;
+    private int myBlue;
+    private int Allcolor;
 
 
 
@@ -142,14 +144,7 @@ public class weatherSeattingFragment extends Fragment {
 
         //this is for the button setting commit
         new ThemeColors(this.getContext());
-        myThemeButton.setOnClickListener(l2 -> {
-
-            int red= new Random().nextInt(255);
-            int green= new Random().nextInt(255);
-            int blue= new Random().nextInt(255);
-            ThemeColors.setNewThemeColor(this.getActivity(), red, green, blue);
-
-        });
+        myThemeButton.setOnClickListener(this::onClick);
 
         Search.setOnClickListener(l -> {
 
@@ -230,6 +225,16 @@ public class weatherSeattingFragment extends Fragment {
         mListener = null;
     }
 
+    private void onClick(View l2) {
+
+        int red = myRed;
+        Log.d("red", String.valueOf(red));
+        int green = mygree;
+        Log.d("green", String.valueOf(green));
+        int blue = myBlue;
+        Log.d("blue", String.valueOf(blue));
+        ThemeColors.setNewThemeColor(this.getActivity(), red, green, blue);
+    }
 
 
     /**
@@ -351,18 +356,14 @@ public class weatherSeattingFragment extends Fragment {
                         Toast.makeText(getActivity().getApplicationContext(),"onColorSelected: 0x" + Integer.toHexString(selectedColor).toUpperCase(), Toast.LENGTH_SHORT).show();
 
                         //this set the color of the background
-                       txtColor.setBackgroundColor(selectedColor);
+//                       txtColor.setBackgroundColor(selectedColor);
 
-                        // we can add if statement and check if the drop down list matches and store color hex # on those variables
-                        // to be passed each value to
+                       // this get the RGB color for the color picked on the Color Picker button
                         myPrmaryColor = Integer.toHexString(selectedColor);
-                        Log.d("PrimaryColor", String.valueOf(myPrmaryColor));
-                        SecondaryColor =  Integer.toHexString(selectedColor);
-                        Log.d("SecondaryColor", String.valueOf(SecondaryColor));
-                        ThirdColor  =  Integer.toHexString(selectedColor);
-                        Log.d("ThridColor", String.valueOf(ThirdColor));
-                        BackGroundColor =  Integer.toHexString(selectedColor);
-                        Log.d("BackGroundColor", String.valueOf(BackGroundColor));
+                        Allcolor = (int)Long.parseLong(myPrmaryColor, 16);
+                        myRed = (Allcolor >> 16) & 0xFF;
+                        mygree = (Allcolor >> 8) & 0xFF;
+                        myBlue = (Allcolor >> 0) & 0xFF;
 
                     }
                 })
@@ -376,7 +377,9 @@ public class weatherSeattingFragment extends Fragment {
     }
 
 
-    // this is an inter class
+    /**
+     * This is an inner class that gets primary colors from styles.xml and based what user selected 
+     */
     public static class ThemeColors {
         private static final String NAME = "ThemeColors", KEY = "color";
         public int color;
@@ -390,6 +393,13 @@ public class weatherSeattingFragment extends Fragment {
             context.setTheme(context.getResources().getIdentifier("T_" + stringColor, "style", context.getPackageName()));
         }
 
+        /**
+         *
+         * @param activity this set the activity
+         * @param red is a variable that hold the integer representation of hex color that user selected
+         * @param green is a variable that hold the integer representation of hex color that user selected
+         * @param blue is a variable that hold the integer representation of hex color that user selected
+         */
         public static void setNewThemeColor(Activity activity, int red, int green, int blue) {
             int colorStep = 15;
             red = Math.round(red / colorStep) * colorStep;
@@ -409,7 +419,11 @@ public class weatherSeattingFragment extends Fragment {
             }
         }
 
-        private boolean isLightActionBar() {// Checking if title text color will be black
+        /**
+         * Check if color will be black
+         * @return the color if user do not selected anything on the color picker
+         */
+        private boolean isLightActionBar() {
             int rgb = (Color.red(color) + Color.green(color) + Color.blue(color)) / 3;
             return rgb > 210;
         }

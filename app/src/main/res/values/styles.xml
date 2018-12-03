@@ -21,7 +21,7 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
     <!--This is many different Themes colors-->
-   
+
         <style name="T_000000">
             <item name="colorPrimary">#000000</item>
             <item name="colorPrimaryDark">#000000</item>
