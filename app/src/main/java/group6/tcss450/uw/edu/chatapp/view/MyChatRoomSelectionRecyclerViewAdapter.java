@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class MyChatRoomSelectionRecyclerViewAdapter extends RecyclerView.Adapter
 //        holder.mMessage.setText(mValues.get(position).getLastMessage());
 //        holder.mDate.setText(mValues.get(position).getDate());
 //        holder.mTime.setText(mValues.get(position).getTime());
-
+        OpenMessage thisChatRoom = holder.mItem;
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +52,22 @@ public class MyChatRoomSelectionRecyclerViewAdapter extends RecyclerView.Adapter
                     mListener.onOpenMessageFragmentInteraction(holder.mItem);
                 }
             }
+        });
+        holder.mRemove.setOnClickListener((View v) -> {
+            mListener.onChatRoomDeleteInteraction(thisChatRoom);
+            this.notifyItemRemoved(mValues.indexOf(thisChatRoom));
+            mValues.remove(thisChatRoom);
+        });
+        holder.mView.setOnLongClickListener((View v) ->  {
+            holder.mLongPressed = !holder.mLongPressed;
+            if(holder.mLongPressed) {
+                holder.mOtherUser.setVisibility(TextView.GONE);
+                holder.mRemove.setVisibility(Button.VISIBLE);
+            } else {
+                holder.mOtherUser.setVisibility(TextView.VISIBLE);
+                holder.mRemove.setVisibility(Button.GONE);
+            }
+            return true;
         });
     }
 
@@ -66,11 +83,15 @@ public class MyChatRoomSelectionRecyclerViewAdapter extends RecyclerView.Adapter
 //        public final TextView mTime;
 //        public final TextView mMessage;
         public OpenMessage mItem;
+        public Button mRemove;
+        public boolean mLongPressed;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mOtherUser = view.findViewById(R.id.tv_connectionsfragment_otheruser);
+            mRemove = view.findViewById(R.id.button_chatrooms_delete);
+            mLongPressed = false;
 //            mDate = view.findViewById(R.id.tv_connectionsfragment_date);
 //            mTime = view.findViewById(R.id.tv_connectionsfragment_time);
 //            mMessage = view.findViewById(R.id.tv_connectionsfragment_message);

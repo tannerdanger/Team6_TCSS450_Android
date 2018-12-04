@@ -116,6 +116,15 @@ public class UriHelper {
                 .build().toString();
     }
 
+    public static String CHATROOM_REMOVE()  {
+        return new Uri.Builder()
+                .scheme(SCHEME)
+                .appendPath(BASE)
+                .appendPath(MESSAGING)
+                .appendPath(REMOVE)
+                .build().toString();
+    }
+
 
     public static String WEATHER_BY_CITY() {
         return new Uri.Builder()

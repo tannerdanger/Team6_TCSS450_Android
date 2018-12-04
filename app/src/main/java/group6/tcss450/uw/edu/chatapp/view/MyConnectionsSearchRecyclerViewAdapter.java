@@ -66,7 +66,7 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
 //                notifyItemRangeChanged(position, mValues.size());
             notifyDataSetChanged();
         });
-        
+
 
     }
 

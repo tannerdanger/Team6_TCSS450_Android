@@ -244,6 +244,18 @@ public class DataHandler {
         updateContacts();
     }
 
+    public void deleteChatroom(OpenMessage om)  {
+        String uri = UriHelper.CHATROOM_REMOVE();
+        JSONObject msg = JsonHelper.messaging_removeChatroom(om.getChatId());
+        if(null != uri && null != msg)  {
+            new SendPostAsyncTask.Builder(uri, msg)
+                    .onPostExecute(this::handleChatroomDelete)
+                    .build()
+                    .execute();
+        }
+        getChats(false);
+    }
+
     public void createOrOpenChatRoom(int therid, String theirUsername, boolean isTransition){
 
         startAsync();
@@ -519,6 +531,20 @@ public class DataHandler {
                 Log.d("ConnectIon", "Connection successfully ADDED/REMOVED.");
             } else {
                 Log.d("ConnectIon", "Connection ADD/REMOVE failed.");
+            }
+        } catch (JSONException e)   {
+            e.printStackTrace();
+            Log.e("Error!", e.getMessage());
+        }
+    }
+
+    private void handleChatroomDelete(String s) {
+        try {
+            JSONObject result = new JSONObject(s);
+            if(result.getBoolean("success"))    {
+                Log.d("Chat room", "Chat room removed");
+            } else {
+                Log.d("Chat room", "Chat room NOT removed. Something went wrong");
             }
         } catch (JSONException e)   {
             e.printStackTrace();

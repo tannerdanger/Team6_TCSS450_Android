@@ -119,5 +119,6 @@ public class ChatRoomSelectionFragment extends Fragment {
     public interface OnOpenMessageFragmentInteractionListener {
         // TODO: Update argument type and name
         void onOpenMessageFragmentInteraction(OpenMessage item);
+        void onChatRoomDeleteInteraction(OpenMessage item);
     }
 }

@@ -74,8 +74,8 @@
     <string name="newchat_prompt">Select users to start a new chat with</string>
 
     <string name="search_by_city">"Search by city..."</string>
-
-
+    <string name="color_apply">apply</string>
+    <string name="chatroom_delete">Delete</string>
 
 
     <string-array name="theme_colors_array">

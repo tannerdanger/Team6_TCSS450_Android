@@ -554,6 +554,11 @@ public class HomeActivity extends AppCompatActivity
         navigateChat();
     }
 
+    @Override
+    public void onChatRoomDeleteInteraction(OpenMessage om) {
+        mDataHandler.deleteChatroom(om);
+    }
+
     //WAIT SCREEN
     @Override
     public void onWaitFragmentInteractionShow() {

@@ -126,6 +126,16 @@ public class JsonHelper extends AppCompatActivity {
 
     }
 
+    public static JSONObject messaging_removeChatroom(int chatid)   {
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put(CHAT, chatid);
+        } catch (JSONException e)   {
+            e.printStackTrace();
+        }
+        return msg;
+    }
+
     public static Forecast[] parse_Forecast(String s){
         Forecast[] forecasts = new Forecast[10];
         try {
