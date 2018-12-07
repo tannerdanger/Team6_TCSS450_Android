@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -53,6 +54,7 @@ import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.UriHelper;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
+import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherSeattingMapsActivity;
 import group6.tcss450.uw.edu.chatapp.weather.weatherSeattingFragment;
 
@@ -66,11 +68,13 @@ import static group6.tcss450.uw.edu.chatapp.view.NotificationFragment.OnListFrag
  */
 public class HomeActivity extends AppCompatActivity
         implements ChatRoomSelectionFragment.OnOpenMessageFragmentInteractionListener,
+        HomeFragment.OnFragmentInteractionListener,
         MessagesFragment.OnMessageFragmentInteractionListener,
         ConnectionFragment.OnConnectionsFragmentInteractionListener,
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
         OnListFragmentInteractionListener,
+        WeatherFragment.OnFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener,
         DataHandler.OnDataLoadedListener, NewChatFragment.OnListFragmentInteractionListener,
         weatherSeattingFragment.OnSettingsFragmentInteractionListener,
@@ -690,6 +694,10 @@ public class HomeActivity extends AppCompatActivity
     public void setLat(double lat){mLat = lat;}
     public void setLon(double lon){mLon = lon;}
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //Does nothing. Can't delete because messy code and people don't feel like contributing to the debugging process.
+    }
 
 
     /**

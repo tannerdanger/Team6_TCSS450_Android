@@ -45,6 +45,7 @@ public class LoginFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Credentials mCredentials;
     private String mFirebaseToken;
+    private String mEmial, mPw;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -64,15 +65,15 @@ public class LoginFragment extends Fragment {
             final String email = prefs.getString(getString(R.string.keys_prefs_email), "");
             final String password = prefs.getString(getString(R.string.keys_prefs_password), "");
 
-            if (email.compareTo("") != 0 && "".compareTo(password) != 0) {
-                getFirebaseToken(email, password);
-            } else {
+
                 //Load the two login EditTexts with the credentials found in SharedPrefs
                 EditText emailEdit = getActivity().findViewById(R.id.edittext_loginfragment_email);
                 emailEdit.setText(email);
+
                 EditText passwordEdit = getActivity().findViewById(R.id.edittext_loginFragment_password);
                 passwordEdit.setText(password);
-            }
+
+
         }
     }
 
@@ -95,7 +96,12 @@ public class LoginFragment extends Fragment {
         mIsWaitFragActive = false;
 
         Button button = view.findViewById(R.id.button_loginfragment_login);
-        button.setOnClickListener(v -> onLoginAttempt());
+        button.setOnClickListener(v -> {
+            EditText emailEdit = getActivity().findViewById(R.id.edittext_loginfragment_email);
+            EditText passwordEdit = getActivity().findViewById(R.id.edittext_loginFragment_password);
+            getFirebaseToken(emailEdit.getText().toString(), passwordEdit.getText().toString());
+
+        });
 
         button = view.findViewById(R.id.button_loginfragment_register);
         button.setOnClickListener(v -> mListener.onRegisterClicked());
