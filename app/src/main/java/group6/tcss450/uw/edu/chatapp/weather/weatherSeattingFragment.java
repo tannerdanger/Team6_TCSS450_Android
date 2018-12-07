@@ -81,9 +81,10 @@ public class weatherSeattingFragment extends Fragment {
     private TextView mLonView;
     private String mCityName;
     private int myRed;
-    private int mygree;
+    private int myGreen;
     private int myBlue;
     private int Allcolor;
+
 
 
 
@@ -151,8 +152,12 @@ public class weatherSeattingFragment extends Fragment {
 
 
         //this is for the button setting commit
-        new ThemeColors(this.getContext());
-        myThemeButton.setOnClickListener(this::onClick);
+        Context ctx = this.getContext();
+        Activity act = this.getActivity();
+        myThemeButton.setOnClickListener(l ->{
+            new ThemeColors(ctx);
+            onClick(view, act);
+        });
 
         Search.setOnClickListener(l -> {
 
@@ -189,7 +194,6 @@ public class weatherSeattingFragment extends Fragment {
             mCityTextView.setAdapter(mAdapter);
             mCityTextView.setThreshold(3);
             mCityTextView.setOnItemClickListener(mAutocompleteClickListener);
-
         }
 
 
@@ -233,15 +237,17 @@ public class weatherSeattingFragment extends Fragment {
         mListener = null;
     }
 
-    private void onClick(View l2) {
+    private void onClick(View l2, Activity act) {
+
+
 
         int red = myRed;
         Log.d("red", String.valueOf(red));
-        int green = mygree;
+        int green = myGreen;
         Log.d("green", String.valueOf(green));
         int blue = myBlue;
         Log.d("blue", String.valueOf(blue));
-        ThemeColors.setNewThemeColor(this.getActivity(), red, green, blue);
+        ThemeColors.setNewThemeColor(act, red, green, blue);
     }
 
 
@@ -308,23 +314,11 @@ public class weatherSeattingFragment extends Fragment {
                 // Get the Place object from the buffer.
                 final Place place = places.get(0);
 
-                // Format details of the place for display and show it in a TextView.
-//                mCityTextView.setText(formatPlaceDetails(getResources(), place.getName(),
-//                        place.getId(), place.getAddress(), place.getPhoneNumber(),
-//                        place.getWebsiteUri()));
+
                 mCityTextView.setText(place.getName().toString());
                 mCityName = place.getName().toString();
+                mCityTextView.dismissDropDown();
 
-
-//                // Display the third party attributions if set.
-//                final CharSequence thirdPartyAttribution = places.getAttributions();
-//                if (thirdPartyAttribution == null) {
-//                    mPlaceDetailsAttribution.setVisibility(View.GONE);
-//                } else {
-//                    mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
-//                    mPlaceDetailsAttribution.setText(
-//                            Html.fromHtml(thirdPartyAttribution.toString()));
-//                }
 
                 Log.i(TAG, "Place details received: " + place.getName());
 
@@ -367,12 +361,13 @@ public class weatherSeattingFragment extends Fragment {
                         //this set the color of the background
 //                       txtColor.setBackgroundColor(selectedColor);
 
-                       // this get the RGB color for the color picked on the Color Picker button
+                        // this get the RGB color for the color picked on the Color Picker button
                         myPrmaryColor = Integer.toHexString(selectedColor);
                         Allcolor = (int)Long.parseLong(myPrmaryColor, 16);
                         myRed = (Allcolor >> 16) & 0xFF;
-                        mygree = (Allcolor >> 8) & 0xFF;
+                        myGreen = (Allcolor >> 8) & 0xFF;
                         myBlue = (Allcolor >> 0) & 0xFF;
+
 
                     }
                 })

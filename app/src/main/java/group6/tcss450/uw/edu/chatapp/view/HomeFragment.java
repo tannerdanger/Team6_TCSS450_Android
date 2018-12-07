@@ -1,7 +1,6 @@
 package group6.tcss450.uw.edu.chatapp.view;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.JsonHelper;
-
 import group6.tcss450.uw.edu.chatapp.utils.WeatherPagerAdapter;
 import group6.tcss450.uw.edu.chatapp.weather.Forecast;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
@@ -29,6 +27,9 @@ import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
  * Activities that contain this fragment must implement the
  * {@link HomeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
+ *
+ * @Author Tanner Brown
+ * @Version 5 dec 2018
  */
 public class HomeFragment extends Fragment {
 
@@ -55,7 +56,8 @@ public class HomeFragment extends Fragment {
         //get credentials and forecast
         if(getArguments() != null && (null == mCredentials || null == mForecast)){
             mCredentials = (Credentials)getArguments().getSerializable(getString(R.string.ARGS_CREDENTIALS));
-            mForecast = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
+            Forecast[] f = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
+            reloadmForecast(f);
         }
         if (null != mForecast) {
             int i = 0;
@@ -91,13 +93,15 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 
         //get credentials and forecast
-        if(getArguments() != null && (null == mCredentials || null == mForecast)){
+        if(getArguments() != null){
             mCredentials = (Credentials)getArguments().getSerializable(getString(R.string.ARGS_CREDENTIALS));
-            mForecast = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
+            Forecast[] f = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
+            reloadmForecast(f);
         }
 
         ViewPager viewPager = (ViewPager)view.findViewById(R.id.viewpager);
@@ -117,6 +121,25 @@ public class HomeFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private void reloadmForecast(Forecast[] forecasts){
+
+        if(forecasts[0].getForecast().compareTo(mForecast[0].getForecast()) == 0
+                && forecasts[0].getPercipChance() == mForecast[0].getPercipChance()){
+            System.out.print("THEY ARE THE SAME, DON'T LOAD");
+        }else{
+            mForecast = forecasts;
+            int i = 0;
+            for (Forecast f : mForecast) {
+                int icon = getResources().getIdentifier(f.getIconCode(), "drawable", getContext().getPackageName());
+                f.setIcon( icon );
+                if(null != mWeatherFrags){
+                    mWeatherFrags.get(i).setmForecast(f);
+                }
+                i++;
+            }
+        }
     }
 
 
@@ -205,17 +228,6 @@ public class HomeFragment extends Fragment {
         updateWeather(mForecast);
        // buildWeatherFrags();
 
-
-
-//        mForecast = new Forecast[10];
-//        JSONObject forcastJson;
-//        if (getArguments() != null){
-//            mForecast = JsonHelper.parse_Forecast(getArguments().getString(getString(R.string.ARGS_FORECAST_DATA)));
-//        }
-//        int i = 0;
-
-        //setupTabIcons(tabLayout.getTabAt(i));
-        //updateWeather();
     }
 
 
@@ -261,7 +273,5 @@ public class HomeFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

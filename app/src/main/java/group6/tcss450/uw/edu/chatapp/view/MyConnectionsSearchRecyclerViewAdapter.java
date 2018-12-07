@@ -59,7 +59,7 @@ public class MyConnectionsSearchRecyclerViewAdapter extends RecyclerView.Adapter
         Connection thisConnection = mValues.get(position);
         holder.mAdd.setOnClickListener((View v) -> {
             mListener.onConnectionSearchFragmentInteraction(thisConnection);
-            Toast toast = Toast.makeText(mContext, "Friend request sent.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(mContext, "Friend request sent.", Toast.LENGTH_LONG);
             toast.show();
             mValues.remove(position);
 //                notifyItemRemoved(position);

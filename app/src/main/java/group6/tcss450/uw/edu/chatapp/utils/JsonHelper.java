@@ -9,6 +9,12 @@ import org.json.JSONObject;
 
 import group6.tcss450.uw.edu.chatapp.weather.Forecast;
 
+/**
+ * This class allows for Json messages to be made and parsed.
+ *
+ * @Author Tanner Brown
+ * @Version 5 Dec 2018
+ */
 public class JsonHelper extends AppCompatActivity {
 
     private static final String MYID = "memberid";

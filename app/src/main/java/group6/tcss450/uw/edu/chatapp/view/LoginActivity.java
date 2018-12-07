@@ -23,6 +23,11 @@ import group6.tcss450.uw.edu.chatapp.R;
 import group6.tcss450.uw.edu.chatapp.utils.Credentials;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
 
+/**
+ * Activity that allows logging in or registering a new account.
+ * @Author Tanner Brown
+ * @Version 15 Nov 2018
+ */
 public class LoginActivity extends AppCompatActivity
         implements LoginFragment.OnFragmentInteractionListener,
         RegisterFragment.OnFragmentInteractionListener,

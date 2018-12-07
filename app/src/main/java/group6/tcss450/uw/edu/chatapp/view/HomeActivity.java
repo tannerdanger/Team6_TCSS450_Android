@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -54,19 +53,21 @@ import group6.tcss450.uw.edu.chatapp.utils.PlaceAutocompleteAdapter;
 import group6.tcss450.uw.edu.chatapp.utils.SendPostAsyncTask;
 import group6.tcss450.uw.edu.chatapp.utils.UriHelper;
 import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
-import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
 import group6.tcss450.uw.edu.chatapp.weather.WeatherSeattingMapsActivity;
 import group6.tcss450.uw.edu.chatapp.weather.weatherSeattingFragment;
 
 import static group6.tcss450.uw.edu.chatapp.view.NotificationFragment.ARG_FRIEND_REQUEST_NOTIFICATION_LIST;
 import static group6.tcss450.uw.edu.chatapp.view.NotificationFragment.OnListFragmentInteractionListener;
 
+/**
+ * This is the main activity that hosts all of the app's fragments.
+ * @Author Tanner Brown
+ * @Version 15 Nov 2018
+ */
 public class HomeActivity extends AppCompatActivity
-        implements HomeFragment.OnFragmentInteractionListener,
-        ChatRoomSelectionFragment.OnOpenMessageFragmentInteractionListener,
+        implements ChatRoomSelectionFragment.OnOpenMessageFragmentInteractionListener,
         MessagesFragment.OnMessageFragmentInteractionListener,
         ConnectionFragment.OnConnectionsFragmentInteractionListener,
-        WeatherFragment.OnFragmentInteractionListener,
         ConnectionsSearchFragment.OnConnectionSearchFragmentInteractionListener,
         ConnectionRequestsFragment.OnConnectionRequestFragmentInteractionListener,
         OnListFragmentInteractionListener,
@@ -140,6 +141,9 @@ public class HomeActivity extends AppCompatActivity
     };
 
 
+    /**
+     * Navigate to the settings page.
+     */
     protected void navigateSettings(){
         Bundle args = new Bundle();
         args.putSerializable(getString(R.string.ARGS_CREDENTIALS), mCredentials);
@@ -336,19 +340,17 @@ public class HomeActivity extends AppCompatActivity
      * @param message the message to be added.
      */
     public void addMessage(Integer chatID, Message message){
-
-        //if ArrayList of messages for chatid doesn't yet exist, create it.
         if (!mMessageListMap.containsKey(chatID)) {
             ArrayList<Message> tmp = new ArrayList<>();
             mMessageListMap.put(chatID, tmp);
         }
 
         if(null != message){
-            // If map doesn't contain messages for this chat id, create empty LL
+
             if(!mMessageListMap.get(chatID).contains(message))   {
                 mMessageListMap.get(chatID).add(message);
             }
-            //mMessageListMap.get(chatid).add(message);
+
         }
 
 
@@ -393,6 +395,11 @@ public class HomeActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    /**
+     * Helper method that sets a tag name based on the fragment type.
+     * @param theFragment the fragment type
+     * @return a tag name or null if one doesn't exist
+     */
     private String getTag(Fragment theFragment) {
         if(theFragment instanceof HomeFragment) return getString(R.string.TAG_HomeActivity);
         if(theFragment instanceof ConnectionFragment) return getString(R.string.TAG_ConnectionActivity);
@@ -402,6 +409,10 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Handler for after a message was sent.
+     * @param result
+     */
     protected void handleMessageSendPost(final String result)   {
         try {
             JSONObject root = new JSONObject(result);
@@ -416,6 +427,10 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Helper method for updating the data structure that holds messages with a new message;
+     * @param chatID the chatID that the message belongs to.
+     */
     public void receiveMessage(int chatID) {
         Message m = null;
         ArrayList l = mMessageListMap.getOrDefault(chatID, null);
@@ -443,10 +458,6 @@ public class HomeActivity extends AppCompatActivity
     public PlaceAutocompleteAdapter getAdapter(){return this.mPlaceAutocompleteAdapter; }
 
 
-    //Home Fragment
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-    }
 
     //OpenMessage Fragment
     @Override
@@ -457,14 +468,12 @@ public class HomeActivity extends AppCompatActivity
     //Messages Fragment
     @Override
     public void onMessageFragmentInteraction(Message item) {
-        System.out.print(" "); //Is this supposed to do anything
     }
 
     @Override
     public void onMessageSendInteraction(Message theMessage)   {
         String uri = UriHelper.MESSAGES_SEND();
         mChatId = theMessage.getChatId();
-        JSONObject obj = theMessage.asJSONObject();
 
         new SendPostAsyncTask.Builder(uri, theMessage.asJSONObject())
                 .onPostExecute(this::handleMessageSendPost)
@@ -506,8 +515,7 @@ public class HomeActivity extends AppCompatActivity
             conns = new Connection[0];
         }
 
-      /*  args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
-                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)); */
+
         args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, conns);
         csf.setArguments(args);
         loadFragment(csf);
@@ -528,8 +536,6 @@ public class HomeActivity extends AppCompatActivity
         }
 
         args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST, conns);
-      /*  args.putSerializable(ConnectionFragment.ARG_CONNECTION_LIST,
-                b.getSerializable(ConnectionFragment.ARG_CONNECTION_LIST)); */
         crf.setArguments(args);
         loadFragment(crf);
     }
@@ -586,19 +592,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-    //*************** ASYNC METHODS ***************//
 
-    private void logout(){
-        SharedPreferences prefs =
-                getSharedPreferences(
-                        getString(R.string.keys_shared_prefs),
-                        Context.MODE_PRIVATE);
-        //remove the saved credentials from StoredPrefs
-        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
-        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
-        //close the app
-        finishAndRemoveTask();
-    }
 
     @Override
     public void onNewZipcode(int zip) {
@@ -615,6 +609,11 @@ public class HomeActivity extends AppCompatActivity
         Log.wtf("HOME ACTIVITY", "ON NEW CITY ENDED");
     }
 
+    /**
+     * Recieved a new lat/long from settings page to update weather.
+     * @param lat the latitude
+     * @param lon the longitude.
+     */
     @Override
     public void onNewLatLon(double lat, double lon) {
         Log.wtf("HOME ACTIVITY", "ON NEW LAT LONG STARTED");
@@ -652,6 +651,11 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Updates the homefragment with new weather data when it is recieved.
+     *
+     * @param transition if true, also navigate to Homefragment.
+     */
     public void weatherLoaded(Boolean transition) {
 
         mHomeFrag.updateContent(mJsonData.get(getString(R.string.ARGS_FORECAST_DATA)));
@@ -685,6 +689,7 @@ public class HomeActivity extends AppCompatActivity
     public double getLom(){return this.mLon; }
     public void setLat(double lat){mLat = lat;}
     public void setLon(double lon){mLon = lon;}
+
 
 
     /**
@@ -745,8 +750,7 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing
-    // we have something that allows us to do that.
+
     class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {

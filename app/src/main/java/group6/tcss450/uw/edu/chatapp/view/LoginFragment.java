@@ -33,6 +33,9 @@ import group6.tcss450.uw.edu.chatapp.utils.WaitFragment;
  * Activities that contain this fragment must implement the
  * {@link LoginFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
+ *
+ * @Author Tanner Brown
+ * @Version 15 Nov 2018
  */
 public class LoginFragment extends Fragment {
 

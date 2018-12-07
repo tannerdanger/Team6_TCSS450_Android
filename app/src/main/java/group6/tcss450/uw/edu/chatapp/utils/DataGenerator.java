@@ -7,8 +7,9 @@ import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 
 /**
- * Tanner Brown
- * This class creates basic data for the app until real data can be recieved
+ * This class creates basic data for the app until real data can be recieved.
+ * @Author Tanner Brown
+ * @Version 15 Nov 2018
  */
 public final class DataGenerator {
 

@@ -14,7 +14,11 @@ import group6.tcss450.uw.edu.chatapp.messages.Message;
 import group6.tcss450.uw.edu.chatapp.messages.OpenMessage;
 import group6.tcss450.uw.edu.chatapp.view.HomeActivity;
 
-
+/**
+ * This class allows for handling of data and api calls.
+ * @Author Tanner Brown
+ * @Version 1 Dec 2018
+ */
 public class DataHandler {
 
     private static final String ARGS_CHATROOMS = "chats";

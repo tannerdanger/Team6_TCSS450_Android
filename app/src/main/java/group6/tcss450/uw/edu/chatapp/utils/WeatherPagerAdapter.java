@@ -7,10 +7,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import group6.tcss450.uw.edu.chatapp.weather.WeatherFragment;
-
 /**
+ * This class is a custom pager adapter for the weather fragments.
  * @author Tanner Brown
  * @version 11/3/2018
  */

@@ -3,9 +3,10 @@ package group6.tcss450.uw.edu.chatapp.utils;
 import android.net.Uri;
 
 
-
 /**
  * This is a helper class for building URIs
+ * @Author Tanner Brown
+ * @Version 1 Dec 2018
  */
 public class UriHelper {
     private static final String SCHEME = "https";
